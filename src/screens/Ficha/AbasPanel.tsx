@@ -1686,7 +1686,8 @@ export const AbasPanel: React.FC = () => {
                                 )}
 
                                 {/* Campos de metadados — só mostram se têm valor */}
-                                <div className="mb-4 flex flex-col gap-1">
+                                <div className="mb-4 flex gap-4 items-center">
+<div className="flex flex-col gap-1 flex-1">
                                   {execucao && (
                                     <div className="text-xs">
                                       <span className="font-bold text-zinc-300">Execução: </span>
