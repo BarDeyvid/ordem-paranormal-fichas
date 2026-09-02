@@ -113,5 +113,5 @@ export function useRituais(): UseRituaisReturn & {
     }));
   };
 
-  return { rituais, loading, error, rituaisAprendidos, aprenderRitual, esquecerRitual, editarRitual };
+  return { rituais, loading, error, rituaisAprendidos, aprenderRitual, esquecerRitual, editarRitual, atualizarRituaisAprendidos: setRituaisAprendidos, simbolosRituais };
 }

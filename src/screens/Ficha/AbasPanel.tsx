@@ -1510,7 +1510,6 @@ export const AbasPanel: React.FC = () => {
                         const corElemento = obterCorBadge(elementoEscolhido);
                         const corPrimaria = obterCorElementoPrimario(elementoEscolhido);
                         const corTextoElemento = obterCorTexto(elementoEscolhido);
-                        const simboloImg = rituaisHook.simbolosRituais?.get(ritual.Codigo_Ritual) || '';
 
                         // Valores dinâmicos baseados na versão
                         const peOriginal = ritual.customProps?.[versao]?.PE_Ritual || obterValorVersao(ritual.PE_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
@@ -1639,13 +1638,6 @@ export const AbasPanel: React.FC = () => {
                               </div>
 
                               <div className="flex items-center gap-2.5">
-                                {simboloImg && !expandido && (
-                                  <img
-                                    src={simboloImg}
-                                    alt=""
-                                    className="h-16 w-16 object-contain drop-shadow-md"
-                                  />
-                                )}
                                 {/* PE */}
                                 <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-xs font-bold text-blue-400">
                                   {pe} PE
@@ -1686,9 +1678,8 @@ export const AbasPanel: React.FC = () => {
                                 )}
 
                                 {/* Campos de metadados — só mostram se têm valor */}
-                                <div className="flex gap-4 mb-4 items-start">
-                                    <div className="flex flex-col gap-1 flex-1">
-                                      {execucao && (
+                                <div className="mb-4 flex flex-col gap-1">
+                                  {execucao && (
                                     <div className="text-xs">
                                       <span className="font-bold text-zinc-300">Execução: </span>
                                       <span className="text-zinc-400">{execucao}</span>
@@ -1734,17 +1725,8 @@ export const AbasPanel: React.FC = () => {
                                     <div className="text-xs">
                                       <span className="font-bold text-zinc-300">Dados: </span>
                                       <span className="text-zinc-400">{dados}</span>
-                                      </div>
-                                    )}
                                     </div>
-                                    {simboloImg && (
-                                      <img
-                                        src={simboloImg}
-                                        alt=""
-                                        className="w-32 h-32 object-contain shrink-0 drop-shadow-lg"
-                                      />
-                                    )}
-                                  </div>
+                                  )}
                                 </div>
 
                               </div>
