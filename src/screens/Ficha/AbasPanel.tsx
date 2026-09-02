@@ -248,6 +248,18 @@ export const AbasPanel: React.FC = () => {
     return map;
   }, [poderesParanormais]);
 
+  const poderesGeraisMap = React.useMemo(() => {
+    const map = new Map<string, string | null>();
+    listaPoderesUtilidade.forEach(p => {
+      map.set(p.Nome.toLowerCase().trim(), p.Automatico ?? null);
+    });
+    poderesClasse.forEach(p => {
+      map.set(p.Nome.toLowerCase().trim(), p.Automatico ?? null);
+    });
+    return map;
+  }, [listaPoderesUtilidade, poderesClasse]);
+
+
   React.useEffect(() => {
     let changed = false;
     const novosPoderes = { ...poderesHook.poderesEscolhidos };
@@ -483,7 +495,7 @@ export const AbasPanel: React.FC = () => {
             // Ignora o segundo block completamente
           } else {
             if (pp) poderesRenderizados.add(nomeBaseCheck);
-            const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : undefined;
+            const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : (poderesGeraisMap.get(nomeBaseCheck) || undefined);
             lista.push({ id: `escolha_nex_${nivelPatamar}`, nome: escolhido.nome, descricao: escolhido.descricao, tipo: finalTipoLabel, preRequisitos: escolhido.preRequisitos, fonte: escolhido.fonte || pp?.Fonte, elemento: elementoDoPoder, afinidade: afinidadeDoPoder, afinidadeAtiva, afinidadeAdquiridaKey: adqKey, categoria, automatico: automaticoVal });
           }
         } else {
@@ -544,7 +556,7 @@ export const AbasPanel: React.FC = () => {
             // Ignora o segundo block
           } else {
             if (pp) poderesRenderizados.add(nomeBaseCheck);
-            const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : undefined;
+            const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : (poderesGeraisMap.get(nomeBaseCheck) || undefined);
             lista.push({ id: `escolha_nex_combate_${nivelPatamar}`, nome: escolhido.nome, descricao: escolhido.descricao, tipo: finalTipoLabel, preRequisitos: escolhido.preRequisitos, fonte: escolhido.fonte || pp?.Fonte, elemento: elementoDoPoder, afinidade: afinidadeDoPoder, afinidadeAtiva, afinidadeAdquiridaKey: adqKey, categoria, automatico: automaticoVal });
           }
         } else {
@@ -602,7 +614,7 @@ export const AbasPanel: React.FC = () => {
           // Ignora duplicata
         } else {
           if (pp) poderesRenderizados.add(nomeBaseCheck);
-          const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : undefined;
+          const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : (poderesGeraisMap.get(nomeBaseCheck) || undefined);
           lista.push({ id: `escolha_${key}`, nome: escolhido.nome, descricao: escolhido.descricao, tipo: finalTipoLabel, preRequisitos: escolhido.preRequisitos, fonte: escolhido.fonte || pp?.Fonte, elemento: elementoDoPoder, afinidade: afinidadeDoPoder, afinidadeAtiva, afinidadeAdquiridaKey: adqKey, categoria, automatico: automaticoVal });
         }
       }
@@ -652,7 +664,7 @@ export const AbasPanel: React.FC = () => {
           // Ignora duplicata
         } else {
           if (pp) poderesRenderizados.add(nomeBaseCheck);
-          const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : undefined;
+          const automaticoVal = pp ? (afinidadeAtiva ? (pp['Automatico?_Afinidade'] ?? pp['Automatico?']) : pp['Automatico?']) : (poderesGeraisMap.get(nomeBaseCheck) || undefined);
           lista.push({ 
             id: `escolha_nex_${chave}`, 
             nome: escolhido.nome, 
