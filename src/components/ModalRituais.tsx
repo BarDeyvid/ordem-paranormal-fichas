@@ -4,6 +4,7 @@ import { sortPorElementoENome } from '../utils/rpgRules';
 import { Collapse } from './Collapse';
 
 interface ModalRituaisProps {
+  simbolosRituais: Map<number, string>;
   rituais: Ritual[];
   onClose: () => void;
   onSelect: (ritual: Ritual, elemento?: string) => void;
@@ -59,7 +60,8 @@ function formatarDescricao(texto: string): string {
   return resultado;
 }
 
-export const ModalRituais: React.FC<ModalRituaisProps> = ({
+export const ModalRituais: React.FC<ModalRituaisProps> = ({ 
+  simbolosRituais,
   rituais,
   onClose,
   onSelect,
@@ -225,6 +227,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                 const codigo = ritual.Codigo_Ritual;
                 const expandido = expandidos.includes(codigo);
                 const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
+                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
                 const isEscolhendo = escolhendoElementoId === codigo;
                 const elementoSendoEscolhido = isVaria ? 'Varia' : ritual.Elemento_Ritual;
                 const corElemento = obterCorBadge(elementoSendoEscolhido);
@@ -295,7 +298,16 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
-                      <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      <div className="flex items-center gap-2.5">
+                        {simboloImg && !expandido && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3"
+                          />
+                        )}
+                        <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      </div>
                     </div>
 
                     <div className="px-3 pb-3 shrink-0">
@@ -358,6 +370,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                 const codigo = ritual.Codigo_Ritual;
                 const expandido = expandidos.includes(codigo);
                 const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
+                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
                 const isEscolhendo = escolhendoElementoId === codigo;
                 const elementoSendoEscolhido = isVaria ? 'Varia' : ritual.Elemento_Ritual;
                 const corElemento = obterCorBadge(elementoSendoEscolhido);
@@ -428,7 +441,16 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
-                      <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      <div className="flex items-center gap-2.5">
+                        {simboloImg && !expandido && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3"
+                          />
+                        )}
+                        <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      </div>
                     </div>
 
                     <div className="px-3 pb-3 shrink-0">

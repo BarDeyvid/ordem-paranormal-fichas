@@ -1510,6 +1510,7 @@ export const AbasPanel: React.FC = () => {
                         const corElemento = obterCorBadge(elementoEscolhido);
                         const corPrimaria = obterCorElementoPrimario(elementoEscolhido);
                         const corTextoElemento = obterCorTexto(elementoEscolhido);
+                        const simboloImg = rituaisHook.simbolosRituais?.get(ritual.Codigo_Ritual) || '';
 
                         // Valores dinâmicos baseados na versão
                         const peOriginal = ritual.customProps?.[versao]?.PE_Ritual || obterValorVersao(ritual.PE_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
@@ -1638,6 +1639,13 @@ export const AbasPanel: React.FC = () => {
                               </div>
 
                               <div className="flex items-center gap-2.5">
+                                {simboloImg && !expandido && (
+                                  <img
+                                    src={simboloImg}
+                                    alt=""
+                                    className="h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3"
+                                  />
+                                )}
                                 {/* PE */}
                                 <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-xs font-bold text-blue-400">
                                   {pe} PE
