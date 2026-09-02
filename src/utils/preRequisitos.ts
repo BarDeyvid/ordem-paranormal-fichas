@@ -142,12 +142,18 @@ export function verificarPreRequisitos(
     case 3:
     case 4: {
       // Exige NEX mínimo (Ex: NEX 30% ou NEX 60%) — convertido para Nível
-      const nexMatch = textoLower.match(/nex\s*(\d+)%/i);
+      const nexMatch = textoLower.match(/nex\s*(\d+)/i);
       if (nexMatch) {
         const nexExigido = parseInt(nexMatch[1], 10);
         const nivelExigido = nexExigido === 99 ? 20 : Math.ceil(nexExigido / 5);
-        if (contexto.nivel < nivelExigido) {
-          return { atende: false, motivo: `Nível ${nivelExigido}` };
+        if (contexto.regras?.['nex_experiencia']) {
+          if (contexto.nivel < nivelExigido) {
+            return { atende: false, motivo: `Nível ${nivelExigido}` };
+          }
+        } else {
+          if (contexto.nex < nexExigido) {
+            return { atende: false, motivo: `NEX ${nexExigido}%` };
+          }
         }
       }
       return { atende: true };
@@ -342,7 +348,11 @@ export function verificarPreRequisitos(
 
     case 22: {
       // Mestre em Elemento no elemento escolhido, Nível 12
-      if (contexto.nivel < 12) return { atende: false, motivo: 'Nível 12' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 12) return { atende: false, motivo: 'Nível 12' };
+      } else {
+        if (contexto.nex < 60) return { atende: false, motivo: 'NEX 60%' };
+      }
       
       if (!elementoTentado) {
         const temAlgum = contexto.poderes.some(p => p.nome.startsWith('mestre em elemento'));
@@ -471,7 +481,11 @@ export function verificarPreRequisitos(
 
     case 29: {
       // Treinado em perícia, Nível 6
-      if (contexto.nivel < 6) return { atende: false, motivo: 'Nível 6' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 6) return { atende: false, motivo: 'Nível 6' };
+      } else {
+        if (contexto.nex < 30) return { atende: false, motivo: 'NEX 30%' };
+      }
       const codigos = extrairCodigosPericias(textoLower);
       if (codigos.length > 0) {
         const res = verificarPericia([codigos[0]]);
@@ -607,7 +621,11 @@ export function verificarPreRequisitos(
 
     case 37: {
       // Nível 8
-      if (contexto.nivel < 8) return { atende: false, motivo: 'Nível 8' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 8) return { atende: false, motivo: 'Nível 8' };
+      } else {
+        if (contexto.nex < 40) return { atende: false, motivo: 'NEX 40%' };
+      }
       return { atende: true };
     }
 
@@ -676,7 +694,11 @@ export function verificarPreRequisitos(
       // Conhecimento 1, Nível 9 e treinado em 18 (Ocultismo).
       const qtdConh = contexto.poderes.filter(p => p.elemento?.toLowerCase().trim() === 'conhecimento').length;
       if (qtdConh < 1) return { atende: false, motivo: '1 Poder de Conhecimento' };
-      if (contexto.nivel < 9) return { atende: false, motivo: 'Nível 9' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 9) return { atende: false, motivo: 'Nível 9' };
+      } else {
+        if (contexto.nex < 45) return { atende: false, motivo: 'NEX 45%' };
+      }
       
       const codigos = extrairCodigosPericias(textoLower);
       if (codigos.length > 0) {
@@ -692,7 +714,11 @@ export function verificarPreRequisitos(
 
     case 47: {
       // Nível 10
-      if (contexto.nivel < 10) return { atende: false, motivo: 'Nível 10' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 10) return { atende: false, motivo: 'Nível 10' };
+      } else {
+        if (contexto.nex < 50) return { atende: false, motivo: 'NEX 50%' };
+      }
       return { atende: true };
     }
 
@@ -706,7 +732,11 @@ export function verificarPreRequisitos(
 
     case 49: {
       // Nível 6 e poder específico escrito no campo
-      if (contexto.nivel < 6) return { atende: false, motivo: 'Nível 6' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 6) return { atende: false, motivo: 'Nível 6' };
+      } else {
+        if (contexto.nex < 30) return { atende: false, motivo: 'NEX 30%' };
+      }
       const nomeExigido = textoLower.trim();
       if (!contexto.poderes.some(p => p.nome === nomeExigido)) {
         return { atende: false, motivo: `Poder ${texto}` };
@@ -716,7 +746,11 @@ export function verificarPreRequisitos(
 
     case 50: {
       // Nível 9 e NÃO ser treinado na perícia do campo Pericia_Poder
-      if (contexto.nivel < 9) return { atende: false, motivo: 'Nível 9' };
+      if (contexto.regras?.['nex_experiencia']) {
+        if (contexto.nivel < 9) return { atende: false, motivo: 'Nível 9' };
+      } else {
+        if (contexto.nex < 45) return { atende: false, motivo: 'NEX 45%' };
+      }
       if (poder.Pericia_Poder) {
         const nomePericia = contexto.nomesPericias[poder.Pericia_Poder];
         if (nomePericia) {
