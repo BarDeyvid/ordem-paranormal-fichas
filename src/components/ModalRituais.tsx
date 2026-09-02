@@ -312,7 +312,8 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
 
                     <div className="px-3 pb-3 shrink-0">
                       <Collapse isOpen={expandido}>
-                        <div className="mb-2 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
+                        <div className="mb-3 flex gap-4 items-center border-b border-zinc-800/50 pb-3">
+                        <div className="flex flex-col gap-1 flex-1">
                           {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual?.split('/')[0].trim()}</span></div>}
@@ -321,7 +322,15 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           {ritual.Efeito_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Efeito: </span><span className="text-zinc-300">{ritual.Efeito_Ritual.split('/')[0].trim()}</span></div>}
                           {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual?.split('/')[0].trim()}</span></div>}
                         </div>
-                      </Collapse>
+                        {simboloImg && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
+                          />
+                        )}
+                      </div>
+                    </Collapse>
                       <Collapse isOpen={expandido} previewHeight="60px">
                         <div className="text-xs leading-relaxed text-zinc-400 ">
                           {ritual.Descricao_Ritual.split('\n').map((linha, idx) => (
@@ -455,7 +464,8 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
 
                     <div className="px-3 pb-3 shrink-0">
                       <Collapse isOpen={expandido}>
-                        <div className="mb-2 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
+                        <div className="mb-3 flex gap-4 items-center border-b border-zinc-800/50 pb-3">
+                        <div className="flex flex-col gap-1 flex-1">
                           {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual?.split('/')[0].trim()}</span></div>}
@@ -464,7 +474,15 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           {ritual.Efeito_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Efeito: </span><span className="text-zinc-300">{ritual.Efeito_Ritual.split('/')[0].trim()}</span></div>}
                           {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual?.split('/')[0].trim()}</span></div>}
                         </div>
-                      </Collapse>
+                        {simboloImg && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
+                          />
+                        )}
+                      </div>
+                    </Collapse>
                       <Collapse isOpen={expandido} previewHeight="60px">
                         <div className="text-xs leading-relaxed text-zinc-400 ">
                           {ritual.Descricao_Ritual.split('\n').map((linha, idx) => (

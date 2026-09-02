@@ -1735,6 +1735,14 @@ export const AbasPanel: React.FC = () => {
                                       <span className="text-zinc-400">{dados}</span>
                                     </div>
                                   )}
+                                  </div>
+                                  {simboloImg && (
+                                    <img
+                                      src={simboloImg}
+                                      alt=""
+                                      className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
+                                    />
+                                  )}
                                 </div>
 
                               </div>
@@ -1836,6 +1844,10 @@ export const AbasPanel: React.FC = () => {
 
         {abaDireita === 'regras' && (
           <div className="flex flex-col gap-3">
+                            <div className="bg-red-500 text-white p-2 text-xs">
+                              DEBUG RITUAIS: {rituaisHook.simbolosRituais?.size || 0} símbolos carregados.
+                              Exemplo de chave no mapa: {Array.from(rituaisHook.simbolosRituais?.keys() || [])[0]}
+                            </div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Regras Opcionais</h4>
             <RegraCheckbox
               nome="nex_experiencia"
