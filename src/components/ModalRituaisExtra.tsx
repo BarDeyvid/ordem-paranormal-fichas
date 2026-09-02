@@ -53,13 +53,15 @@ function formatarDescricao(texto: string): string {
 }
 
 interface ModalRituaisExtraProps {
+  simbolosRituais: Map<number, string>;
   rituais: Ritual[];
   rituaisAprendidosIds: number[];
   onClose: () => void;
   onSelect: (ritual: Ritual, elementoVaria?: string) => void;
 }
 
-export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
+export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({ 
+  simbolosRituais,
   rituais,
   rituaisAprendidosIds,
   onClose,
@@ -201,6 +203,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
               const codigo = ritual.Codigo_Ritual;
               const expandido = expandidos.includes(codigo);
               const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
+                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
               const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
               const corElemento = obterCorBadge(elementoSendoEscolhido);
               const corTextoElemento = obterCorTexto(elementoSendoEscolhido);
@@ -223,20 +226,39 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                         <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                       </div>
                     </div>
-                    <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
-                  </div>
+                      <div className="flex items-center gap-2.5">
+                        {simboloImg && !expandido && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="h-16 w-16 object-contain drop-shadow-md"
+                          />
+                        )}
+                        <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      </div>
+                    </div>
 
                   <div className="px-3 pb-3 cursor-pointer" onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])}>
                     <Collapse isOpen={expandido}>
-                      <div className="mb-3 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
-                        {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual}</span></div>}
+                      <div className="flex gap-4 mb-3 border-b border-zinc-800/50 pb-3 items-start">
+                        <div className="flex flex-col gap-1 flex-1">
+                          {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual}</span></div>}
                         {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual}</span></div>}
                         {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual}</span></div>}
                         {ritual.Alvo_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alvo: </span><span className="text-zinc-300">{ritual.Alvo_Ritual}</span></div>}
                         {ritual.Duracao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Duração: </span><span className="text-zinc-300">{ritual.Duracao_Ritual}</span></div>}
                         {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual}</span></div>}
+                        </div>
+                        {simboloImg && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="w-32 h-32 object-contain shrink-0 drop-shadow-lg"
+                          />
+                        )}
                       </div>
-                    </Collapse>
+                    </div>
+                  </Collapse>
                     <Collapse isOpen={expandido} previewHeight="4.5em">
                       <div className="text-xs leading-relaxed text-zinc-400 min-h-[4.5em]">
                         {ritual.Descricao_Ritual.split('\n').map((linha, i) => (
@@ -283,6 +305,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                 const codigo = ritual.Codigo_Ritual;
                 const expandido = expandidos.includes(codigo);
                 const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
+                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
                 const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
                 const corElemento = obterCorBadge(elementoSendoEscolhido);
                 const corTextoElemento = obterCorTexto(elementoSendoEscolhido);
@@ -305,12 +328,22 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                           <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
-                      <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      <div className="flex items-center gap-2.5">
+                        {simboloImg && !expandido && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="h-16 w-16 object-contain drop-shadow-md"
+                          />
+                        )}
+                        <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
+                      </div>
                     </div>
 
                     <div className="px-3 pb-3 cursor-pointer" onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])}>
                       <Collapse isOpen={expandido}>
-                        <div className="mb-3 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
+                        <div className="flex gap-4 mb-3 border-b border-zinc-800/50 pb-3 items-start">
+                        <div className="flex flex-col gap-1 flex-1">
                           {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual}</span></div>}
                           {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual}</span></div>}
                           {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual}</span></div>}
@@ -318,7 +351,16 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                           {ritual.Duracao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Duração: </span><span className="text-zinc-300">{ritual.Duracao_Ritual}</span></div>}
                           {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual}</span></div>}
                         </div>
-                      </Collapse>
+                        {simboloImg && (
+                          <img
+                            src={simboloImg}
+                            alt=""
+                            className="w-32 h-32 object-contain shrink-0 drop-shadow-lg"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </Collapse>
                       <Collapse isOpen={expandido} previewHeight="4.5em">
                         <div className="text-xs leading-relaxed text-zinc-400 min-h-[4.5em]">
                           {ritual.Descricao_Ritual.split('\n').map((linha, idx) => (
