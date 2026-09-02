@@ -62,13 +62,15 @@ function PoderCard({
   onEscolher,
   contextoPrereq,
 }: {
-  poder: { codigo_poder: number; Nome: string; Descricao: string; PreRequisitos: string; Fonte: string; Pre_Codigo?: number | null; Tipo?: string; Classe?: string | null; Codigo_Regra?: number; };
+  poder: { codigo_poder: number; Nome: string; Descricao: string; PreRequisitos: string; Fonte: string; Pre_Codigo?: number | null; Tipo?: string; Classe?: string | null; Codigo_Regra?: number; Automatico?: string | null; };
   ehParanormal: boolean;
   paranormalData?: {
     Elemento?: string;
     Afinidade?: string;
     PreRequisitosAfinidade?: string;
     Pre_Codigo_Afinidade?: number | null;
+    'Automatico?'?: string | null;
+    'Automatico?_Afinidade'?: string | null;
   };
   estaExpandido: boolean;
   onToggle: () => void;
@@ -106,6 +108,10 @@ function PoderCard({
 
   const precisaEscolherPericia = poder.Nome.toLowerCase().includes('perícia') || (poder.Descricao && poder.Descricao.toLowerCase().includes('escolha uma perícia'));
   const [escolhendoPericia, setEscolhendoPericia] = useState(false);
+  
+  const automaticoVal = ehParanormal && paranormalData
+    ? (count >= 1 ? (paranormalData['Automatico?_Afinidade'] ?? paranormalData['Automatico?']) : paranormalData['Automatico?'])
+    : poder.Automatico;
   const periciasDisponiveis = contextoPrereq ? Object.entries(contextoPrereq.nomesPericias).map(([id, nome]) => ({ id: Number(id), nome })).sort((a,b) => a.nome.localeCompare(b.nome)) : [];
 
   return (
@@ -115,6 +121,28 @@ function PoderCard({
       >
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none truncate">{poder.Nome}</span>
+          {automaticoVal && (
+            <span
+              title={automaticoVal === 'Sim' ? 'Totalmente automático — acontece sozinho' : 'Semi-automático — parte funciona automaticamente'}
+              className={`shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.6rem] font-bold uppercase tracking-wider ${
+                automaticoVal === 'Sim'
+                  ? 'bg-green-950/60 text-green-400 border border-green-800/50'
+                  : 'bg-yellow-950/60 text-yellow-400 border border-yellow-800/50'
+              }`}
+            >
+              {automaticoVal === 'Sim' ? (
+                <>
+                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>
+                  Auto
+                </>
+              ) : (
+                <>
+                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z" opacity="0.5"/><path d="M19 3v4m0 4v10" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/></svg>
+                  Semi
+                </>
+              )}
+            </span>
+          )}
           {ehParanormal && paranormalData?.Elemento && (
             <span
               className={`inline-block rounded px-1.5 py-px text-[9px] font-bold uppercase tracking-wider leading-tight ${
