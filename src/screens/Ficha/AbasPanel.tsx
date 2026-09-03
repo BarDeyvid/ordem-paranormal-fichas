@@ -1576,14 +1576,27 @@ export const AbasPanel: React.FC = () => {
                               }
                               className="flex cursor-pointer items-center justify-between gap-2 bg-zinc-800/60 px-4 py-3 transition hover:bg-zinc-700/50"
                             >
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center">
                                 {simboloImg && (
-                                  <img
-                                    src={simboloImg}
-                                    alt=""
-                                    loading="lazy"
-                                    className={`h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3 transition-opacity duration-200 ${expandido ? 'opacity-0' : 'opacity-100'}`}
-                                  />
+                                  <div
+                                    className="overflow-hidden shrink-0 flex items-center justify-center"
+                                    style={{
+                                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                      width: expandido ? '0px' : '80px',
+                                      height: '80px',
+                                      marginTop: '-12px',
+                                      marginBottom: '-12px',
+                                      marginRight: expandido ? '0px' : '12px',
+                                      opacity: expandido ? 0 : 1,
+                                    }}
+                                  >
+                                    <img
+                                      src={simboloImg}
+                                      loading="lazy"
+                                      alt=""
+                                      className="h-20 w-20 object-contain drop-shadow-md max-w-none"
+                                    />
+                                  </div>
                                 )}
                                 <div className="flex flex-col gap-1 justify-center py-1">
                                   <div className="flex items-center gap-2">
