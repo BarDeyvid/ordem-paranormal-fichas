@@ -240,49 +240,17 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
 
                 return (
                   <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out h-full cursor-pointer`} style={{ borderLeftColor: corElemento }}>
-                    <div className={`flex justify-between gap-3 px-4 py-3 relative ${simboloImg ? 'items-stretch' : 'items-center'}`}>
+                    <div className="flex justify-between gap-3 px-4 py-3 relative items-center">
                       {/* LADO ESQUERDO */}
                       <div className="flex items-center">
-                                {simboloImg && (
-                                  <>
-                                    <div
-                                      className="overflow-hidden shrink-0 flex items-center justify-center"
-                                      style={{
-                                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                                        width: expandido ? '0px' : '64px',
-                                        height: '64px',
-                                        marginTop: '-6px',
-                                        marginBottom: '-6px',
-                                        opacity: expandido ? 0 : 1,
-                                      }}
-                                    >
-                                      <img
-                                        src={simboloImg}
-                                        loading="lazy"
-                                        alt=""
-                                        className="h-16 w-16 object-contain drop-shadow-md max-w-none"
-                                      />
-                                    </div>
-                                    <div
-                                      className="shrink-0 bg-white/20 rounded-full"
-                                      style={{
-                                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                                        width: expandido ? '0px' : '1px',
-                                        height: '36px',
-                                        marginLeft: expandido ? '0px' : '10px',
-                                        marginRight: expandido ? '0px' : '10px',
-                                        opacity: expandido ? 0 : 1,
-                                      }}
-                                    />
-                                  </>
-                                )}
+                                
                         <div className="flex flex-col gap-1 justify-center py-1">
                           <span className="text-sm font-bold text-zinc-200 group-hover:text-green-400 transition">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
 
                       {/* LADO DIREITO */}
-                      <div className={`flex flex-col justify-between shrink-0 ml-2 ${simboloImg ? 'items-end py-1' : 'items-end'}`}>
+                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end">
                         <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
                           {(() => {
                             const elStr = elementoSendoEscolhido;
@@ -328,7 +296,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           })()}
                         </span>
                         
-                        <div className={`flex items-center gap-2 ${simboloImg ? 'mt-auto' : 'mt-2'}`}>
+                        <div className="flex items-center gap-2 mt-2">
                           <span className="text-zinc-500 text-xs ml-1">{expandido ? '▲' : '▼'}</span>
                         </div>
                       </div>
