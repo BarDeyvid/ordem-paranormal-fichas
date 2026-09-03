@@ -234,7 +234,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
 
                 return (
                   <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out h-full cursor-pointer`} style={{ borderLeftColor: corElemento }}>
-                    <div className="flex justify-between gap-3 px-4 py-3 relative items-center">
+                    <div className="flex justify-between gap-3 px-4 py-3 relative items-stretch">
                       {/* LADO ESQUERDO */}
                       <div className="flex items-center">
                                 
@@ -244,7 +244,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                       </div>
 
                       {/* LADO DIREITO */}
-                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end">
+                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end py-1">
                         <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
                           {(() => {
                             const elStr = elementoSendoEscolhido;
@@ -290,7 +290,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           })()}
                         </span>
                         
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-2 mt-auto">
                           <span className="text-zinc-500 text-xs ml-1">{expandido ? '▲' : '▼'}</span>
                         </div>
                       </div>

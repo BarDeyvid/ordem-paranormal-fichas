@@ -210,7 +210,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
 
               return (
                 <div key={codigo} className="bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 transition group flex flex-col h-full border-l-4" style={{ borderLeftColor: corElemento }}>
-                  <div onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className="flex justify-between gap-3 px-4 py-3 cursor-pointer relative items-center">
+                  <div onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className="flex justify-between gap-3 px-4 py-3 cursor-pointer relative items-stretch">
                       {/* LADO ESQUERDO */}
                       <div className="flex items-center">
                                 
@@ -220,7 +220,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                       </div>
 
                       {/* LADO DIREITO */}
-                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end">
+                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end py-1">
                         <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
                           {(() => {
                             const elStr = elementoSendoEscolhido;
@@ -262,7 +262,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                           })()}
                         </span>
                         
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-2 mt-auto">
                           <span className="text-zinc-500 text-xs ml-1">{expandido ? '▲' : '▼'}</span>
                         </div>
                       </div>
