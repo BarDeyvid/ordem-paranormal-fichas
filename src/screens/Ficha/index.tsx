@@ -78,14 +78,10 @@ export const FichaScreen: React.FC = () => {
 function AtributosFicha() {
   const { atributos, setAtributos, bonusAtributos, setBonusAtributos, bloquearLetras, atributosFinais } = useRPG();
 
-  return (
-    <div className="mb-8 flex flex-wrap justify-center gap-5">
-      {(Object.keys(atributos) as Array<keyof typeof atributos>).map(nome => (
-        <div
-          key={nome}
-          className="relative flex h-[72px] w-[72px] flex-col items-center justify-center rounded-full border-2 border-zinc-700 bg-zinc-900/60"
-        >
-          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-amber-500 bg-zinc-950" title="Bônus temporário">
+  const renderAtributo = (nome, posClasses) => {
+    return (
+      <div key={nome} className={`absolute flex flex-col items-center justify-center ${posClasses}`}>
+          <div className="absolute -right-3 -top-3 flex h-5 w-5 items-center justify-center rounded-full border border-amber-500 bg-zinc-950 shadow-md z-10" title="Bônus temporário">
             <input
               type="number"
               onKeyDown={bloquearLetras}
@@ -93,10 +89,10 @@ function AtributosFicha() {
               onChange={(e) =>
                 setBonusAtributos({ ...bonusAtributos, [nome]: Math.max(0, Number(e.target.value)) })
               }
-              className="w-full bg-transparent text-center text-xs font-bold text-amber-400 outline-none"
+              className="w-full bg-transparent text-center text-[10px] font-bold text-amber-400 outline-none"
             />
           </div>
-          <span className="mt-2.5 text-xs font-bold text-zinc-500">{nome}</span>
+          
           <input
             type="number"
             onKeyDown={bloquearLetras}
@@ -105,10 +101,23 @@ function AtributosFicha() {
               const diferenca = atributosFinais[nome] - atributos[nome];
               setAtributos({ ...atributos, [nome]: Number(e.target.value) - diferenca });
             }}
-            className={`-mt-0.5 w-full bg-transparent text-center text-2xl font-bold outline-none ${atributosFinais[nome] > (atributos[nome] + bonusAtributos[nome]) ? 'text-green-500' : 'text-zinc-100'}`}
+            className={`relative z-0 w-16 bg-transparent text-center text-[2rem] font-black outline-none ${atributosFinais[nome] > (atributos[nome] + bonusAtributos[nome]) ? 'text-green-500' : 'text-zinc-100'}`}
           />
-        </div>
-      ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="mb-10 mt-6 flex justify-center w-full">
+      <div className="relative w-full max-w-[340px] aspect-square">
+        <img src="/images/atributos-bg.png" alt="Atributos" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
+        
+        {renderAtributo('AGI', 'top-[12%] left-[50%] -translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('INT', 'top-[39%] right-[11%] translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('VIG', 'top-[82%] right-[24%] translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('PRE', 'top-[82%] left-[24%] -translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('FOR', 'top-[39%] left-[11%] -translate-x-1/2 -translate-y-1/2')}
+      </div>
     </div>
   );
 }
