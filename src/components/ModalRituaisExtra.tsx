@@ -229,7 +229,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                       <div className="flex items-center gap-2.5">
                         {simboloImg && (
                                   <img
-                                    src={simboloImg}
+                                    src={simboloImg} loading="lazy"
                                     alt=""
                                     className={`h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3 transition-opacity duration-200 ${expandido ? 'opacity-0' : 'opacity-100'}`}
                                   />
@@ -251,7 +251,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                         </div>
                         {simboloImg && (
                           <img
-                            src={simboloImg}
+                            src={simboloImg} loading="lazy"
                             alt=""
                             className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
                           />
@@ -330,7 +330,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                       <div className="flex items-center gap-2.5">
                         {simboloImg && (
                                   <img
-                                    src={simboloImg}
+                                    src={simboloImg} loading="lazy"
                                     alt=""
                                     className={`h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3 transition-opacity duration-200 ${expandido ? 'opacity-0' : 'opacity-100'}`}
                                   />
@@ -352,7 +352,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                         </div>
                         {simboloImg && (
                           <img
-                            src={simboloImg}
+                            src={simboloImg} loading="lazy"
                             alt=""
                             className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
                           />

@@ -71,19 +71,20 @@ export function useRituais(): UseRituaisReturn & {
           const rituaisNormalized = rituaisRes.data.map(normalizarRitual);
           setRituais(rituaisNormalized);
 
-          const simbolosTransformados = (simbolosRes.data || [])
+                    const simbolosTransformados = (simbolosRes.data || [])
             .filter(row => row.Link_Imagem)
             .map(row => {
-              const rawUrl = row.Link_Imagem.replace(/[?&]dl=[01]/, (m: string) => m[0] + 'raw=1');
+              // Converter links do Dropbox para links diretos (CDN) que evitam o redirecionamento (302) e carregam mais rápido
+              let rawUrl = row.Link_Imagem;
+              if (rawUrl.includes('dropbox.com')) {
+                rawUrl = rawUrl.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace(/[?&]dl=[01]/, '');
+              }
               return { codigo: Number(row.Codigo_Ritual), url: rawUrl };
             });
           setSimbolosRaw(simbolosTransformados);
           
-          // Pre-load the images in the background so they appear instantly
-          simbolosTransformados.forEach(s => {
-            const img = new Image();
-            img.src = s.url;
-          });
+          // NOTA: O pre-load agressivo (new Image().src) foi removido pois estava engarrafando a fila de download 
+          // do navegador (são ~76 imagens). Agora o navegador só baixa o que realmente aparece na tela, com os links ultra rápidos do CDN.
         }
       } catch (err: any) {
         console.error('Erro ao buscar rituais:', err);
