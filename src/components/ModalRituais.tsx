@@ -155,38 +155,44 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
         </div>
 
         {/* FILTROS (Abas Principais - Elementos) */}
-        <div className="flex flex-wrap border-b border-zinc-800 bg-zinc-950">
+        <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Elementos:</span>
           <button
             onClick={() => setAbaElemento(null)}
-            className={`min-w-[70px] flex-1 px-1 py-2.5 text-xs font-bold uppercase tracking-wider transition ${
+            className={`rounded px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition border ${
               abaElemento === null
-                ? 'border-b-2 border-green-900 bg-zinc-900 text-zinc-100'
-                : 'border-b-2 border-transparent text-zinc-500 hover:bg-zinc-900/50 hover:text-zinc-300'
+                ? 'bg-green-900/40 text-green-300 border-green-800'
+                : 'bg-zinc-800/60 text-zinc-500 border-zinc-700 hover:text-zinc-300'
             }`}
           >
             Todos
           </button>
-          {ELEMENTOS.map(elem => {
+          {['Sangue', 'Morte', 'Conhecimento', 'Energia', 'Medo'].map(elem => {
             const ativo = abaElemento === elem;
             return (
               <button
                 key={elem}
                 onClick={() => setAbaElemento(elem)}
-                className={`min-w-[70px] flex-1 px-1 py-2.5 text-xs font-bold uppercase tracking-wider transition ${
+                className={`rounded px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider transition border ${
                   ativo
-                    ? 'border-b-2 bg-zinc-900 text-zinc-100'
-                    : 'border-b-2 border-transparent text-zinc-500 hover:bg-zinc-900/50 hover:text-zinc-300'
+                    ? (() => {
+                        const elStr = elem.toLowerCase();
+                        if (elStr.includes('medo')) return 'border-zinc-500 bg-zinc-200/80 text-zinc-950 px-3';
+                        if (elStr.includes('sangue')) return 'border-red-900 bg-red-950/20 text-red-500';
+                        if (elStr.includes('morte')) return 'border-zinc-700 bg-black/50 text-white px-3';
+                        if (elStr.includes('conhecimento')) return 'border-yellow-900 bg-yellow-950/20 text-yellow-500';
+                        if (elStr.includes('energia')) return 'border-purple-900 bg-purple-950/20 text-purple-500';
+                        return 'border-zinc-600 text-zinc-100';
+                      })()
+                    : 'border-zinc-700 text-zinc-500 hover:text-zinc-300'
                 }`}
-                style={{
-                  borderBottomColor: ativo ? (CORES_ELEMENTOS[elem.toLowerCase()] || '#888') : 'transparent',
-                }}
               >
                 {elem}
               </button>
             );
           })}
         </div>
-
+        
         {/* FILTROS (Abas Secundárias - Círculos) */}
         <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
           <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Círculos:</span>
