@@ -218,10 +218,10 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                                     className="overflow-hidden shrink-0 flex items-center justify-center"
                                     style={{
                                       transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                      width: expandido ? '0px' : '80px',
-                                      height: '80px',
-                                      marginTop: '-12px',
-                                      marginBottom: '-12px',
+                                      width: expandido ? '0px' : '64px',
+                                      height: '64px',
+                                      marginTop: '-6px',
+                                      marginBottom: '-6px',
                                       marginRight: expandido ? '0px' : '12px',
                                       opacity: expandido ? 0 : 1,
                                     }}
@@ -230,7 +230,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                                       src={simboloImg}
                                       loading="lazy"
                                       alt=""
-                                      className="h-20 w-20 object-contain drop-shadow-md max-w-none"
+                                      className="h-16 w-16 object-contain drop-shadow-md max-w-none"
                                     />
                                   </div>
                                 )}
