@@ -1902,6 +1902,7 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais EXTRAS para qualquer círculo */}
       {modalRituaisExtraAberto && (
         <ModalRituaisExtra
+          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
           rituais={rituaisHook.rituais || []}
           rituaisAprendidosIds={(rituaisHook.rituaisAprendidos || []).map((r: any) => r.codigo_ritual)}
           onClose={() => setModalRituaisExtraAberto(false)}
@@ -1924,6 +1925,7 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais para os slots */}
       {escolhendoRitualPlaceholder && (
         <ModalRituais
+          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
           rituais={rituaisHook.rituais || []}
           limiteCirculo={
             escolhendoRitualPlaceholder.nex 
