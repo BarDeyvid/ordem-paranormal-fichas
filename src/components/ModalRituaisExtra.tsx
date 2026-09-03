@@ -227,13 +227,25 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                       </div>
                     </div>
                       <div className="flex items-center gap-2.5">
-                        {simboloImg && !expandido && (
-                          <img
-                            src={simboloImg}
-                            alt=""
-                            className="h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3"
-                          />
-                        )}
+                        {simboloImg && (
+                                  <div
+                                    className="overflow-hidden shrink-0 flex items-center justify-center"
+                                    style={{
+                                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                      width: expandido ? '0px' : '80px',
+                                      height: expandido ? '0px' : '80px',
+                                      opacity: expandido ? 0 : 1,
+                                      marginTop: expandido ? '0px' : '-12px',
+                                      marginBottom: expandido ? '0px' : '-12px',
+                                    }}
+                                  >
+                                    <img
+                                      src={simboloImg}
+                                      alt=""
+                                      className="h-20 w-20 object-contain drop-shadow-md max-w-none"
+                                    />
+                                  </div>
+                                )}
                         <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
                       </div>
                     </div>
@@ -328,13 +340,25 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                         </div>
                       </div>
                       <div className="flex items-center gap-2.5">
-                        {simboloImg && !expandido && (
-                          <img
-                            src={simboloImg}
-                            alt=""
-                            className="h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3"
-                          />
-                        )}
+                        {simboloImg && (
+                                  <div
+                                    className="overflow-hidden shrink-0 flex items-center justify-center"
+                                    style={{
+                                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                      width: expandido ? '0px' : '80px',
+                                      height: expandido ? '0px' : '80px',
+                                      opacity: expandido ? 0 : 1,
+                                      marginTop: expandido ? '0px' : '-12px',
+                                      marginBottom: expandido ? '0px' : '-12px',
+                                    }}
+                                  >
+                                    <img
+                                      src={simboloImg}
+                                      alt=""
+                                      className="h-20 w-20 object-contain drop-shadow-md max-w-none"
+                                    />
+                                  </div>
+                                )}
                         <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
                       </div>
                     </div>
