@@ -1488,11 +1488,11 @@ export const AbasPanel: React.FC = () => {
                             
                             return (
                               <div key={elemento} className="mt-2 mb-2 flex flex-col gap-2.5">
-                                <div className="flex items-center gap-1.5 mb-1 pl-0.5 pr-1">
-                                  <span className="text-[0.55rem] font-bold uppercase tracking-wider text-zinc-600 ml-1">↳</span>
-                                  <span className="text-[0.6rem] font-bold uppercase tracking-widest text-zinc-600">{elemento}</span>
-                                  <div className="h-px flex-1 bg-zinc-800/50"></div>
-                                  <span className="text-xs font-bold uppercase tracking-widest text-zinc-400" title="10 + PRE + Nível">DT {baseDT}</span>
+                                <div className="flex items-center gap-3 mb-1 mt-1">
+                                  <span className="h-2 w-2 rounded-full shrink-0" style={{ background: obterCorBadge(elemento) || '#52525b' }}></span>
+                                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-zinc-500">{elemento}</span>
+                                  <div className="flex-1 border-t border-zinc-800/50"></div>
+                                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500" title="10 + PRE + Nível">DT {baseDT}</span>
                                 </div>
                                 <div className="flex flex-col gap-2.5">
                                 {ritualsOfElement.map(ritual => {
