@@ -1640,23 +1640,11 @@ export const AbasPanel: React.FC = () => {
 
                               <div className="flex items-center gap-2.5">
                                 {simboloImg && (
-                                  <div
-                                    className="overflow-hidden shrink-0 flex items-center justify-center"
-                                    style={{
-                                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                      width: expandido ? '0px' : '80px',
-                                      height: expandido ? '0px' : '80px',
-                                      opacity: expandido ? 0 : 1,
-                                      marginTop: expandido ? '0px' : '-12px',
-                                      marginBottom: expandido ? '0px' : '-12px',
-                                    }}
-                                  >
-                                    <img
-                                      src={simboloImg}
-                                      alt=""
-                                      className="h-20 w-20 object-contain drop-shadow-md max-w-none"
-                                    />
-                                  </div>
+                                  <img
+                                    src={simboloImg}
+                                    alt=""
+                                    className={`h-20 w-20 object-contain drop-shadow-md shrink-0 -my-3 transition-opacity duration-200 ${expandido ? 'opacity-0' : 'opacity-100'}`}
+                                  />
                                 )}
                                 {/* PE */}
                                 <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-0.5 text-xs font-bold text-blue-400">
