@@ -2,7 +2,7 @@
 
 - **Animação Obrigatória em Blocos Expansíveis (Collapse)**: TODOS os blocos que abrem/fecham na aplicação DEVEM usar o componente `<Collapse>` (`src/components/Collapse.tsx`). NUNCA usar renderização condicional seca como `{isExpanded && (<div>...</div>)}` para mostrar/esconder conteúdo expandido. Isso se aplica a TUDO: Origens, Inventário, Habilidades, Progressão NEX, Modais de Rituais, Modais de Itens, Modais de Armas, Modais de Proteções, etc. Sem exceção.
   - NUNCA sobrescreva as props duration ou 	imingFunction no componente <Collapse>. O componente já tem a velocidade e a curva de animação perfeitas como padrão, e nós queremos que toda a aplicação abra e feche exatamente na mesma velocidade para manter consistência absoluta.
-  - NUNCA sobrescreva as props duration ou 	imingFunction no componente <Collapse>. O componente já tem a velocidade (0.25s) e a curva de animação perfeitas como padrão, e nós queremos que toda a aplicação expanda/retraia exatamente na mesma velocidade para manter consistência absoluta.
+  - NUNCA sobrescreva as props duration ou 	imingFunction no componente <Collapse>. O componente já tem a velocidade (0.35s) e a curva de animação perfeitas como padrão, e nós queremos que toda a aplicação expanda/retraia exatamente na mesma velocidade para manter consistência absoluta.
   - Para blocos com preview de texto (ex: descrições que mostram 3 linhas quando fechado e expandem ao clicar): usar `<Collapse isOpen={expandido} previewHeight="4.5em">` com um único conteúdo dentro. O Collapse cuida do gradiente de fade e da transição suave. NÃO duplicar o conteúdo (um para preview e outro para expandido).
   - Para blocos que simplesmente aparecem/desaparecem: usar `<Collapse isOpen={expandido}>` sem previewHeight.
 

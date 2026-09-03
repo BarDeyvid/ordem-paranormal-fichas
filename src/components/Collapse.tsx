@@ -14,7 +14,7 @@ export function Collapse({
   children, 
   className = '', 
   previewHeight,
-  duration = '0.25s',
+  duration = '0.35s',
   timingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)'
 }: CollapseProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function Collapse({
 
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => setIsFullyOpen(true), 300);
+      const timer = setTimeout(() => setIsFullyOpen(true), 400);
       return () => clearTimeout(timer);
     } else {
       setIsFullyOpen(false);

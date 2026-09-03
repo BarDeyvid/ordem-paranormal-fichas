@@ -1581,7 +1581,7 @@ export const AbasPanel: React.FC = () => {
                                   <div
                                     className="overflow-hidden shrink-0 flex items-center justify-center"
                                     style={{
-                                      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                      transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
                                       width: expandido ? '0px' : '64px',
                                       height: '64px',
                                       marginTop: '-6px',
@@ -1625,7 +1625,7 @@ export const AbasPanel: React.FC = () => {
                                           <React.Fragment key={idx}>
                                             {idx > 0 && <span className="text-xs text-zinc-700">›</span>}
                                             <span
-                                              className={`text-sm font-bold transition-all duration-200 ${idx === ativo ? 'text-zinc-100' : 'text-zinc-600'}`}
+                                              className={`text-sm font-bold transition-all duration-300 ${idx === ativo ? 'text-zinc-100' : 'text-zinc-600'}`}
                                             >
                                               {parte}
                                             </span>
