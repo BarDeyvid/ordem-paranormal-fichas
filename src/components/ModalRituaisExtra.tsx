@@ -220,7 +220,7 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                       </div>
 
                       {/* LADO DIREITO */}
-                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end py-1">
+                      <div className="flex flex-col justify-between shrink-0 ml-2 items-end pb-1 pt-0 mt-[-4px]">
                         <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
                           {(() => {
                             const elStr = elementoSendoEscolhido;

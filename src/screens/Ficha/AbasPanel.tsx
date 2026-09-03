@@ -1649,7 +1649,7 @@ export const AbasPanel: React.FC = () => {
                                 </div>
                               </div>
 
-                              <div className={`flex flex-col justify-between shrink-0 ml-2 ${simboloImg ? 'items-end py-1' : 'items-end'}`}>
+                              <div className={`flex flex-col justify-between shrink-0 ml-2 ${simboloImg ? 'items-end pb-1 pt-0 mt-[-4px]' : 'items-end pb-1 pt-0 mt-[-4px]'}`}>
                                 {/* Badge do elemento */}
                                 <span
                                   className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 uppercase tracking-wider leading-tight ${
