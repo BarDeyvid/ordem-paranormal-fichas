@@ -57,7 +57,7 @@ export const AtributosScreen: React.FC = () => {
 
       {/* LISTA DE ATRIBUTOS */}
       <div className="mb-10 mt-6 flex justify-center w-full">
-        <div className="relative w-full max-w-[340px] aspect-square">
+        <div className="relative w-full max-w-[420px] aspect-square">
           <img src="/images/atributos-bg.png" alt="Atributos" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
           
           {(() => {
