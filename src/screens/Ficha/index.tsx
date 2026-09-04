@@ -114,8 +114,8 @@ function AtributosFicha() {
         
         {renderAtributo('AGI', 'top-[16%] left-[50%] -translate-x-1/2 -translate-y-1/2')}
         {renderAtributo('INT', 'top-[36%] right-[19%] translate-x-1/2 -translate-y-1/2')}
-        {renderAtributo('VIG', 'top-[78%] right-[28%] translate-x-1/2 -translate-y-1/2')}
-        {renderAtributo('PRE', 'top-[78%] left-[28%] -translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('VIG', 'top-[74%] right-[32%] translate-x-1/2 -translate-y-1/2')}
+        {renderAtributo('PRE', 'top-[74%] left-[32%] -translate-x-1/2 -translate-y-1/2')}
         {renderAtributo('FOR', 'top-[36%] left-[19%] -translate-x-1/2 -translate-y-1/2')}
       </div>
     </div>
