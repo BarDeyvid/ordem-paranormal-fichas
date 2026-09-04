@@ -1,61 +1,12 @@
-// AtributosScreen.tsx — CORRIGIDO
-import React from 'react';
-import { useRPG } from '../context/RPGContext';
-import { capMaximoAtributo, NEX_OPTIONS } from '../utils/rpgRules';
-import type { AtributoKey } from '../types';
-import { CustomSelect } from '../components/CustomSelect';
+const fs = require('fs');
+const file = 'src/screens/AtributosScreen.tsx';
+let content = fs.readFileSync(file, 'utf8');
 
-const ATRIBUTOS_ORDER: AtributoKey[] = ['FOR', 'AGI', 'INT', 'PRE', 'VIG'];
+const startIdx = content.indexOf('{/* LISTA DE ATRIBUTOS */}');
+const endTextIdx = content.indexOf('Avançar para Origens');
+const endIdx = content.lastIndexOf('<button', endTextIdx);
 
-const NOMES_ATRIBUTOS: Record<AtributoKey, string> = {
-  FOR: 'Força',
-  AGI: 'Agilidade',
-  INT: 'Intelecto',
-  PRE: 'Presença',
-  VIG: 'Vigor',
-};
-
-export const AtributosScreen: React.FC = () => {
-  const {
-    nex, setNex,
-    nivel,
-    atributos,
-    pontosRestantes,
-    alterarAtributo,
-    setTelaAtual,
-  } = useRPG();
-
-  const handleNexChange = (novoNex: string) => {
-    setNex(Number(novoNex));
-    setNex(novoNex);
-    // ❌ REMOVIDO: setAtributos({ FOR: 1, AGI: 1, INT: 1, PRE: 1, VIG: 1 });
-    // ✅ Agora só muda o NEX, os atributos distribuídos permanecem intactos
-  };
-
-  return (
-    <div className="mx-auto w-full max-w-2xl">
-      <h1 className="font-display mb-2 text-3xl uppercase tracking-wide text-zinc-100">
-        Criação de Personagem
-      </h1>
-      <p className="mb-8 border-b border-zinc-800 pb-4 text-sm uppercase tracking-widest text-green-600">
-        Passo 1 — Atributos
-      </p>
-
-      {/* SELETOR DE NEX */}
-      <div className="mb-6 flex items-center gap-4 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4 relative z-50">
-        <label htmlFor="nex-select" className="text-sm font-bold uppercase tracking-wider text-zinc-400">
-          NEX Inicial
-        </label>
-        <CustomSelect value={nex.toString()} onChange={handleNexChange} options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + "%" }))} wrapperClassName="w-32" />
-      </div>
-
-      {/* PONTOS RESTANTES — recalcula automaticamente */}
-      <div className={`mb-6 text-lg font-bold ${pontosRestantes < 0 ? 'text-red-500' : 'text-zinc-100'}`}>
-        Pontos restantes:{' '}
-        <span className={pontosRestantes > 0 ? 'text-red-500' : 'text-zinc-500'}>{pontosRestantes}</span>
-      </div>
-
-      {/* LISTA DE ATRIBUTOS */}
+const newBlock = `{/* LISTA DE ATRIBUTOS */}
       <div className="mb-10 mt-6 flex justify-center w-full">
         <div className="relative w-full max-w-[340px] aspect-square">
           <img src="/images/atributos-bg.png" alt="Atributos" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
@@ -67,7 +18,7 @@ export const AtributosScreen: React.FC = () => {
               const naoPodeAumentar = pontosRestantes <= 0 || atributos[nome] >= capMaximoAtributo(nivel);
 
               return (
-                <div key={nome} className={`absolute flex items-center justify-center gap-1.5 ${posClasses}`}>
+                <div key={nome} className={\`absolute flex items-center justify-center gap-1.5 \${posClasses}\`}>
                   <button
                     onClick={() => alterarAtributo(nome, 'diminuir')}
                     disabled={naoPodeDiminuir}
@@ -100,12 +51,8 @@ export const AtributosScreen: React.FC = () => {
         </div>
       </div>
 
-      <button
-        onClick={() => setTelaAtual('origens')}
-        className="rounded-md bg-green-700 px-8 py-3 text-lg font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
-      >
-        Avançar para Origens ➔
-      </button>
-    </div>
-  );
-};
+      `;
+
+content = content.substring(0, startIdx) + newBlock + content.substring(endIdx);
+fs.writeFileSync(file, content);
+console.log('Updated AtributosScreen');
