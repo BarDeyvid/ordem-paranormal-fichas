@@ -911,7 +911,7 @@ export const AbasPanel: React.FC = () => {
                             <div key={hab.id} className="mb-2 overflow-hidden rounded-r border-l-4 border-green-800 bg-zinc-900/50">
                               <div
                                 onClick={() => trilhasHook.toggleTrilhaExpandida(isVersatilidade ? t.Codigo_Trilha + 10000 : t.Codigo_Trilha)}
-                                className="flex cursor-pointer flex-col p-3 transition hover:bg-zinc-800"
+                                className="flex cursor-pointer flex-col bg-zinc-800/40 px-4 py-3 transition hover:bg-zinc-700/50"
                               >
                                 <div className="flex items-center justify-between">
                                   <div className="flex flex-col">
