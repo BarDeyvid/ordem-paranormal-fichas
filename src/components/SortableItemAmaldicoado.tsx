@@ -244,8 +244,11 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
 
                 return (
                   <div className="flex flex-col gap-2 mt-2 pt-3 border-t border-zinc-800/50">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-bold text-[15px] text-zinc-100">{ritualA.customNome || base.Nome_Ritual}</h4>
+                    <div 
+                      className="flex items-center gap-2 mb-1 cursor-pointer select-none group"
+                      onClick={() => setRitualExpandido(!ritualExpandido)}
+                    >
+                      <h4 className="font-bold text-[15px] text-zinc-100 group-hover:text-green-400 transition-colors">{ritualA.customNome || base.Nome_Ritual}</h4>
                       {(() => {
                         const elementoStrOriginal = base.Elemento_Ritual === 'Varia' || base.Elemento_Ritual === 'Lista' ? (ritualA.elemento_escolhido || 'Sangue') : base.Elemento_Ritual;
                         const elStr = String(elementoStrOriginal).toLowerCase();
@@ -261,7 +264,11 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                           </span>
                         );
                       })()}
+                      <span className="ml-auto text-zinc-500 text-xs">
+                        {ritualExpandido ? '▼' : '▶'}
+                      </span>
                     </div>
+                    
                     <div className="flex justify-between items-center bg-zinc-900 rounded p-1.5 border border-zinc-800">
                        <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider ml-1">Custo: <span className="text-zinc-300">{pe}</span></span>
                        {optionsVersao.length > 1 && (
@@ -276,7 +283,9 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                        )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-[10px]">
+                    <Collapse isOpen={ritualExpandido}>
+                      <div className="flex flex-col gap-2 mt-2">
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-[10px]">
                       {exec && exec !== 'Nenhum' && <div><span className="text-zinc-500 font-bold">EXEC.:</span> <span className="text-zinc-300">{exec}</span></div>}
                       {alcance && alcance !== 'Nenhum' && <div><span className="text-zinc-500 font-bold">ALCANCE:</span> <span className="text-zinc-300">{alcance}</span></div>}
                       {alvo && alvo !== 'Nenhum' && <div><span className="text-zinc-500 font-bold">ALVO:</span> <span className="text-zinc-300">{alvo}</span></div>}
@@ -313,6 +322,8 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                         });
                       })()}
                     </div>
+                      </div>
+                    </Collapse>
                   </div>
                 );
               })()}
