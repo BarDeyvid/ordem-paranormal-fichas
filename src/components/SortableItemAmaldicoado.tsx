@@ -99,8 +99,10 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">
               {item.item.Nome_Ama}
               {item.item.Nome_Ama === 'Selos Paranormais' && item.item.ritualSeloKey ? (() => {
-                 const ritual = rituaisHook.rituaisAprendidos.find(r => `${r.Codigo_Ritual}_${r.Origem}` === item.item.ritualSeloKey);
-                 return ritual ? ` (${ritual.customNome || ritual.Nome_Ritual})` : '';
+                 const ritualA = rituaisHook.rituaisAprendidos.find(r => `${r.codigo_ritual}_${r.origem}` === item.item.ritualSeloKey);
+                 if (!ritualA) return '';
+                 const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === ritualA.codigo_ritual);
+                 return ` (${ritualA.customNome || (base ? base.Nome_Ritual : '')})`;
               })() : ''}
             </span>
 
@@ -205,10 +207,13 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                 }}
                 options={[
                   { value: '', label: 'Nenhum ritual selecionado' },
-                  ...rituaisHook.rituaisAprendidos.map(r => ({
-                    value: `${r.Codigo_Ritual}_${r.Origem}`,
-                    label: r.customNome || r.Nome_Ritual
-                  }))
+                  ...rituaisHook.rituaisAprendidos.map(r => {
+                    const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === r.codigo_ritual);
+                    return {
+                      value: `${r.codigo_ritual}_${r.origem}`,
+                      label: r.customNome || (base ? base.Nome_Ritual : 'Ritual Desconhecido')
+                    };
+                  })
                 ]}
                 placeholder="Selecione um ritual..."
                 className="w-full text-xs"
@@ -216,25 +221,28 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               />
 
               {item.item.ritualSeloKey && (() => {
-                const ritual = rituaisHook.rituaisAprendidos.find(r => `${r.Codigo_Ritual}_${r.Origem}` === item.item.ritualSeloKey);
-                if (!ritual) return null;
+                const ritualA = rituaisHook.rituaisAprendidos.find(r => `${r.codigo_ritual}_${r.origem}` === item.item.ritualSeloKey);
+                if (!ritualA) return null;
+                const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === ritualA.codigo_ritual);
+                if (!base) return null;
                 
                 const versao = versaoRitual[item.item.ritualSeloKey as any] || 'normal';
                 const optionsVersao = [ { value: 'normal', label: 'Normal' } ];
-                if (ritual.Tem_Discente) optionsVersao.push({ value: 'discente', label: 'Discente' });
-                if (ritual.Tem_Verdadeiro) optionsVersao.push({ value: 'verdadeiro', label: 'Verdadeiro' });
+                if (base.Tem_Discente) optionsVersao.push({ value: 'discente', label: 'Discente' });
+                if (base.Tem_Verdadeiro) optionsVersao.push({ value: 'verdadeiro', label: 'Verdadeiro' });
 
-                const pe = obterValorVersao(ritual.PE_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                const alcance = obterValorVersao(ritual.Alcance_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                const alvo = obterValorVersao(ritual.Alvo_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                const duracao = obterValorVersao(ritual.Duracao_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                const exec = obterValorVersao(ritual.Execucao_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                const resist = obterValorVersao(ritual.Resistencia_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
+                const pe = obterValorVersao(base.PE_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const alcance = ritualA.customProps?.[versao]?.Alcance_Ritual ?? obterValorVersao(base.Alcance_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const alvo = ritualA.customProps?.[versao]?.Alvo_Ritual ?? obterValorVersao(base.Alvo_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const duracao = ritualA.customProps?.[versao]?.Duracao_Ritual ?? obterValorVersao(base.Duracao_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const exec = ritualA.customProps?.[versao]?.Execucao_Ritual ?? obterValorVersao(base.Execucao_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const resist = ritualA.customProps?.[versao]?.Resistencia_Ritual ?? obterValorVersao(base.Resistencia_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
+                const efeito = ritualA.customDesc || obterValorVersao(base.Efeito_Ritual, versao as any, base.Tem_Discente, base.Tem_Verdadeiro);
 
                 return (
                   <div className="flex flex-col gap-2 mt-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-bold text-sm text-zinc-100">{ritual.customNome || ritual.Nome_Ritual}</h4>
+                      <h4 className="font-bold text-sm text-zinc-100">{ritualA.customNome || base.Nome_Ritual}</h4>
                     </div>
                     <div className="flex justify-between items-center bg-zinc-900 rounded p-1.5 border border-zinc-800">
                        <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider ml-1">Custo: <span className="text-zinc-300">{pe}</span></span>
@@ -259,7 +267,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                     </div>
 
                     <div className="text-xs text-zinc-400 bg-zinc-900 p-2.5 rounded border border-zinc-800 leading-relaxed whitespace-pre-wrap mt-1">
-                       <div dangerouslySetInnerHTML={{__html: formatarTexto(obterValorVersao(ritual.Efeito_Ritual, versao as any, ritual.Tem_Discente, ritual.Tem_Verdadeiro))}} />
+                       <div dangerouslySetInnerHTML={{__html: formatarTexto(efeito)}} />
                     </div>
                   </div>
                 );
