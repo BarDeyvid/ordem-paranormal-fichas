@@ -295,6 +295,7 @@ export interface ItemAmaldicoado {
   Fonte_Ama: string;
   'Vestimenta?': string | null;
   Bonus_Vestimenta: string | null;
+  ritualSeloKey?: string;
 }
 
 export interface ItemAmaldicoadoInventario {

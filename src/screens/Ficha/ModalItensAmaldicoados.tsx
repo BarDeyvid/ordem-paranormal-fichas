@@ -11,7 +11,7 @@ interface ModalItensAmaldicoadosProps {
 
 export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoadosProps) {
 
-  const { itensAmaldicoadosHook } = useRPG();
+  const { itensAmaldicoadosHook, poderesHook, trilhasHook, nex } = useRPG();
   const { itens, adicionarItem, loading } = itensAmaldicoadosHook;
 
   React.useEffect(() => {
@@ -25,6 +25,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     }
   }, [aberto]);
   
+  
+  const temCriarSelo = useMemo(() => {
+    return Object.values(poderesHook.poderesEscolhidos).some(p => p.nome.toLowerCase().includes('criar selo')) || (trilhasHook.trilhaSelecionada?.Nome_Trilha === 'Criptologista do Oculto' && nex >= 10);
+  }, [poderesHook.poderesEscolhidos, trilhasHook.trilhaSelecionada, nex]);
+
   const [busca, setBusca] = useState('');
   const [abaElemento, setAbaElemento] = useState<string | null>(null);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
@@ -212,16 +217,30 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           • <span className="text-zinc-400 font-semibold">Categoria:</span> <span className={`uppercase tracking-wider text-zinc-400`}>{item.Categoria_Ama}</span>
                         </span>
                         
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            adicionarItem(item);
-                            fechar();
-                          }}
-                          className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
-                        >
-                          + Adicionar
-                        </button>
+                        
+                        {item.Nome_Ama === 'Selos Paranormais' && !temCriarSelo ? (
+                          <button 
+                            disabled
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            title="Requer o poder 'Criar Selo' ou trilha Criptologista do Oculto."
+                            className="ml-auto shrink-0 px-3 py-1 bg-zinc-800 text-zinc-500 rounded font-bold text-[10px] uppercase tracking-wider cursor-not-allowed"
+                          >
+                            Bloqueado
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              adicionarItem(item);
+                              fechar();
+                            }}
+                            className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                          >
+                            + Adicionar
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
@@ -275,16 +294,30 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           • <span className="text-zinc-400 font-semibold">Categoria:</span> <span className={`uppercase tracking-wider text-zinc-400`}>{item.Categoria_Ama}</span>
                         </span>
                         
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            adicionarItem(item);
-                            fechar();
-                          }}
-                          className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
-                        >
-                          + Adicionar
-                        </button>
+                        
+                        {item.Nome_Ama === 'Selos Paranormais' && !temCriarSelo ? (
+                          <button 
+                            disabled
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            title="Requer o poder 'Criar Selo' ou trilha Criptologista do Oculto."
+                            className="ml-auto shrink-0 px-3 py-1 bg-zinc-800 text-zinc-500 rounded font-bold text-[10px] uppercase tracking-wider cursor-not-allowed"
+                          >
+                            Bloqueado
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              adicionarItem(item);
+                              fechar();
+                            }}
+                            className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                          >
+                            + Adicionar
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
