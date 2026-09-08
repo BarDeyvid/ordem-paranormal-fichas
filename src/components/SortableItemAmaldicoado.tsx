@@ -294,16 +294,22 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                           const linhaLower = linha.trim().toLowerCase();
                           const isHeaderDiscente = linhaLower.startsWith('*discente') || linhaLower.startsWith('discente');
                           const isHeaderVerdadeiro = linhaLower.startsWith('*verdadeiro') || linhaLower.startsWith('verdadeiro');
-                          if (isHeaderDiscente || isHeaderVerdadeiro) {
-                            if (isHeaderDiscente && currentScope !== 'discente') currentScope = 'discente';
-                            if (isHeaderVerdadeiro && currentScope !== 'verdadeiro') currentScope = 'verdadeiro';
-                          }
 
-                          const style = (currentScope === 'discente' || currentScope === 'verdadeiro') ? 'ml-3 mt-1' : 'mb-2';
-                          if (isHeaderDiscente || isHeaderVerdadeiro) {
-                            return <div key={i} className="font-bold text-zinc-300 mt-2 mb-1 border-b border-zinc-800 pb-1">{linha}</div>;
-                          }
-                          return linha.trim() ? <div key={i} className={style} dangerouslySetInnerHTML={{__html: formatarTexto(linha)}} /> : null;
+                          if (isHeaderDiscente) currentScope = 'discente';
+                          if (isHeaderVerdadeiro) currentScope = 'verdadeiro';
+
+                          let dimmed = false;
+                          if (currentScope === 'discente' && versao !== 'discente') dimmed = true;
+                          if (currentScope === 'verdadeiro' && versao !== 'verdadeiro') dimmed = true;
+
+                          return (
+                            <span
+                              key={i}
+                              className={`block ${dimmed ? 'opacity-50' : ''} ${currentScope !== 'normal' && !dimmed ? 'text-zinc-300' : ''}`}
+                              style={{ transition: 'opacity 0.2s ease' }}
+                              dangerouslySetInnerHTML={{ __html: formatarDescricao(linha) }}
+                            />
+                          );
                         });
                       })()}
                     </div>
@@ -343,4 +349,18 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
       </Collapse>
     </div>
   );
+}
+
+function formatarDescricao(texto: string): string {
+  if (!texto) return '';
+  let resultado = texto;
+  if (!resultado.includes('<') && !resultado.includes('&')) {
+    resultado = resultado
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    resultado = resultado.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    resultado = resultado.replace(/_(.*?)_/g, '<em>$1</em>');
+  }
+  return resultado;
 }
