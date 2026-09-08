@@ -42,6 +42,7 @@ function obterValorVersao(
 
 export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, removerItem, stringDT, onEditar, toggleEquipado, isOverlay }: SortableItemAmaldicoadoProps) {
   const { modificacoesHook, rituaisHook, itensAmaldicoadosHook, versaoRitual, setVersaoRitual } = useRPG();
+  const [ritualExpandido, setRitualExpandido] = useState(false);
 
   const {
     attributes,
