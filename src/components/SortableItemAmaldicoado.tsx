@@ -101,7 +101,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               {item.item.Nome_Ama === 'Selos Paranormais' && item.item.ritualSeloKey ? (() => {
                  const ritualA = rituaisHook.rituaisAprendidos.find(r => `${r.codigo_ritual}_${r.origem}` === item.item.ritualSeloKey);
                  if (!ritualA) return '';
-                 const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === ritualA.codigo_ritual);
+                 const base = rituaisHook.rituais.find(b => b.Codigo_Ritual == ritualA.codigo_ritual);
                  return ` (${ritualA.customNome || (base ? base.Nome_Ritual : '')})`;
               })() : ''}
             </span>
@@ -191,24 +191,27 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               <CustomSelect
                 value={item.item.ritualSeloKey || ''}
                 onChange={(val) => {
-                  if (!val) {
-                    itensAmaldicoadosHook.editarItem(item.id, { ritualSeloKey: undefined, Categoria_Ama: 'Varia', Elemento_Ama: 'Varia' });
-                    return;
-                  }
-                  const ritual = rituaisHook.rituaisAprendidos.find(r => `${r.Codigo_Ritual}_${r.Origem}` === val);
-                  if (ritual) {
-                    const circulosMap: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' };
-                    itensAmaldicoadosHook.editarItem(item.id, { 
-                      ritualSeloKey: val,
-                      Categoria_Ama: circulosMap[ritual.Circulo_Ritual] || 'Varia',
-                      Elemento_Ama: ritual.Elemento_Ritual === 'Varia' || ritual.Elemento_Ritual === 'Lista' ? (ritual.ElementoEscolhidoPermanente || 'Sangue') : ritual.Elemento_Ritual
-                    });
-                  }
-                }}
-                options={[
+                    if (!val) {
+                      itensAmaldicoadosHook.editarItem(item.id, { ritualSeloKey: undefined, Categoria_Ama: 'Varia', Elemento_Ama: 'Varia' });
+                      return;
+                    }
+                    const ritualA = rituaisHook.rituaisAprendidos.find(r => `${r.codigo_ritual}_${r.origem}` === val);
+                    if (ritualA) {
+                      const base = rituaisHook.rituais.find(b => b.Codigo_Ritual == ritualA.codigo_ritual);
+                      if (base) {
+                        const circulosMap: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' };
+                        itensAmaldicoadosHook.editarItem(item.id, { 
+                          ritualSeloKey: val,
+                          Categoria_Ama: circulosMap[base.Circulo_Ritual] || 'Varia',
+                          Elemento_Ama: base.Elemento_Ritual === 'Varia' || base.Elemento_Ritual === 'Lista' ? (ritualA.elemento_escolhido || 'Sangue') : base.Elemento_Ritual
+                        });
+                      }
+                    }
+                  }}
+                  options={[
                   { value: '', label: 'Nenhum ritual selecionado' },
                   ...rituaisHook.rituaisAprendidos.map(r => {
-                    const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === r.codigo_ritual);
+                    const base = rituaisHook.rituais.find(b => b.Codigo_Ritual == r.codigo_ritual);
                     return {
                       value: `${r.codigo_ritual}_${r.origem}`,
                       label: r.customNome || (base ? base.Nome_Ritual : 'Ritual Desconhecido')
@@ -223,7 +226,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               {item.item.ritualSeloKey && (() => {
                 const ritualA = rituaisHook.rituaisAprendidos.find(r => `${r.codigo_ritual}_${r.origem}` === item.item.ritualSeloKey);
                 if (!ritualA) return null;
-                const base = rituaisHook.rituais.find(b => b.Codigo_Ritual === ritualA.codigo_ritual);
+                const base = rituaisHook.rituais.find(b => b.Codigo_Ritual == ritualA.codigo_ritual);
                 if (!base) return null;
                 
                 const versao = versaoRitual[item.item.ritualSeloKey as any] || 'normal';
