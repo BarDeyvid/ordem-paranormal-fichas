@@ -96,7 +96,13 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
           onClick={() => toggleExpandir(item.id)}
         >
           <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-            <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{item.item.Nome_Ama}</span>
+            <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">
+              {item.item.Nome_Ama}
+              {item.item.Nome_Ama === 'Selos Paranormais' && item.item.ritualSeloKey ? (() => {
+                 const ritual = rituaisHook.rituaisAprendidos.find(r => `${r.Codigo_Ritual}_${r.Origem}` === item.item.ritualSeloKey);
+                 return ritual ? ` (${ritual.customNome || ritual.Nome_Ritual})` : '';
+              })() : ''}
+            </span>
 
             {stringDT && (
               <div className="flex items-center gap-4 text-xs text-zinc-300 mt-0.5">
@@ -227,6 +233,9 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
 
                 return (
                   <div className="flex flex-col gap-2 mt-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold text-sm text-zinc-100">{ritual.customNome || ritual.Nome_Ritual}</h4>
+                    </div>
                     <div className="flex justify-between items-center bg-zinc-900 rounded p-1.5 border border-zinc-800">
                        <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider ml-1">Custo: <span className="text-zinc-300">{pe}</span></span>
                        {optionsVersao.length > 1 && (
