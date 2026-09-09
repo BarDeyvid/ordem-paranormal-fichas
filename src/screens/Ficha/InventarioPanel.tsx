@@ -660,8 +660,8 @@ export function InventarioPanel() {
           <CustomSelect
             value={patente}
             onChange={(val) => setPatenteManual(val as Patente)}
-            wrapperClassName="w-40"
-            className="w-40 rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
+            wrapperClassName="w-52"
+            className="w-52 rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
             options={patentesDisponiveis.map(p => ({ value: p, label: p }))}
           />
         </div>
