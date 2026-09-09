@@ -33,13 +33,20 @@ export const AtributosScreen: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
-      <h1 className="font-display mb-2 text-3xl uppercase tracking-wide text-zinc-100">
+    <div className="mx-auto w-full max-w-5xl">
+      <h1 className="font-display mb-2 text-center text-3xl uppercase tracking-wide text-zinc-100">
         Criação de Personagem
       </h1>
-      <p className="mb-8 border-b border-zinc-800 pb-4 text-sm uppercase tracking-widest text-green-600">
+      <p className="mb-4 border-b border-zinc-800 pb-4 text-center text-sm uppercase tracking-widest text-green-600">
         Passo 1 — Atributos
       </p>
+
+      
+      <div className="mx-auto mb-6 max-w-4xl text-center text-sm leading-relaxed text-zinc-400">
+        <p>
+          Personagens de Ordem Paranormal RPG possuem cinco atributos, que definem suas competências básicas: Agilidade, Força, Intelecto, Presença e Vigor. Atributos são medidos numericamente. Um valor 1 representa a média humana. Valores 2 ou 3 estão acima da média — um atleta de elite e um pesquisador de renome podem ter Força ou Intelecto nesse intervalo. Valores 4 ou 5 representam indivíduos extraordinários — um medalhista olímpico ou vencedor do Nobel podem ter Força ou Intelecto nessa faixa. Já um valor 0 está abaixo da média — uma criança pode ter Força 0, enquanto um idoso de saúde frágil pode ter Vigor 0.
+        </p>
+      </div>
 
       {/* SELETOR DE NEX */}
       <div className="mb-6 flex items-center gap-4 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4 relative z-50">
@@ -55,8 +62,14 @@ export const AtributosScreen: React.FC = () => {
         <span className={pontosRestantes > 0 ? 'text-red-500' : 'text-zinc-500'}>{pontosRestantes}</span>
       </div>
 
-      {/* LISTA DE ATRIBUTOS */}
-      <div className="mb-10 mt-6 flex justify-center w-full">
+      {/* LISTA DE ATRIBUTOS E TEXTO */}
+      <div className="mb-10 mt-6 flex flex-col md:flex-row items-center gap-10 w-full">
+        <div className="flex-1 text-sm leading-relaxed text-zinc-400 text-left order-2 md:order-1">
+          <p>
+            Quando você cria um personagem, todos os seus atributos começam em 1 e você recebe 4 pontos para distribuir entre eles como quiser. Você também pode reduzir um atributo para 0 para receber 1 ponto adicional. O valor máximo inicial que você pode ter em cada atributo é 3.
+          </p>
+        </div>
+        <div className="flex-1 flex justify-center order-1 md:order-2 w-full">
         <div className="relative w-full max-w-[420px] aspect-square">
           <img src="/images/atributos-bg.png" alt="Atributos" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
           
@@ -97,6 +110,7 @@ export const AtributosScreen: React.FC = () => {
               </>
             );
           })()}
+        </div>
         </div>
       </div>
 
