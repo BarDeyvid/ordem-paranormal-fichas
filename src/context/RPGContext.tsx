@@ -372,7 +372,7 @@ const atributosBaseComBonus = useMemo(() => {
   const status = useStatus(classe, effectiveNex, effectiveNivel, atributosBaseComBonus, paranormalPenalty, regrasAutomaticasAtivas, bonusVestimentas.pv + bonusMaldicoes.pv, bonusVestimentas.pe + bonusMaldicoes.pe);
 
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (regrasAutomaticasAtivas.has(83)) {
       if ((regras['nex_experiencia'] && nivel >= 20) || (!regras['nex_experiencia'] && nex >= 95)) {
         if (!status.hasPeTemp) {
