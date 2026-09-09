@@ -687,7 +687,7 @@ export function InventarioPanel() {
       </div>
 
       {/* LINHA 3: Limite + Em Uso */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center mt-2 max-w-sm">
+      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center mt-2 max-w-xs">
         <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 text-right">Limite</label>
         <div className="flex gap-1 min-w-0">
           {limitesItens.map((limite, index) => (
