@@ -39,7 +39,7 @@ export const ClasseScreen: React.FC = () => {
           <h2 className="font-display mb-3 text-center text-xl uppercase tracking-wide text-green-500">
             Combatente
           </h2>
-          <p className="flex-grow text-sm leading-relaxed text-zinc-400">
+          <p className="flex-grow text-sm leading-relaxed text-zinc-400 text-center">
             Treinado para lutar com todo tipo de armas, e com a força e a coragem para encarar os perigos de frente, É o tipo de agente que prefere abordagens mais diretas e costuma atirar primeiro e perguntar depois.
           </p>
 
@@ -78,7 +78,7 @@ export const ClasseScreen: React.FC = () => {
           <h2 className="font-display mb-3 text-center text-xl uppercase tracking-wide text-green-500">
             Especialista
           </h2>
-          <p className="flex-grow text-sm leading-relaxed text-zinc-400">
+          <p className="flex-grow text-sm leading-relaxed text-zinc-400 text-center">
             Um agente que confia mais em esperteza do que em força bruta. Um especialista se vale de conhecimento técnico, raciocínio rápido ou mesmo lábia para resolver mistérios e enfrentar o paranormal.
           </p>
           <div className="my-5 flex min-h-[102px] items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950/80 p-4">
@@ -97,7 +97,7 @@ export const ClasseScreen: React.FC = () => {
           <h2 className="font-display mb-3 text-center text-xl uppercase tracking-wide text-green-500">
             Ocultista
           </h2>
-          <p className="flex-grow text-[13px] leading-relaxed text-zinc-400">
+          <p className="flex-grow text-[13px] leading-relaxed text-zinc-400 text-center">
             O Outro Lado é misterioso, perigoso e, de certa forma, cativante. Muitos estudiosos das entidades se perdem em seus reinos obscuros em busca de poder, mas existem aqueles que visam compreender e dominar os mistérios paranormais para usá-los para combater o próprio Outro Lado. Esse tipo de agente não é apenas um conhecedor do oculto, como também possui talento para se conectar com elementos paranormais.
           </p>
           <div className="my-5 flex min-h-[102px] items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950/80 p-4 text-sm">
