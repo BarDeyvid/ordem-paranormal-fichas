@@ -640,94 +640,90 @@ export function InventarioPanel() {
 
   return (
     <div className="flex flex-1 min-h-0 flex-col overflow-hidden gap-2 p-2 font-sans text-zinc-300 w-full">
-      {/* PAINEL DE STATUS DO INVENTÁRIO */}
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-
-          {/* Prestígio */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Prestígio</label>
-            <input
-              type="number"
-              min="0"
-              value={prestigio}
-              onChange={(e) => setPrestigio(Number(e.target.value))}
-              className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-lg font-bold text-zinc-100 outline-none transition focus:border-green-700"
-            />
-          </div>
-
-          {/* Patente */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Patente</label>
-            <CustomSelect
-              value={patente}
-              onChange={(val) => setPatenteManual(val as Patente)}
-              wrapperClassName="w-full"
-              className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
-              options={patentesDisponiveis.map(p => ({ value: p, label: p }))}
-            />
-          </div>
-
-          {/* Limite de Crédito */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Limite de Crédito</label>
-            <CustomSelect
-              value={credito}
-              onChange={(val) => setCreditoOverride(val as LimiteCredito)}
-              wrapperClassName="w-full"
-              className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
-              options={creditosDisponiveis.map(c => ({ value: c, label: c }))}
-            />
-          </div>
-
-          {/* Carga */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Carga</label>
-            <div className="flex items-center gap-1.5 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 justify-center">
-              <span className={`text-lg font-bold ${cargaAtual > cargaMaxima ? 'text-red-400' : 'text-zinc-100'}`}>{cargaAtual}</span>
-              <span className="text-zinc-600 text-sm">/</span>
-              <span className="text-lg font-bold text-zinc-500">{cargaMaxima}</span>
-            </div>
-          </div>
-
+      {/* STATUS DO INVENTÁRIO */}
+      <div className="grid grid-cols-4 gap-3">
+        {/* Prestígio */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Prestígio</label>
+          <input
+            type="number"
+            min="0"
+            value={prestigio}
+            onChange={(e) => setPrestigio(Number(e.target.value))}
+            className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
+          />
         </div>
 
-        {/* Separador */}
-        <div className="h-px bg-zinc-800 my-4" />
+        {/* Patente */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Patente</label>
+          <CustomSelect
+            value={patente}
+            onChange={(val) => setPatenteManual(val as Patente)}
+            wrapperClassName="w-full"
+            className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
+            options={patentesDisponiveis.map(p => ({ value: p, label: p }))}
+          />
+        </div>
 
-        {/* Limites e Inventário lado a lado */}
-        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 items-center">
-          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 text-right">Limite</label>
-          <div className="flex gap-1.5">
-            {limitesItens.map((limite, index) => (
-              <input
-                key={`limite-${index}`}
-                type="number"
-                min="0"
-                value={limite}
-                onChange={(e) => setLimiteItemCategoria(index, Number(e.target.value))}
-                className="w-11 rounded border border-zinc-700 bg-zinc-900 py-1 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
-              />
-            ))}
-          </div>
+        {/* Limite de Crédito */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Crédito</label>
+          <CustomSelect
+            value={credito}
+            onChange={(val) => setCreditoOverride(val as LimiteCredito)}
+            wrapperClassName="w-full"
+            className="w-full rounded border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
+            options={creditosDisponiveis.map(c => ({ value: c, label: c }))}
+          />
+        </div>
 
-          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 text-right">Em uso</label>
-          <div className="flex gap-1.5">
-            {noInventario.map((qtd: number, index: number) => (
-              <div
-                key={`inventario-${index}`}
-                className={`w-11 rounded border py-1 flex items-center justify-center text-sm font-bold ${
-                  qtd > limitesItens[index]
-                    ? 'border-red-800/60 bg-red-950/30 text-red-400'
-                    : 'border-zinc-800 bg-zinc-950 text-zinc-500'
-                }`}
-              >
-                {qtd}
-              </div>
-            ))}
+        {/* Carga */}
+        <div className="flex flex-col gap-1">
+          <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Carga</label>
+          <div className="flex items-center gap-1.5 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 justify-center">
+            <span className={`text-sm font-bold ${cargaAtual > cargaMaxima ? 'text-red-400' : 'text-zinc-100'}`}>{cargaAtual}</span>
+            <span className="text-zinc-600 text-xs">/</span>
+            <span className="text-sm font-bold text-zinc-500">{cargaMaxima}</span>
           </div>
         </div>
       </div>
+
+      {/* Limite e Em Uso — largura total */}
+      <div className="flex items-center gap-3">
+        <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 shrink-0 w-10 text-right">Limite</label>
+        <div className="flex flex-1 gap-1.5">
+          {limitesItens.map((limite, index) => (
+            <input
+              key={`limite-${index}`}
+              type="number"
+              min="0"
+              value={limite}
+              onChange={(e) => setLimiteItemCategoria(index, Number(e.target.value))}
+              className="flex-1 min-w-0 rounded border border-zinc-700 bg-zinc-900 py-1 text-center text-sm font-bold text-zinc-100 outline-none transition focus:border-green-700"
+            />
+          ))}
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 shrink-0 w-10 text-right">Em uso</label>
+        <div className="flex flex-1 gap-1.5">
+          {noInventario.map((qtd: number, index: number) => (
+            <div
+              key={`inventario-${index}`}
+              className={`flex-1 min-w-0 rounded border py-1 flex items-center justify-center text-sm font-bold ${
+                qtd > limitesItens[index]
+                  ? 'border-red-800/60 bg-red-950/30 text-red-400'
+                  : 'border-zinc-800 bg-zinc-950 text-zinc-500'
+              }`}
+            >
+              {qtd}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="h-px bg-zinc-800 my-1" />
 
       {/* Seção de Inventário */}
       <div className="flex flex-col flex-1 min-h-0 gap-3 mt-2">
