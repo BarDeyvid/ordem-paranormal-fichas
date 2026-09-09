@@ -144,10 +144,10 @@ export const StatusPanel: React.FC = () => {
         </div>
 
         {/* AFINIDADE */}
-        {afinidadeEscolhida && (
+        {afinidadeAtiva && afinidadeEscolhida && (
           <div className="flex flex-col items-center gap-1.5">
             <div 
-              className={`group relative flex h-9 cursor-help items-center justify-center rounded border px-3 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${!afinidadeAtiva ? 'opacity-60 saturate-50 border-dashed' : ''}`}
+              className="group relative flex h-9 cursor-help items-center justify-center rounded border px-3 text-xs font-bold uppercase tracking-wider text-zinc-100 transition"
               style={{
                 borderColor: CORES_ELEMENTOS[afinidadeEscolhida.toLowerCase()] || '#888',
                 backgroundColor: `${CORES_ELEMENTOS[afinidadeEscolhida.toLowerCase()] || '#888'}40`,
@@ -175,9 +175,7 @@ export const StatusPanel: React.FC = () => {
               {/* TOOLTIP */}
               <div className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-72 -translate-x-1/2 rounded border border-zinc-700 bg-zinc-950 p-3 text-left text-xs font-normal text-zinc-300 opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
                 <div className="mb-2 border-b border-zinc-800 pb-2">
-                  <strong className={`${!afinidadeAtiva ? 'text-zinc-400' : 'text-zinc-100'}`}>
-                    {!afinidadeAtiva ? `Afinidade Latente com ${afinidadeEscolhida}` : `Você está conectado à entidade de ${afinidadeEscolhida}`}
-                  </strong>
+                  <strong className="text-zinc-100">Você está conectado à entidade de {afinidadeEscolhida}</strong>
                 </div>
                 <ul className="flex list-disc flex-col gap-2 pl-4">
                   <li>Não precisa de componentes ritualísticos para conjurar rituais deste elemento.</li>
@@ -187,9 +185,7 @@ export const StatusPanel: React.FC = () => {
                 </ul>
               </div>
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
-              {afinidadeAtiva ? 'Afinidade' : 'Afin. (Latente)'}
-            </span>
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">Afinidade</span>
           </div>
         )}
 
