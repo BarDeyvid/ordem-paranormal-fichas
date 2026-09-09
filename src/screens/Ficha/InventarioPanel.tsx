@@ -687,7 +687,7 @@ export function InventarioPanel() {
       </div>
 
       {/* LINHA 3: Limite + Em Uso */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center">
+      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center mt-2">
         <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 text-right">Limite</label>
         <div className="flex gap-1 min-w-0">
           {limitesItens.map((limite, index) => (
@@ -697,7 +697,7 @@ export function InventarioPanel() {
               min="0"
               value={limite}
               onChange={(e) => setLimiteItemCategoria(index, Number(e.target.value))}
-              className="flex-1 min-w-0 rounded border border-zinc-700 bg-zinc-900 py-1 text-center text-xs font-bold text-zinc-100 outline-none transition focus:border-green-700"
+              className="flex-1 min-w-0 rounded border border-zinc-700 bg-zinc-900 py-1.5 text-center text-xs font-bold text-zinc-100 outline-none transition focus:border-green-700"
             />
           ))}
         </div>
@@ -706,7 +706,7 @@ export function InventarioPanel() {
           {noInventario.map((qtd: number, index: number) => (
             <div
               key={`inventario-${index}`}
-              className={`flex-1 min-w-0 rounded border py-1 flex items-center justify-center text-xs font-bold ${
+              className={`flex-1 min-w-0 rounded border py-1.5 flex items-center justify-center text-xs font-bold ${
                 qtd > limitesItens[index]
                   ? 'border-red-800/60 bg-red-950/30 text-red-400'
                   : 'border-zinc-800 bg-zinc-950 text-zinc-500'
