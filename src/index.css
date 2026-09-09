@@ -9,6 +9,10 @@
   --font-display: 'Special Elite', 'Courier New', monospace;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 :root {
   color-scheme: dark;
 }
