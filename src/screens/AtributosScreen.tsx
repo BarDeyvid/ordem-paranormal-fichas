@@ -42,54 +42,41 @@ export const AtributosScreen: React.FC = () => {
           Passo 1 — Atributos
         </p>
         <div className="w-full max-w-3xl text-sm leading-relaxed text-zinc-400 space-y-4">
-          <p>Personagens de Ordem Paranormal RPG possuem cinco atributos, que definem suas competências básicas: Agilidade, Força, Intelecto, Presença e Vigor.</p><p>Atributos são medidos numericamente. Um valor 1 representa a média humana. Valores 2 ou 3 estão acima da média — um atleta de elite e um pesquisador de renome podem ter Força ou Intelecto nesse intervalo. Valores 4 ou 5 representam indivíduos extraordinários — um medalhista olímpico ou vencedor do Nobel podem ter Força ou Intelecto nessa faixa. Já um valor 0 está abaixo da média — uma criança pode ter Força 0, enquanto um idoso de saúde frágil pode ter Vigor 0.</p>
+          <p>
+            Quando você cria um personagem, todos os seus atributos começam em 1 e você recebe 4 pontos para distribuir entre eles como quiser. Você também pode reduzir um atributo para 0 para receber 1 ponto adicional. O valor máximo inicial que você pode ter em cada atributo é 3.
+          </p>
         </div>
         <div className="mt-8 h-px w-full max-w-5xl bg-zinc-800/80"></div>
       </header>
 
-      {/* CONTAINER PRINCIPAL */}
-      <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-12 w-full mt-4">
+      {/* CAIXA DE CONFIGURAÇÃO (NEX & PONTOS) */}
+      <div className="mx-auto mb-10 flex w-fit flex-col sm:flex-row items-center justify-center gap-8 rounded-lg border border-zinc-800 bg-zinc-900/60 px-8 py-5 relative z-50 shadow-lg">
         
-        {/* COLUNA ESQUERDA: Textos e Configurações */}
-        <div className="flex flex-col w-full max-w-[340px] gap-6 order-2 md:order-1 md:pt-8">
-          
-          <div className="text-sm leading-relaxed text-zinc-400 text-justify">
-            <p>
-              Quando você cria um personagem, todos os seus atributos começam em 1 e você recebe 4 pontos para distribuir entre eles como quiser. Você também pode reduzir um atributo para 0 para receber 1 ponto adicional. O valor máximo inicial que você pode ter em cada atributo é 3.
-            </p>
-          </div>
-
-          <div className="h-px w-full bg-zinc-800/80"></div>
-
-          {/* CAIXA DE CONFIGURAÇÃO */}
-          <div className="flex flex-col gap-5 rounded-lg border border-zinc-800 bg-zinc-900/60 p-5 relative z-50 shadow-lg">
-            <h3 className="font-display text-base uppercase tracking-wider text-green-500 mb-1">
-              Configurações
-            </h3>
-            
-            <div className="flex items-center justify-between">
-              <label htmlFor="nex-select" className="text-sm font-bold uppercase tracking-wider text-zinc-300">
-                NEX Inicial
-              </label>
-              <CustomSelect 
-                value={nex.toString()} 
-                onChange={handleNexChange} 
-                options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + "%" }))} 
-                wrapperClassName="w-28" 
-              />
-            </div>
-
-            <div className={`flex items-center justify-between text-sm font-bold uppercase tracking-wider pt-4 border-t border-zinc-800/50 ${pontosRestantes < 0 ? 'text-red-500' : 'text-zinc-300'}`}>
-              <span>Pontos Restantes</span>
-              <span className={`text-2xl ${pontosRestantes > 0 ? 'text-green-500' : (pontosRestantes < 0 ? 'text-red-500' : 'text-zinc-600')}`}>
-                {pontosRestantes}
-              </span>
-            </div>
-          </div>
+        <div className="flex items-center gap-4">
+          <label htmlFor="nex-select" className="text-sm font-bold uppercase tracking-wider text-zinc-300">
+            NEX Inicial
+          </label>
+          <CustomSelect 
+            value={nex.toString()} 
+            onChange={handleNexChange} 
+            options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + "%" }))} 
+            wrapperClassName="w-24" 
+          />
         </div>
 
-        {/* COLUNA DIREITA: Pentagrama */}
-        <div className="flex flex-col items-center order-1 md:order-2 w-full max-w-[460px]">
+        <div className="hidden h-8 w-px bg-zinc-700/50 sm:block"></div>
+
+        <div className={`flex items-center gap-4 text-sm font-bold uppercase tracking-wider ${pontosRestantes < 0 ? 'text-red-500' : 'text-zinc-300'}`}>
+          <span>Pontos Restantes</span>
+          <span className={`text-2xl ${pontosRestantes > 0 ? 'text-green-500' : (pontosRestantes < 0 ? 'text-red-500' : 'text-zinc-500')}`}>
+            {pontosRestantes}
+          </span>
+        </div>
+
+      </div>
+
+      {/* PENTAGRAMA DE ATRIBUTOS */}
+      <div className="flex flex-col items-center justify-center w-full max-w-[460px] mx-auto">
         <div className="relative w-full aspect-square">
           <img src="/images/atributos-bg.png" alt="Atributos" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]" />
           
@@ -132,7 +119,6 @@ export const AtributosScreen: React.FC = () => {
           })()}
         </div>
         </div>
-      </div>
 
       <button
         onClick={() => setTelaAtual('origens')}
