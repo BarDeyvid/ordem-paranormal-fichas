@@ -34,19 +34,18 @@ export const AtributosScreen: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-5xl">
-      <h1 className="font-display mb-2 text-center text-3xl uppercase tracking-wide text-zinc-100">
-        Criação de Personagem
-      </h1>
-      <p className="mb-4 border-b border-zinc-800 pb-4 text-center text-sm uppercase tracking-widest text-green-600">
-        Passo 1 — Atributos
-      </p>
-
-      
-      <div className="mx-auto mb-6 max-w-4xl text-center text-sm leading-relaxed text-zinc-400">
-        <p>
-          Personagens de Ordem Paranormal RPG possuem cinco atributos, que definem suas competências básicas: Agilidade, Força, Intelecto, Presença e Vigor. Atributos são medidos numericamente. Um valor 1 representa a média humana. Valores 2 ou 3 estão acima da média — um atleta de elite e um pesquisador de renome podem ter Força ou Intelecto nesse intervalo. Valores 4 ou 5 representam indivíduos extraordinários — um medalhista olímpico ou vencedor do Nobel podem ter Força ou Intelecto nessa faixa. Já um valor 0 está abaixo da média — uma criança pode ter Força 0, enquanto um idoso de saúde frágil pode ter Vigor 0.
+      <header className="mb-10 flex flex-col items-center text-center">
+        <h1 className="font-display mb-2 text-3xl uppercase tracking-wide text-zinc-100">
+          Criação de Personagem
+        </h1>
+        <p className="mb-6 text-sm uppercase tracking-widest text-green-500 font-bold">
+          Passo 1 — Atributos
         </p>
-      </div>
+        <div className="w-full max-w-3xl text-sm leading-relaxed text-zinc-400 space-y-4">
+          <p>Personagens de Ordem Paranormal RPG possuem cinco atributos, que definem suas competências básicas: Agilidade, Força, Intelecto, Presença e Vigor.</p><p>Atributos são medidos numericamente. Um valor 1 representa a média humana. Valores 2 ou 3 estão acima da média — um atleta de elite e um pesquisador de renome podem ter Força ou Intelecto nesse intervalo. Valores 4 ou 5 representam indivíduos extraordinários — um medalhista olímpico ou vencedor do Nobel podem ter Força ou Intelecto nessa faixa. Já um valor 0 está abaixo da média — uma criança pode ter Força 0, enquanto um idoso de saúde frágil pode ter Vigor 0.</p>
+        </div>
+        <div className="mt-8 h-px w-full max-w-5xl bg-zinc-800/80"></div>
+      </header>
 
       {/* SELETOR DE NEX */}
       <div className="mb-6 flex items-center gap-4 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4 relative z-50">

@@ -26,21 +26,18 @@ export const ClasseScreen: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-6xl">
-      <h1 className="font-display mb-2 text-center text-3xl uppercase tracking-wide text-zinc-100">
-        Escolha sua Classe
-      </h1>
-      <p className="mb-6 text-center text-sm uppercase tracking-widest text-green-600">
-        Passo 3 — Seu papel na Ordem
-      </p>
-
-      <div className="mx-auto mb-10 max-w-4xl text-center text-sm leading-relaxed text-zinc-400">
-        <p className="mb-2">
-          Sua classe indica o treinamento que você recebeu na Ordem para enfrentar os perigos do Outro Lado. Em termos de jogo, é a sua característica mais importante, pois define o que você faz e qual é o seu papel no grupo de investigadores.
+      <header className="mb-10 flex flex-col items-center text-center">
+        <h1 className="font-display mb-2 text-3xl uppercase tracking-wide text-zinc-100">
+          Escolha sua Classe
+        </h1>
+        <p className="mb-6 text-sm uppercase tracking-widest text-green-500 font-bold">
+          Passo 3 — Seu papel na Ordem
         </p>
-        <p>
-          Ordem Paranormal RPG contém três classes, que representam os principais arquétipos de heróis em histórias de terror e suspense:
-        </p>
-      </div>
+        <div className="w-full max-w-3xl text-sm leading-relaxed text-zinc-400 space-y-4">
+          <p>Sua classe indica o treinamento que você recebeu na Ordem para enfrentar os perigos do Outro Lado. Em termos de jogo, é a sua característica mais importante, pois define o que você faz e qual é o seu papel no grupo de investigadores.</p><p>Ordem Paranormal RPG contém três classes, que representam os principais arquétipos de heróis em histórias de terror e suspense:</p>
+        </div>
+        <div className="mt-8 h-px w-full max-w-5xl bg-zinc-800/80"></div>
+      </header>
 
       <div className="flex flex-col items-stretch gap-5 lg:flex-row">
         {/* COMBATENTE — Sangue */}
