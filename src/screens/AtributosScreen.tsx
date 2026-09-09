@@ -64,7 +64,7 @@ export const AtributosScreen: React.FC = () => {
 
       {/* LISTA DE ATRIBUTOS E TEXTO */}
       <div className="mb-10 mt-6 flex flex-col md:flex-row items-center gap-10 w-full">
-        <div className="flex-1 text-sm leading-relaxed text-zinc-400 text-left order-2 md:order-1">
+        <div className="w-full max-w-[280px] text-base leading-relaxed text-zinc-400 text-left order-2 md:order-1 ml-auto">
           <p>
             Quando você cria um personagem, todos os seus atributos começam em 1 e você recebe 4 pontos para distribuir entre eles como quiser. Você também pode reduzir um atributo para 0 para receber 1 ponto adicional. O valor máximo inicial que você pode ter em cada atributo é 3.
           </p>
