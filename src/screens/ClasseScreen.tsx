@@ -82,7 +82,7 @@ export const ClasseScreen: React.FC = () => {
             Um agente que confia mais em esperteza do que em força bruta. Um especialista se vale de conhecimento técnico, raciocínio rápido ou mesmo lábia para resolver mistérios e enfrentar o paranormal.
           </p>
           <div className="my-5 flex min-h-[102px] items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950/80 p-4">
-            <p className="text-sm font-bold text-green-500">Perícias em dobro</p>
+            <p className="text-sm text-zinc-500 italic">Nenhuma perícia padrão</p>
           </div>
           <button
             onClick={() => escolherClasse('Especialista')}
@@ -100,8 +100,12 @@ export const ClasseScreen: React.FC = () => {
           <p className="flex-grow text-[13px] leading-relaxed text-zinc-400">
             O Outro Lado é misterioso, perigoso e, de certa forma, cativante. Muitos estudiosos das entidades se perdem em seus reinos obscuros em busca de poder, mas existem aqueles que visam compreender e dominar os mistérios paranormais para usá-los para combater o próprio Outro Lado. Esse tipo de agente não é apenas um conhecedor do oculto, como também possui talento para se conectar com elementos paranormais.
           </p>
-          <div className="my-5 flex min-h-[102px] items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950/80 p-4">
-            <p className="text-sm font-bold text-green-500">Vontade & Ocultismo</p>
+          <div className="my-5 flex min-h-[102px] items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950/80 p-4 text-sm">
+            <div className="flex items-center justify-center gap-3">
+              <span>Vontade</span>
+              <span className="text-zinc-600">&</span>
+              <span>Ocultismo</span>
+            </div>
           </div>
           <button
             onClick={() => escolherClasse('Ocultista')}
