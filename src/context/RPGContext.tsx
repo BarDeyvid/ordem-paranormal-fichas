@@ -348,7 +348,20 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
     }
   }, [nex, regras]);
 
-  const atributosBaseComBonus = useMemo(() => {
+  
+  const effectiveNex = useMemo(() => {
+    let finalNex = nex;
+    if (regrasAutomaticasAtivas.has(83)) finalNex += 5;
+    return Math.min(99, finalNex);
+  }, [nex, regrasAutomaticasAtivas]);
+
+  const effectiveNivel = useMemo(() => {
+    let finalNivel = nivel;
+    if (regrasAutomaticasAtivas.has(83)) finalNivel += 1;
+    return Math.min(20, finalNivel);
+  }, [nivel, regrasAutomaticasAtivas]);
+
+const atributosBaseComBonus = useMemo(() => {
     const obj = { ...atributos };
     (Object.keys(obj) as AtributoKey[]).forEach(k => {
       obj[k] += bonusAtributos[k] + (bonusMaldicoes.atributos[k] || 0);
@@ -356,9 +369,22 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
     return obj;
   }, [atributos, bonusAtributos]);
 
-  const status = useStatus(classe, nex, nivel, atributosBaseComBonus, paranormalPenalty, regrasAutomaticasAtivas, bonusVestimentas.pv + bonusMaldicoes.pv, bonusVestimentas.pe + bonusMaldicoes.pe);
+  const status = useStatus(classe, effectiveNex, effectiveNivel, atributosBaseComBonus, paranormalPenalty, regrasAutomaticasAtivas, bonusVestimentas.pv + bonusMaldicoes.pv, bonusVestimentas.pe + bonusMaldicoes.pe);
 
-  const atributosFinais = useMemo(() => {
+  
+  useEffect(() => {
+    if (regrasAutomaticasAtivas.has(83)) {
+      if ((regras['nex_experiencia'] && nivel >= 20) || (!regras['nex_experiencia'] && nex >= 95)) {
+        if (!status.hasPeTemp) {
+          status.setHasPeTemp(true);
+          status.setPeTempMax(10);
+          status.setPeTempAtual(10);
+        }
+      }
+    }
+  }, [regrasAutomaticasAtivas, nex, nivel, regras, status]);
+
+const atributosFinais = useMemo(() => {
     const obj = { ...atributosBaseComBonus };
     const machucado = status.pvAtual !== null && status.pvMax > 0 && status.pvAtual <= Math.floor(status.pvMax / 2);
     if (machucado && regrasAutomaticasAtivas.has(53) && escolhaRegra53) {
@@ -561,7 +587,7 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const value: RPGContextType = {
     telaAtual, setTelaAtual,
     classe, setClasse,
-    nex, setNex,
+    nex: effectiveNex, setNex,
     atributos, setAtributos,
     bonusAtributos, setBonusAtributos,
     pontosRestantes, alterarAtributo,
@@ -599,7 +625,7 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
     bonusDadosCondicionais, setBonusDadosCondicionais,
     bonusDadosAtivos, setBonusDadosAtivos,
     regras, setRegras, toggleRegra,
-    nivel, setNivel,
+    nivel: effectiveNivel, setNivel,
     rituaisExpandidos, setRituaisExpandidos,
     versaoRitual, setVersaoRitual,
     elementoRitual, setElementoRitual,
