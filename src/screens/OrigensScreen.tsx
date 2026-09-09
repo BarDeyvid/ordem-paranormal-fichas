@@ -44,6 +44,18 @@ export const OrigensScreen: React.FC = () => {
         Passo 2 — Quem você era antes do Paranormal
       </p>
 
+      <div className="mb-6 text-sm leading-relaxed text-zinc-400">
+        <p className="mb-2">
+          O que seu personagem fazia antes de se envolver com o paranormal e ingressar na Ordem da Realidade? A origem representa como a vida pregressa influencia sua carreira de investigador. Escolha uma origem que se encaixe com o conceito de seu personagem.
+        </p>
+        <p className="mb-2 italic text-zinc-300">
+          Ao escolher uma origem, você recebe duas perícias treinadas e um poder da origem.
+        </p>
+        <p>
+          Cada origem apresentada a seguir é intencionalmente vaga, apenas uma ideia por onde começar. Você pode usá-la como está, para jogar rapidamente, ou colorir com quantos detalhes quiser, conforme o conceito de seu agente.
+        </p>
+      </div>
+
       {/* Abas de Grupos */}
       {grupos.length > 0 && (
         <div className="mb-4 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
