@@ -641,7 +641,7 @@ export function InventarioPanel() {
   return (
     <div className="flex flex-1 min-h-0 flex-col overflow-hidden gap-2 p-2 font-sans text-zinc-300 w-full">
       {/* LINHA 1: Prestígio + Patente */}
-      <div className="flex items-end gap-4">
+      <div className="flex items-end gap-4 pr-2">
         <div className="flex flex-col gap-1">
           <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Prestígio</label>
           <input
@@ -665,7 +665,7 @@ export function InventarioPanel() {
       </div>
 
       {/* LINHA 2: Crédito + Carga */}
-      <div className="flex items-end gap-4">
+      <div className="flex items-end gap-4 pr-2">
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Limite de Crédito</label>
           <CustomSelect
@@ -687,7 +687,7 @@ export function InventarioPanel() {
       </div>
 
       {/* LINHA 3: Limite + Em Uso */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center mt-2">
+      <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center mt-2 pr-2">
         <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500 text-right">Limite</label>
         <div className="flex gap-1 min-w-0">
           {limitesItens.map((limite, index) => (
