@@ -1066,7 +1066,7 @@ export const AbasPanel: React.FC = () => {
                                     <span className="text-[10px] text-zinc-500 italic">
                                       {hab.automatico.toLowerCase().trim() === 'sim' 
                                         ? 'Os bônus deste poder já estão aplicados na sua ficha.' 
-                                        : 'Os bônus deste poder são condicionais ou necessitam de ativação manual.'}
+                                        : 'Uma parte deste poder é aplicada automaticamente na sua ficha, e a outra não.'}
                                     </span>
                                   </div>
                                 )}
