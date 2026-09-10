@@ -666,7 +666,7 @@ export function InventarioPanel() {
 
       {/* LINHA 2: Crédito + Carga */}
       <div className="flex items-end gap-4 pr-2">
-        <div className="flex flex-col gap-1 w-28">
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
           <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Crédito</label>
           <CustomSelect
             value={credito}
@@ -676,7 +676,7 @@ export function InventarioPanel() {
             options={creditosDisponiveis.map(c => ({ value: c, label: c }))}
           />
         </div>
-        <div className="flex flex-col gap-1 flex-1 min-w-0">
+        <div className="flex flex-col gap-1 w-24">
           <label className="text-[0.65rem] font-semibold uppercase tracking-widest text-zinc-500">Carga</label>
           <div className="flex items-center gap-1.5 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 justify-center">
             <span className={`text-sm font-bold ${cargaAtual > cargaMaxima ? 'text-red-400' : 'text-zinc-100'}`}>{cargaAtual}</span>
