@@ -208,6 +208,7 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
         if (novo[nome]) {
           // Ativou a regra: salva nível baseado no NEX atual
           setNivel(Math.min(20, Math.max(1, Math.ceil(nex / 5))));
+          setNex(0);
         } else {
           // Desativou a regra: recupera NEX baseado no Nível atual
           setNex(Math.min(99, Math.max(5, nivel * 5)));

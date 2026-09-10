@@ -57,7 +57,7 @@ export const AtributosScreen: React.FC = () => {
             NEX Inicial
           </label>
           <CustomSelect 
-            value={nex.toString()} 
+            value={(NEX_OPTIONS.includes(nex) ? nex : Math.max(5, Math.ceil(nex / 5) * 5)).toString()} 
             onChange={handleNexChange} 
             options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + "%" }))} 
             wrapperClassName="w-24" 
