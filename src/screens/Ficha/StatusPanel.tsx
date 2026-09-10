@@ -90,48 +90,18 @@ export const StatusPanel: React.FC = () => {
     <div>
       {/* LINHA: NEX + PE/TURNO + AFINIDADE + DESLOCAMENTO */}
       <div className="mb-8 flex flex-wrap items-start gap-2 sm:gap-4 justify-between sm:justify-start border-b border-zinc-800 pb-5">
-        {/* NEX / NÍVEL (regra NEX & EXPERIÊNCIA) */}
-        {regraNexExperiencia ? (
-          <>
-            {/* NEX MANUAL */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="flex items-center rounded border border-zinc-600 bg-zinc-900 transition hover:border-green-700 focus-within:border-green-700">
-                <input
-                  type="number"
-                  onKeyDown={bloquearLetras}
-                  value={nex}
-                  onChange={(e) => setNex(Math.max(0, Math.min(99, Number(e.target.value))))}
-                  className="w-14 bg-transparent px-3 py-2 text-center text-lg font-bold text-zinc-100 outline-none"
-                />
-                <span className="pr-2 text-lg font-bold text-zinc-500">%</span>
-              </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">NEX</span>
-            </div>
-
-            {/* NÍVEL */}
-            <div className="flex flex-col items-center gap-1.5">
-              <div className="relative z-50 w-full">
-                <CustomSelect
-                  value={nivel.toString()}
-                  onChange={(val) => setNivel(Number(val))}
-                  options={NIVEL_OPTIONS.map(n => ({ value: n.toString(), label: n.toString() }))}
-                  wrapperClassName="w-20"
-                />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">Nível</span>
-            </div>
-          </>
-        ) : (
+        {/* NÍVEL (se regra ativa) */}
+        {regraNexExperiencia && (
           <div className="flex flex-col items-center gap-1.5">
             <div className="relative z-50 w-full">
               <CustomSelect
-                value={nex.toString()}
-                onChange={(val) => setNex(Number(val))}
-                options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + '%' }))}
-                wrapperClassName="w-24"
+                value={nivel.toString()}
+                onChange={(val) => setNivel(Number(val))}
+                options={NIVEL_OPTIONS.map(n => ({ value: n.toString(), label: n.toString() }))}
+                wrapperClassName="w-20"
               />
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">NEX</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">Nível</span>
           </div>
         )}
 
