@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { useRPG } from '../../context/RPGContext';\nimport { CustomSelect } from '../../components/CustomSelect';\nimport { NEX_OPTIONS } from '../../utils/rpgRules';
+import { useRPG } from '../../context/RPGContext';
+import { CustomSelect } from '../../components/CustomSelect';
+import { NEX_OPTIONS } from '../../utils/rpgRules';
 import { StatusPanel } from './StatusPanel';
 import { PericiasTable } from './PericiasTable';
 import { AbasPanel } from './AbasPanel';
