@@ -95,7 +95,7 @@ export const StatusPanel: React.FC = () => {
           <div className="flex flex-col items-center gap-1.5">
             <div className="relative z-50 w-full">
               <CustomSelect
-                value={nivel.toString()}
+                value={(NIVEL_OPTIONS.includes(nivel) ? nivel : Math.max(1, nivel)).toString()}
                 onChange={(val) => setNivel(Number(val))}
                 options={NIVEL_OPTIONS.map(n => ({ value: n.toString(), label: n.toString() }))}
                 wrapperClassName="w-20"

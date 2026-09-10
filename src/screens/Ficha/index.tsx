@@ -127,7 +127,7 @@ function AtributosFicha() {
         ) : (
           <div className="relative z-50 w-20">
             <CustomSelect
-              value={nex.toString()}
+              value={(NEX_OPTIONS.includes(nex) ? nex : Math.max(5, Math.ceil(nex / 5) * 5)).toString()}
               onChange={(val) => setNex(Number(val))}
               options={NEX_OPTIONS.map(n => ({ value: n.toString(), label: n + '%' }))}
               hideIcon={true}
