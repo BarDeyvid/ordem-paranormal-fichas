@@ -338,6 +338,7 @@ export function usePericias(
     if (codigoPerRegra === 2) extra = 2;
     if (codigoPerRegra === 4) extra = 5;
     if (codigoPerRegra === 5) extra = 3;
+    if (regrasAutomaticasAtivas?.has(9)) extra += 1;
     
     return {
     bonusVestimentas: bonusVestimentas || {},
