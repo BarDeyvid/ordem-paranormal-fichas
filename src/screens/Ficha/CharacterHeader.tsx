@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRPG } from '../../context/RPGContext';
 import { SaveLoadButtons } from '../../components/SaveLoadButtons';
+import { ModalMudarOrigem } from '../../components/ModalMudarOrigem';
 
 export const CharacterHeader: React.FC = () => {
   const rpg = useRPG();
   const { classe, origensHook } = rpg;
   const origemNome = origensHook.origemSelecionada?.Nome || '';
 
+  const [modalOrigemAberto, setModalOrigemAberto] = useState(false);
+
   return (
     <div className="flex w-full items-end gap-5 mb-4">
+      {modalOrigemAberto && <ModalMudarOrigem onClose={() => setModalOrigemAberto(false)} />}
+      
       {/* Avatar Placeholder */}
       <div className="h-16 w-16 shrink-0 overflow-hidden rounded bg-zinc-800 border border-zinc-700 shadow-md flex items-center justify-center relative group cursor-pointer">
         <img src="https://drive.google.com/uc?export=view&id=1PcyQ99Z2n8wY3R67E7aN_cW4fJ3Vj5F3" alt="Avatar" className="object-cover w-full h-full opacity-50 group-hover:opacity-30 transition" />
@@ -35,15 +40,22 @@ export const CharacterHeader: React.FC = () => {
             />
           </div>
           {/* Origem */}
-          <div className="flex items-end">
+          <div className="flex items-end relative">
             <span className="w-24 text-[0.6rem] font-bold uppercase tracking-widest text-zinc-400 shrink-0 pb-1">Origem</span>
             <input
               key={`origem-${origemNome}`}
               type="text"
               defaultValue={origemNome}
               placeholder="Sua Origem"
-              className="flex-1 border-b border-zinc-200 bg-transparent py-0.5 text-sm font-bold text-zinc-100 outline-none transition focus:border-green-500"
+              className="flex-1 border-b border-zinc-200 bg-transparent py-0.5 text-sm font-bold text-zinc-100 outline-none transition focus:border-green-500 pr-8"
             />
+            <button 
+              onClick={() => setModalOrigemAberto(true)}
+              className="absolute right-0 bottom-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-600 rounded px-2 py-0.5 text-xs transition"
+              title="Mudar Origem (Teste)"
+            >
+              Trocar
+            </button>
           </div>
         </div>
 

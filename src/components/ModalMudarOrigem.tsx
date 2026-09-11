@@ -1,0 +1,159 @@
+import React, { useState } from 'react';
+import { useRPG } from '../context/RPGContext';
+import { InputOtimizado } from './InputOtimizado';
+import type { Origem } from '../types';
+import { Collapse } from './Collapse';
+
+interface ModalMudarOrigemProps {
+  onClose: () => void;
+}
+
+export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) => {
+  const { origensHook } = useRPG();
+  const {
+    origens,
+    origensExpandidas,
+    toggleOrigemExpandida,
+    selecionarOrigem,
+    nomePericia,
+  } = origensHook;
+
+  const [busca, setBusca] = useState('');
+  const [escolhasRegra6, setEscolhasRegra6] = useState<Record<number, 'p2' | 'pesp'>>({});
+
+  const origensFiltradas = origens.filter(o => 
+    o.Nome.toLowerCase().includes(busca.toLowerCase()) || 
+    (o.Nome_Poder && o.Nome_Poder.toLowerCase().includes(busca.toLowerCase()))
+  );
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-sans" onClick={onClose}>
+      <div className="flex w-full max-w-2xl h-[80vh] flex-col gap-4 rounded-lg border border-zinc-800 bg-zinc-950 p-6 shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+        
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-display text-lg uppercase tracking-wide text-zinc-100">
+            Mudar Origem (Teste)
+          </h3>
+          <button onClick={onClose} className="border-none bg-transparent text-2xl text-zinc-500 transition hover:text-zinc-100">&times;</button>
+        </div>
+
+        <InputOtimizado
+          value={busca}
+          onChange={setBusca}
+          placeholder="Buscar origem ou poder..."
+        />
+
+        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-2">
+          {origensFiltradas.map((origem) => {
+            const estaExpandida = origensExpandidas.includes(origem.Codigo_Origem);
+            const nomeP1 = nomePericia(origem.Pericia_Treinada_1);
+            const nomeP2 = nomePericia(origem.Pericia_Treinada_2);
+            let nomePEsp = null;
+            if (origem.Pericia_Treinada_Especial) {
+              nomePEsp = nomePericia(origem.Pericia_Treinada_Especial as any);
+            }
+
+            return (
+              <div key={origem.Codigo_Origem} className="rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden">
+                <div 
+                  onClick={() => toggleOrigemExpandida(origem.Codigo_Origem)}
+                  className="flex cursor-pointer items-center justify-between bg-zinc-900 p-4 transition hover:bg-zinc-800/50"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="font-display text-lg uppercase tracking-wide text-zinc-100">{origem.Nome}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    {origem.Codigo_Per_Regra !== 6 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          selecionarOrigem(origem);
+                          onClose();
+                        }}
+                        className="rounded-md bg-green-700 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
+                      >
+                        Selecionar
+                      </button>
+                    )}
+                    <span className="text-xl font-light text-zinc-500">{estaExpandida ? '−' : '+'}</span>
+                  </div>
+                </div>
+
+                <Collapse isOpen={estaExpandida}>
+                  <div className="border-t border-zinc-800 p-4">
+                    <div className="mb-4 text-sm text-zinc-400">
+                      {origem.Descricao_Origem?.split('\n').map((linha, i) => (
+                        <p key={i} className="mb-2 last:mb-0">{linha}</p>
+                      ))}
+                    </div>
+
+                    <div className="mb-4 flex flex-col gap-2 rounded bg-zinc-950 p-3">
+                      <div className="text-xs font-bold uppercase tracking-wider text-zinc-500">Perícias Treinadas</div>
+                      
+                      {origem.Codigo_Per_Regra === 1 && origem.Pericia_Treinada_Especial ? (
+                        <div className="text-sm font-bold text-zinc-300">Escolha duas perícias entre: {nomeP1}, {nomeP2} e {nomePEsp}.</div>
+                      ) : origem.Pericia_Treinada_Especial && ![1].includes(origem.Codigo_Per_Regra || 0) ? (
+                        <div className="text-sm font-bold text-zinc-300">{nomeP1}, {nomeP2} e {nomePEsp}</div>
+                      ) : (
+                        <div className="text-sm font-bold text-zinc-300">{nomeP1} e {nomeP2}</div>
+                      )}
+                    </div>
+
+                    {origem.Nome_Poder && (
+                      <div className="mb-4">
+                        <div className="mb-2 flex items-center gap-2">
+                          <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">Poder da Origem:</span>
+                          <span className="text-sm font-bold text-zinc-100">{origem.Nome_Poder}</span>
+                        </div>
+                        <div className="text-sm text-zinc-400">{origem.Descricao_Poder}</div>
+                      </div>
+                    )}
+
+                    {origem.Codigo_Per_Regra === 6 && (
+                      <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4">
+                        <div className="flex gap-4">
+                          <label className="flex items-center gap-2 text-sm text-zinc-300">
+                            <input
+                              type="radio"
+                              name={`origem-${origem.Codigo_Origem}-pericia`}
+                              checked={escolhasRegra6[origem.Codigo_Origem] === 'p2'}
+                              onChange={() => setEscolhasRegra6(prev => ({ ...prev, [origem.Codigo_Origem]: 'p2' }))}
+                              className="text-green-500 focus:ring-green-500 focus:ring-offset-zinc-900"
+                            />
+                            {nomeP2}
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-zinc-300">
+                            <input
+                              type="radio"
+                              name={`origem-${origem.Codigo_Origem}-pericia`}
+                              checked={escolhasRegra6[origem.Codigo_Origem] === 'pesp'}
+                              onChange={() => setEscolhasRegra6(prev => ({ ...prev, [origem.Codigo_Origem]: 'pesp' }))}
+                              className="text-green-500 focus:ring-green-500 focus:ring-offset-zinc-900"
+                            />
+                            {nomePEsp}
+                          </label>
+                        </div>
+                        <button
+                          onClick={() => {
+                            selecionarOrigem(origem, escolhasRegra6[origem.Codigo_Origem]);
+                            onClose();
+                          }}
+                          disabled={!escolhasRegra6[origem.Codigo_Origem]}
+                          className={`rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${!escolhasRegra6[origem.Codigo_Origem] ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
+                        >
+                          Confirmar Origem
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </Collapse>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </div>
+  );
+};
