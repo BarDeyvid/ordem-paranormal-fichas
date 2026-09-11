@@ -439,7 +439,7 @@ export function InventarioPanel() {
   }, []);
 
   const patentesDisponiveis: Patente[] = ['Recruta', 'Operador', 'Agente Especial', 'Oficial de Operações', 'Agente de Elite'];
-  const creditosDisponiveis: LimiteCredito[] = ['Baixo', 'Medio', 'Alto', 'Ilimitado'];
+  const creditosDisponiveis: LimiteCredito[] = ['Baixo', 'Médio', 'Alto', 'Ilimitado'];
 
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
