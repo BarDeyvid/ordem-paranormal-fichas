@@ -54,7 +54,7 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
             }
 
             return (
-              <div key={origem.Codigo_Origem} className="rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden">
+              <div key={origem.Codigo_Origem} className="rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden shrink-0">
                 <div 
                   onClick={() => toggleOrigemExpandida(origem.Codigo_Origem)}
                   className="flex cursor-pointer items-center justify-between bg-zinc-900 p-4 transition hover:bg-zinc-800/50"
