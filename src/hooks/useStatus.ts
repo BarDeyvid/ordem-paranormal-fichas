@@ -80,6 +80,8 @@ export function useStatus(
   const calcMaxSan = Math.max(0, baseStatus.sanMax - paranormalPenalty);
   const peTurno = baseStatus.peTurno;
 
+  const peTurnoDT = regrasAtivas?.has(6) ? peTurno - 1 : peTurno;
+
   const calcMaxPd = Math.max(0, calcularPD(classe, atributos, nivel, regrasAtivas) - paranormalPenalty);
 
   // Efeito de sincronização (mesma lógica do original, mas sem -1)
