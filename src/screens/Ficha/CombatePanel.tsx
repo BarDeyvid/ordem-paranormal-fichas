@@ -54,8 +54,7 @@ function parseDanoString(danoStr: string) {
 
   return matches.map((m, i) => {
     const val = m.replace(/\s/g, ''); // Limpa os espacos
-    // Se o primeiro item não tem sinal, deixa sem sinal, se os outros não tem, a regex pegou errado, mas a regex sempre pega com sinal se existir
-    const valorFinal = (i > 0 && !val.startsWith('+') && !val.startsWith('-')) ? \`+\${val}\` : val;
+    const valorFinal = (i > 0 && !val.startsWith('+') && !val.startsWith('-')) ? `+${val}` : val;
 
     if (valorFinal.toLowerCase().includes('d')) {
       if (i === 0) return { label: 'Dado', valor: valorFinal };
