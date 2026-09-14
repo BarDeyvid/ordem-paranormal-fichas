@@ -86,6 +86,7 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
+  const { atributosFinais } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
@@ -153,6 +154,18 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
 
   let bonusAtaque = 0;
+  
+  // 1. Adiciona bônus de atributo
+  const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
+  if (!isFogoDisparo) {
+    if (atributoDano === 'FOR') {
+      bonusAtaque += (atributosFinais.FOR || 0);
+    } else if (atributoDano === 'AGI' && isAgil) {
+      bonusAtaque += (atributosFinais.AGI || 0);
+    }
+  }
+
+  // 2. Adiciona bônus de modificações
   modsAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Modif?.toLowerCase() || '';
@@ -161,7 +174,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
       bonusAtaque += 2;
     }
   });
-  const bonusAtaqueStr = bonusAtaque > 0 ? bonusAtaque.toString() : '0';
+  
+  const bonusAtaqueStr = bonusAtaque >= 0 ? `+${bonusAtaque}` : `${bonusAtaque}`;
 
   const getCorElementoTexto = (el: string) => {
     const e = el?.toLowerCase() || '';
@@ -243,7 +257,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
           {/* 2. STATS DA ARMA ESPALHADAS (GRID) */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-2 mt-1 border-t border-zinc-800/50">
-            <span className="text-zinc-300"><span className="font-bold text-green-400">Ataque Bônus:</span> +{bonusAtaqueStr}</span>
+            <span className="text-zinc-300"><span className="font-bold text-green-400">Ataque Bônus:</span> {bonusAtaqueStr}</span>
             <span className="text-zinc-300"><span className="font-bold text-green-400">Perícia:</span> {pericia}</span>
             {arma.Alcance_Item && arma.Alcance_Item.trim() !== '-' && (
               <span className="text-zinc-300"><span className="font-bold text-green-400">Alcance:</span> {arma.Alcance_Item}</span>
