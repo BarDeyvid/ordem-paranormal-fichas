@@ -17,7 +17,10 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') {
     return { normal: 0, critico: 0 };
   }
-  const normalized = danoStr.toLowerCase().replace(/\s/g, '').replace(/-/g, '+-');
+  
+  // Remove colchetes de tipos (ex: 1d8[Sangue]) para o cálculo
+  const strClean = danoStr.replace(/\[.*?\]/g, '');
+  const normalized = strClean.toLowerCase().replace(/\s/g, '').replace(/-/g, '+-');
   const parts = normalized.split('+');
   let avgNormal = 0;
   let sumMaxMult = 0;
@@ -45,22 +48,32 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
   return { normal, critico };
 }
 
-function parseDanoString(danoStr: string) {
+function parseDanoString(danoStr: string, tipoDanoBase: string) {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') return [];
-  // Separa por + ou - mantendo o sinal
-  const regex = /([+-]?\s*\d+d\d+)|([+-]?\s*\d+)/gi;
+  
+  // Separa por + ou - mantendo o sinal. Ex: 1d8+1d6[Sangue]+2
+  const regex = /([+-]?\s*\d+d\d+(?:\[.*?\])?)|([+-]?\s*\d+(?:\[.*?\])?)/gi;
   const matches = danoStr.match(regex);
-  if (!matches) return [{ label: 'Dado', valor: danoStr }];
+  if (!matches) return [{ label: 'Dado', valor: danoStr, tipo: tipoDanoBase }];
 
   return matches.map((m, i) => {
-    const val = m.replace(/\s/g, ''); // Limpa os espacos
+    let val = m.replace(/\s/g, ''); // Limpa os espacos
+    let tipo = tipoDanoBase;
+    
+    // Extrai tipo se houver [Tipo]
+    const typeMatch = val.match(/\[(.*?)\]/);
+    if (typeMatch) {
+      tipo = typeMatch[1];
+      val = val.replace(/\[.*?\]/, '');
+    }
+
     const valorFinal = (i > 0 && !val.startsWith('+') && !val.startsWith('-')) ? `+${val}` : val;
 
     if (valorFinal.toLowerCase().includes('d')) {
-      if (i === 0) return { label: 'Dado', valor: valorFinal };
-      return { label: 'Dado Bônus', valor: valorFinal };
+      if (i === 0) return { label: 'Dado', valor: valorFinal, tipo };
+      return { label: 'Dado Bônus', valor: valorFinal, tipo };
     } else {
-      return { label: 'Dano Bônus', valor: valorFinal };
+      return { label: 'Dano Bônus', valor: valorFinal, tipo };
     }
   });
 }
@@ -87,10 +100,40 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
   const [atributoDano, setAtributoDano] = React.useState(defaultAtributo);
 
+  let extrasStr = '';
+  
+  maldicoesAtivas.forEach(m => {
+    if (!m) return;
+    const desc = m.Descricao_Mald || '';
+    const match = desc.match(/\+?\s*(\d+d\d+)/i);
+    if (match) {
+      let elemento = m.Elemento_Mald || 'Paranormal';
+      if (elemento.toLowerCase() === 'varia' || elemento.toLowerCase() === 'variável') {
+         elemento = armaInv.maldicoes_elementos?.[m.Codigo_Mald] || elemento;
+      }
+      extrasStr += `+${match[1]}[${elemento}]`;
+    }
+  });
+
+  modsAtivas.forEach(m => {
+    if (!m) return;
+    const desc = m.Descricao_Modif || '';
+    if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || m.Nome_Modificacao?.toLowerCase() === 'cruel') {
+       extrasStr += `+2`;
+    }
+    const match = desc.match(/\+?\s*(\d+d\d+)/i);
+    if (match) {
+      extrasStr += `+${match[1]}`;
+    }
+  });
+
   const multCrit = arma.Multiplicador_Arma || 2;
-  const danoStr = arma.Dano_Arma || '';
-  const parsedDano = parseDanoString(danoStr);
-  const danoMedioPrincipal = calcularDanoMedio(danoStr, multCrit);
+  const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
+  const danoStrOrig = arma.Dano_Arma || '';
+  const danoStrFull = danoStrOrig ? danoStrOrig + extrasStr : extrasStr;
+  
+  const parsedDano = parseDanoString(danoStrFull, tipoBase);
+  const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = arma.Dano_Secundario ? calcularDanoMedio(arma.Dano_Secundario, multCrit) : null;
 
   const bonusAtaqueStr = modsAtivas.find((m: any) => m?.Descricao_Modif?.toLowerCase().includes('+2 em testes de ataque')) ? '2' : '0';
@@ -105,7 +148,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         <div className="flex flex-col gap-1">
           <span className="font-bold text-sm text-zinc-200">{arma.Nome_Item}</span>
           <span className="text-xs text-zinc-400">
-            <span className="font-bold text-green-400">Dano:</span> {danoStr || '-'} 
+            <span className="font-bold text-green-400">Dano:</span> {danoStrFull.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
             <span className="font-bold text-green-400">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
           </span>
