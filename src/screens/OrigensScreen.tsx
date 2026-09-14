@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRPG } from '../context/RPGContext';
 import { Collapse } from '../components/Collapse';
+import { CustomSelect } from '../components/CustomSelect';
 
 export const OrigensScreen: React.FC = () => {
   const { setTelaAtual, origensHook } = useRPG();
@@ -16,6 +17,7 @@ export const OrigensScreen: React.FC = () => {
   } = origensHook;
 
   const [escolhasRegra6, setEscolhasRegra6] = React.useState<Record<number, 'p2' | 'pesp'>>({});
+  const [escolhasElemento, setEscolhasElemento] = React.useState<Record<number, string>>({});
   const [busca, setBusca] = React.useState('');
   const [grupoAtivo, setGrupoAtivo] = React.useState<number | 'todos'>('todos');
 
@@ -111,19 +113,19 @@ export const OrigensScreen: React.FC = () => {
                   <span className="text-lg font-bold text-zinc-100">{origem.Nome}</span>
                 </button>
                 
-                {origem.Codigo_Per_Regra === 6 && estaExpandida ? (
+                {(origem.Codigo_Per_Regra === 6 || origem.Codigo_Regra === 18) && estaExpandida ? (
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-zinc-400">Escolha uma perícia abaixo primeiro</span>
+                    <span className="text-xs text-zinc-400">Preencha as opções abaixo primeiro</span>
                   </div>
                 ) : (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      selecionarOrigem(origem, escolhasRegra6[origem.Codigo_Origem] || 'p2');
+                      selecionarOrigem(origem, escolhasRegra6[origem.Codigo_Origem] || 'p2', escolhasElemento[origem.Codigo_Origem]);
                       setTelaAtual('classe');
                     }}
-                    disabled={origem.Codigo_Per_Regra === 6 && !escolhasRegra6[origem.Codigo_Origem]}
-                    className={`rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${origem.Codigo_Per_Regra === 6 && !escolhasRegra6[origem.Codigo_Origem] ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
+                    disabled={(origem.Codigo_Per_Regra === 6 && !escolhasRegra6[origem.Codigo_Origem]) || (origem.Codigo_Regra === 18 && !escolhasElemento[origem.Codigo_Origem])}
+                    className={`rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${((origem.Codigo_Per_Regra === 6 && !escolhasRegra6[origem.Codigo_Origem]) || (origem.Codigo_Regra === 18 && !escolhasElemento[origem.Codigo_Origem])) ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
                   >
                     Escolher
                   </button>
@@ -196,6 +198,35 @@ export const OrigensScreen: React.FC = () => {
                     {origem.Descricao_Poder}
                   </p>
                 </div>
+              
+                  {origem.Codigo_Regra === 18 && (
+                    <div className="mt-4 flex flex-col gap-2 rounded-md border border-zinc-700 bg-zinc-800 p-4">
+                      <strong className="text-zinc-200 block">Escolha o Elemento da Afinidade</strong>
+                      <CustomSelect
+                        value={escolhasElemento[origem.Codigo_Origem] || ''}
+                        onChange={(val) => setEscolhasElemento(prev => ({ ...prev, [origem.Codigo_Origem]: val }))}
+                        options={[
+                          { value: '', label: 'Selecione...' },
+                          { value: 'Sangue', label: 'Sangue' },
+                          { value: 'Morte', label: 'Morte' },
+                          { value: 'Conhecimento', label: 'Conhecimento' },
+                          { value: 'Energia', label: 'Energia' }
+                        ]}
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          selecionarOrigem(origem, escolhasRegra6[origem.Codigo_Origem] || 'p2', escolhasElemento[origem.Codigo_Origem]);
+                          setTelaAtual('classe');
+                        }}
+                        disabled={!escolhasElemento[origem.Codigo_Origem]}
+                        className={`mt-2 self-start rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${!escolhasElemento[origem.Codigo_Origem] ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
+                      >
+                        Confirmar Origem
+                      </button>
+                    </div>
+                  )}
+
               </Collapse>
             </div>
           );
