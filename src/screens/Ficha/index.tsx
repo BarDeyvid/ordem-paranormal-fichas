@@ -273,7 +273,7 @@ function ProtecoesPanel() {
     imunidades, setImunidades,
     vulnerabilidades, setVulnerabilidades,
     regrasAutomaticasAtivas, atributosFinais, poderesHook, rituaisHook, periciasHook, status,
-    protecoesHook, modificacoesHook, bonusVestimentas, bonusMaldicoes, origemHook
+    protecoesHook, modificacoesHook, bonusVestimentas, bonusMaldicoes, origensHook
   } = useRPG();
   const [mostrarOutros, setMostrarOutros] = React.useState(false);
 
@@ -336,7 +336,7 @@ function ProtecoesPanel() {
 
   // REGRA 18 e 19: Resistência 10 (ou 20) ao elemento escolhido
   const poderesRegra18 = Object.values(poderesHook.poderesEscolhidos || {}).filter(p => p.codigoRegra === 18);
-  const elementoRegra18 = poderesRegra18[0]?.elemento || origemHook.origemSelecionada?.elemento_escolhido;
+  const elementoRegra18 = poderesRegra18[0]?.elemento || origensHook.origemSelecionada?.elemento_escolhido;
 
   if (regrasAutomaticasAtivas.has(18) && elementoRegra18) {
     const temAfinidade = regrasAutomaticasAtivas.has(19) || poderesRegra18.length >= 2;
