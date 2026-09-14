@@ -55,7 +55,10 @@ function parseDanoString(danoStr: string, tipoDanoBase: string) {
   const matches = danoStr.match(regex);
   if (!matches) return [{ label: 'Dado', valor: danoStr, tipo: tipoDanoBase }];
 
-  return matches.map((m, i) => {
+  const parsed: { label: string, valor: string, tipo: string }[] = [];
+  const flatBonuses: Record<string, number> = {};
+
+  matches.forEach((m, i) => {
     let val = m.replace(/\s/g, ''); // Limpa os espacos
     let tipo = tipoDanoBase;
     
@@ -69,12 +72,24 @@ function parseDanoString(danoStr: string, tipoDanoBase: string) {
     const valorFinal = (i > 0 && !val.startsWith('+') && !val.startsWith('-')) ? `+${val}` : val;
 
     if (valorFinal.toLowerCase().includes('d')) {
-      if (i === 0) return { label: 'Dado', valor: valorFinal, tipo };
-      return { label: 'Dado Bônus', valor: valorFinal, tipo };
+      if (i === 0) parsed.push({ label: 'Dado', valor: valorFinal, tipo });
+      else parsed.push({ label: 'Dado Bônus', valor: valorFinal, tipo });
     } else {
-      return { label: 'Dano Bônus', valor: valorFinal, tipo };
+      const num = parseInt(valorFinal, 10);
+      if (!isNaN(num)) {
+        flatBonuses[tipo] = (flatBonuses[tipo] || 0) + num;
+      }
     }
   });
+
+  Object.entries(flatBonuses).forEach(([tipo, total]) => {
+    if (total !== 0) {
+      const sign = total > 0 ? '+' : '';
+      parsed.push({ label: 'Dano Bônus', valor: `${sign}${total}`, tipo });
+    }
+  });
+
+  return parsed;
 }
 
 interface ArmaCombateCardProps {
@@ -165,7 +180,14 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
-  const danoHeader = danoStrFull;
+  const danoHeader = parsedDano
+    .filter(p => p.label !== 'Dano Secundário')
+    .map((p, i) => {
+      let v = p.valor;
+      if (i > 0 && !v.startsWith('+') && !v.startsWith('-')) v = '+' + v;
+      return v;
+    })
+    .join('');
 
   const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
