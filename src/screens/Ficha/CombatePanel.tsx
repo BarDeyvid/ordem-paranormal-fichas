@@ -2,19 +2,26 @@ import React from 'react';
 import { useRPG } from '../../context/RPGContext';
 import type { ArmaInventario } from '../../types';
 import { Collapse } from '../../components/Collapse';
+import { CustomSelect } from '../../components/CustomSelect';
+
+const ATRIBUTO_OPTIONS = [
+  { label: 'Força', value: 'FOR' },
+  { label: 'Agilidade', value: 'AGI' },
+  { label: 'Intelecto', value: 'INT' },
+  { label: 'Presença', value: 'PRE' },
+  { label: 'Vigor', value: 'VIG' },
+  { label: 'Nenhum', value: 'NENHUM' }
+];
 
 function calcularDanoMedio(danoStr: string, multCritico: number): { normal: number, critico: number } {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') {
     return { normal: 0, critico: 0 };
   }
-
   const normalized = danoStr.toLowerCase().replace(/\s/g, '').replace(/-/g, '+-');
   const parts = normalized.split('+');
-
   let avgNormal = 0;
   let sumMaxMult = 0;
   let flatBonus = 0;
-
   for (const part of parts) {
     if (!part) continue;
     const match = part.match(/^(-?)(\d+)d(\d+)$/);
@@ -22,11 +29,8 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
       const sign = match[1] === '-' ? -1 : 1;
       const count = parseInt(match[2], 10);
       const faces = parseInt(match[3], 10);
-
-      // Média baixa: 1d4=2, 1d6=3, 1d8=4, 1d10=5, 1d12=6
       const lowAvg = Math.floor(faces / 2);
       avgNormal += sign * (count * lowAvg);
-      
       sumMaxMult += sign * (count * faces);
     } else {
       const val = parseInt(part, 10);
@@ -35,14 +39,32 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
       }
     }
   }
-
   const normal = Math.max(0, avgNormal + flatBonus);
   const factor = multCritico >= 2 ? multCritico / 2 : 1;
   const critico = Math.max(0, Math.floor(factor * sumMaxMult) + flatBonus);
-
   return { normal, critico };
 }
 
+function parseDanoString(danoStr: string) {
+  if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') return [];
+  // Separa por + ou - mantendo o sinal
+  const regex = /([+-]?\s*\d+d\d+)|([+-]?\s*\d+)/gi;
+  const matches = danoStr.match(regex);
+  if (!matches) return [{ label: 'Dado', valor: danoStr }];
+
+  return matches.map((m, i) => {
+    const val = m.replace(/\s/g, ''); // Limpa os espacos
+    // Se o primeiro item não tem sinal, deixa sem sinal, se os outros não tem, a regex pegou errado, mas a regex sempre pega com sinal se existir
+    const valorFinal = (i > 0 && !val.startsWith('+') && !val.startsWith('-')) ? \`+\${val}\` : val;
+
+    if (valorFinal.toLowerCase().includes('d')) {
+      if (i === 0) return { label: 'Dado', valor: valorFinal };
+      return { label: 'Dado Bônus', valor: valorFinal };
+    } else {
+      return { label: 'Dano Bônus', valor: valorFinal };
+    }
+  });
+}
 
 interface ArmaCombateCardProps {
   armaInv: ArmaInventario;
@@ -53,40 +75,112 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
-  const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
   const modsAtivas = (modificacoes || []).map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
   const maldicoesAtivas = (maldicoes || []).map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
 
-  const bonusAtaqueStr = modsAtivas.find((m: any) => m?.Descricao_Modif?.toLowerCase().includes('+2 em testes de ataque')) 
-    ? '+2' : null;
+  const isPontaria = ['arremesso', 'disparo', 'fogo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
+  const pericia = isPontaria ? 'Pontaria' : 'Luta';
+  const isAgil = arma['Agil?'] || isPontaria;
+  const defaultAtributo = isAgil ? 'AGI' : 'FOR';
+
+  const [atributoDano, setAtributoDano] = React.useState(defaultAtributo);
 
   const multCrit = arma.Multiplicador_Arma || 2;
-  const danoMedioPrincipal = calcularDanoMedio(arma.Dano_Arma, multCrit);
+  const danoStr = arma.Dano_Arma || '';
+  const parsedDano = parseDanoString(danoStr);
+  const danoMedioPrincipal = calcularDanoMedio(danoStr, multCrit);
   const danoMedioSecundario = arma.Dano_Secundario ? calcularDanoMedio(arma.Dano_Secundario, multCrit) : null;
 
+  const bonusAtaqueStr = modsAtivas.find((m: any) => m?.Descricao_Modif?.toLowerCase().includes('+2 em testes de ataque')) ? '2' : '0';
+
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col transition-all">
+    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-zinc-700 transition-all flex flex-col">
       <div 
         className="flex items-start justify-between gap-3 cursor-pointer select-none"
         onClick={toggleExpandir}
       >
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-bold text-sm text-zinc-200 group-hover:text-green-400 transition">{arma.Nome_Item}</span>
-          {bonusAtaqueStr && (
-            <span className="shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.6rem] font-bold uppercase tracking-wider bg-green-950/60 text-green-400 border border-green-800/50">
-              Ataque {bonusAtaqueStr}
-            </span>
-          )}
+        <div className="flex flex-col gap-0.5">
+          <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
+          <span className="text-[0.7rem] text-zinc-300">
+            <span className="text-purple-400 font-bold">Dano:</span> {danoStr || '-'} &nbsp;&nbsp;&nbsp;
+            <span className="text-purple-400 font-bold">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
+          </span>
         </div>
-        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
+        <div className="flex items-center gap-2">
+          {/* O user enviou uma imagem com icone de dado, usando um svg simples como placeholder */}
+          <svg className="w-5 h-5 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          <span className={\`text-xs text-zinc-600 transition-transform mt-0.5 \${estaExpandida ? 'rotate-180' : ''}\`}>▼</span>
+        </div>
       </div>
 
       <Collapse isOpen={estaExpandida}>
         <div className="mt-3 pt-3 border-t border-zinc-800/50 flex flex-col gap-1.5">
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-purple-400 font-bold">Ataque Bônus:</span>
+            <span className="text-zinc-200">{bonusAtaqueStr}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-purple-400 font-bold">Tipo de Dano:</span>
+            <span className="text-zinc-200">{arma.Tipo_Dano_Arma || 'Físico'}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-purple-400 font-bold">Alcance:</span>
+            <span className="text-zinc-200">{arma.Alcance_Item || 'Curto'}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-purple-400 font-bold">Perícia:</span>
+            <span className="text-zinc-200">{pericia}</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs mt-0.5">
+            <span className="text-purple-400 font-bold">Atributo Dano:</span>
+            <div className="w-32">
+              <CustomSelect
+                value={atributoDano}
+                onChange={setAtributoDano}
+                options={ATRIBUTO_OPTIONS}
+                className="!py-0.5 !min-h-0 text-xs"
+              />
+            </div>
+          </div>
+
+          {parsedDano.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-zinc-800/50 flex flex-col gap-1.5">
+              {parsedDano.map((pd, index) => (
+                <div key={index} className="flex items-center gap-1.5 text-xs">
+                  <span className="text-purple-400 font-bold">{pd.label}:</span>
+                  <span className="text-zinc-200">{pd.valor} <span className="text-zinc-500 italic">({arma.Tipo_Dano_Arma || 'Físico'})</span></span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {arma.Dano_Secundario && arma.Dano_Secundario.trim() !== '-' && (
+            <div className="flex items-center gap-1.5 text-xs mt-1">
+              <span className="text-purple-400 font-bold">Dano Secundário:</span>
+              <span className="text-zinc-200">{arma.Dano_Secundario}</span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-1.5 text-xs mt-1">
+            <span className="text-purple-400 font-bold">Média Dano (Normal):</span>
+            <span className="text-zinc-200">{danoMedioPrincipal.normal}</span>
+          </div>
+          
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-purple-400 font-bold">Média Dano (Crítico):</span>
+            <span className="text-zinc-200">{danoMedioPrincipal.critico}</span>
+          </div>
+
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
-            <div className="flex flex-wrap gap-1 mb-1.5">
+            <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-zinc-800/50">
               {modsAtivas.map((m: any) => (
                 <span key={m!.Codigo_Modif} className="rounded border border-zinc-700 bg-zinc-800/50 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-zinc-300">
                   {m!.Nome_Modificacao}
@@ -99,58 +193,6 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               ))}
             </div>
           )}
-          
-          <p className="text-xs text-zinc-300">
-            <span className="text-zinc-500 font-bold uppercase text-[0.6rem] tracking-wider mr-1">Tipo:</span> 
-            {arma.Tipo_Dano_Arma || 'Físico'}
-          </p>
-          <p className="text-xs text-zinc-300">
-            <span className="text-zinc-500 font-bold uppercase text-[0.6rem] tracking-wider mr-1">Dano Base:</span> 
-            {arma.Dano_Arma}
-          </p>
-          {arma.Dano_Secundario && arma.Dano_Secundario.trim() !== '-' && (
-            <p className="text-xs text-zinc-300">
-              <span className="text-zinc-500 font-bold uppercase text-[0.6rem] tracking-wider mr-1">Dano Sec.:</span> 
-              {arma.Dano_Secundario}
-            </p>
-          )}
-          <p className="text-xs text-zinc-300">
-            <span className="text-zinc-500 font-bold uppercase text-[0.6rem] tracking-wider mr-1">Crítico:</span> 
-            {arma.Critico_Arma || 20} / x{multCrit}
-          </p>
-
-          <button
-            onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
-            className="mt-2 text-[0.65rem] text-zinc-500 hover:text-zinc-300 underline text-left w-fit"
-          >
-            {mostrarDanoMedio ? 'Ocultar Média de Dano' : 'Mostrar Média de Dano'}
-          </button>
-
-          <Collapse isOpen={mostrarDanoMedio}>
-            <div className="mt-2 pl-3 border-l-2 border-zinc-800 flex flex-col gap-1.5">
-              <p className="text-[0.65rem] text-zinc-400">
-                <span className="font-bold mr-1">Média Normal (x1 / x2 / x3):</span> 
-                {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}
-              </p>
-              <p className="text-[0.65rem] text-zinc-400">
-                <span className="font-bold mr-1">Média Crítica:</span> 
-                {danoMedioPrincipal.critico}
-              </p>
-              
-              {danoMedioSecundario && (
-                <div className="mt-1 pt-1 border-t border-zinc-800/50 flex flex-col gap-1.5">
-                  <p className="text-[0.65rem] text-zinc-400">
-                    <span className="font-bold mr-1">Secundária (x1 / x2 / x3):</span> 
-                    {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}
-                  </p>
-                  <p className="text-[0.65rem] text-zinc-400">
-                    <span className="font-bold mr-1">Crítica Secundária:</span> 
-                    {danoMedioSecundario.critico}
-                  </p>
-                </div>
-              )}
-            </div>
-          </Collapse>
         </div>
       </Collapse>
     </div>
@@ -181,12 +223,11 @@ export const CombatePanel: React.FC = () => {
     );
   }
 
-  
   const renderWeaponList = (lista: ArmaInventario[], titulo: string) => {
     if (lista.length === 0) return null;
     return (
-      <div className="flex flex-col gap-4">
-        <h3 className="font-bold text-zinc-400 uppercase tracking-wider text-sm border-b border-zinc-800 pb-1 mt-2">{titulo}</h3>
+      <div className="flex flex-col gap-2">
+        <h3 className="font-bold text-zinc-400 uppercase tracking-wider text-sm border-b border-zinc-800 pb-1 mt-2 mb-1">{titulo}</h3>
         {lista.map((armaInv: ArmaInventario) => (
           <ArmaCombateCard 
             key={armaInv.id} 
