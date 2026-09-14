@@ -28,6 +28,7 @@ import { ModalPoderOutraOrigem } from '../../components/ModalPoderOutraOrigem';
 import { ModalHabilidadeTrilhaExtra } from '../../components/ModalHabilidadeTrilhaExtra';
 import { ProgressaoNEXPanel } from './ProgressaoNEXPanel';
 import { InventarioPanel } from './InventarioPanel';
+import { CombatePanel } from './CombatePanel';
 // ═══════════════════════════════════════════════════════════════
 // CORES DOS ELEMENTOS
 // ═══════════════════════════════════════════════════════════════
@@ -790,7 +791,7 @@ export const AbasPanel: React.FC = () => {
       </div>
 
       <div className="mt-2 flex flex-1 flex-col min-h-0">
-        {abaDireita === 'combate' && <div className="mt-5 text-center italic text-zinc-600">Conteúdo de Combate</div>}
+        {abaDireita === 'combate' && <CombatePanel />}
 
         {abaDireita === 'habilidades' && (
           <div className="flex flex-1 flex-col min-h-0">
