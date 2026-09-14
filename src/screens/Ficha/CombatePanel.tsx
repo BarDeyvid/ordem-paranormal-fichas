@@ -145,7 +145,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const parsedDano = parseDanoString(danoStrFull, tipoBase);
   
   if (extraDadoSec) {
-    parsedDano.splice(1, 0, { label: 'Dado Sec.', valor: extraDadoSec, tipo: tipoBase });
+    parsedDano.splice(1, 0, { label: 'Dano Secundário', valor: extraDadoSec, tipo: tipoBase });
   }
 
   let danoSecStr = arma.Dano_Secundario || '';
@@ -153,8 +153,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (extraDadoSec) {
       danoSecStr = extraDadoSec;
     }
+  } else if (!extraDadoSec) {
+    parsedDano.splice(1, 0, { label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
+  const danoHeader = (arma.Dano_Arma || '') + extrasStr;
 
   const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
@@ -180,7 +183,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         <div className="flex flex-col gap-1">
           <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
           <span className="text-xs text-zinc-400">
-            <span className="font-bold text-green-400">Dano:</span> {danoStrFull.replace(/\[.*?\]/g, '') || '-'} 
+            <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
             <span className="font-bold text-green-400">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
           </span>
@@ -218,9 +221,6 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 hideIcon={true}
               />
             </div>
-            {danoSecFull && (
-              <span className="text-zinc-300 col-span-2"><span className="font-bold text-green-400">Dano Secundário:</span> {danoSecFull.replace(/\[.*?\]/g, '')}</span>
-            )}
           </div>
 
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
