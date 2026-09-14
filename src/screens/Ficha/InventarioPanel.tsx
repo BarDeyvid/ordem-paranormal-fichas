@@ -287,7 +287,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className={`text-[9px] px-1 py-0 rounded border border-zinc-700 uppercase tracking-widest ${corTexto}`}>{m.Elemento_Mald}</span>
+                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1511,7 +1511,7 @@ function SortableArmaItem({
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className={`text-[9px] px-1 py-0 rounded border border-zinc-700 uppercase tracking-widest ${corTexto}`}>{m.Elemento_Mald}</span>
+                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1700,7 +1700,7 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className={`text-[9px] px-1 py-0 rounded border border-zinc-700 uppercase tracking-widest ${corTexto}`}>{m.Elemento_Mald}</span>
+                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1896,7 +1896,7 @@ function SortableProtecaoItem({
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className={`text-[9px] px-1 py-0 rounded border border-zinc-700 uppercase tracking-widest ${corTexto}`}>{m.Elemento_Mald}</span>
+                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
