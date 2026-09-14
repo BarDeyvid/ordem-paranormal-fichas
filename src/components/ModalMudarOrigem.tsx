@@ -3,6 +3,7 @@ import { useRPG } from '../context/RPGContext';
 import { InputOtimizado } from './InputOtimizado';
 import type { Origem } from '../types';
 import { Collapse } from './Collapse';
+import { CustomSelect } from './CustomSelect';
 
 interface ModalMudarOrigemProps {
   onClose: () => void;
@@ -20,6 +21,7 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
 
   const [busca, setBusca] = useState('');
   const [escolhasRegra6, setEscolhasRegra6] = useState<Record<number, 'p2' | 'pesp'>>({});
+  const [escolhasElemento, setEscolhasElemento] = useState<Record<number, string>>({});
 
   const origensFiltradas = origens.filter(o => 
     o.Nome.toLowerCase().includes(busca.toLowerCase()) || 
@@ -64,7 +66,7 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    {origem.Codigo_Per_Regra !== 6 && (
+                    {origem.Codigo_Per_Regra !== 6 && origem.Codigo_Regra !== 18 && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -107,6 +109,36 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
                           <span className="text-sm font-bold text-zinc-100">{origem.Nome_Poder}</span>
                         </div>
                         <div className="text-sm text-zinc-400">{origem.Descricao_Poder}</div>
+                      </div>
+                    )}
+
+
+                    {origem.Codigo_Regra === 18 && (
+                      <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4">
+                        <div className="flex gap-4 items-center">
+                          <label className="text-sm font-bold text-zinc-300">Escolha o Elemento:</label>
+                          <CustomSelect
+                            value={escolhasElemento[origem.Codigo_Origem] || ''}
+                            onChange={(val) => setEscolhasElemento(prev => ({ ...prev, [origem.Codigo_Origem]: val }))}
+                            options={[
+                              { value: '', label: 'Selecione...' },
+                              { value: 'Sangue', label: 'Sangue' },
+                              { value: 'Morte', label: 'Morte' },
+                              { value: 'Conhecimento', label: 'Conhecimento' },
+                              { value: 'Energia', label: 'Energia' }
+                            ]}
+                          />
+                        </div>
+                        <button
+                          onClick={() => {
+                            selecionarOrigem(origem, undefined, escolhasElemento[origem.Codigo_Origem]);
+                            onClose();
+                          }}
+                          disabled={!escolhasElemento[origem.Codigo_Origem]}
+                          className={`rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${!escolhasElemento[origem.Codigo_Origem] ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
+                        >
+                          Confirmar Origem
+                        </button>
                       </div>
                     )}
 

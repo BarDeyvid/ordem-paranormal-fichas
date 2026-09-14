@@ -89,6 +89,7 @@ export interface OrigemSelecionada extends Origem {
   nome_p2: string;
   nome_pesp: string | null;
   escolhaRegra6?: 'p2' | 'pesp' | null;
+  elemento_escolhido?: string | null;
 }
 
 export interface PoderSlot {
