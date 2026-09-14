@@ -45,8 +45,12 @@ export function ModalEditarArma({
   const [tipoDano, setTipoDano] = useState(arma.Tipo_Dano_Arma || 'Corte');
 
   const { modificacoesHook, maldicoesHook } = useRPG();
-  const [modificacoes, setModificacoes] = useState<number[]>(armaInventario.modificacoes || []);
-  const [maldicoes, setMaldicoes] = useState<number[]>(armaInventario.maldicoes || []);
+
+  const initialMods = Array.isArray(armaInventario.modificacoes) ? armaInventario.modificacoes : [];
+  const initialMalds = Array.isArray(armaInventario.maldicoes) ? armaInventario.maldicoes : [];
+  
+  const [modificacoes, setModificacoes] = useState<number[]>(initialMods);
+  const [maldicoes, setMaldicoes] = useState<number[]>(initialMalds);
   const [maldicoesElementos, setMaldicoesElementos] = useState<Record<number, string>>(armaInventario.maldicoes_elementos || {});
   
 

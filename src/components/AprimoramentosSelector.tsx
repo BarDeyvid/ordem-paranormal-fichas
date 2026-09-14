@@ -56,21 +56,23 @@ export function AprimoramentosSelector({
   // Estado local para o seletor de elemento da maldição
   const [subAbaElemento, setSubAbaElemento] = useState<string>('Todos');
   const [elementosVaria, setElementosVaria] = useState<Record<number, string>>({});
+  const modsSafe = Array.isArray(modificacoesAplicadas) ? modificacoesAplicadas : [];
+  const maldsSafe = Array.isArray(maldicoesAplicadas) ? maldicoesAplicadas : [];
 
   // Arrays de aplicadas completas
-  const modsAplicadasFull = (modificacoesAplicadas || [])
+  const modsAplicadasFull = modsSafe
     .map(id => todasModificacoes.find(m => m.Codigo_Modif === id))
     .filter(Boolean) as Modificacao[];
 
-  const maldsAplicadasFull = (maldicoesAplicadas || [])
+  const maldsAplicadasFull = maldsSafe
     .map(id => todasMaldicoes.find(m => m.Codigo_Mald === id))
     .filter(Boolean) as Maldicao[];
 
   const temAprimoramentos = modsAplicadasFull.length > 0 || maldsAplicadasFull.length > 0;
 
   // Filtros
-  const modsDisponiveis = opcoesModificacoes.filter(op => !(modificacoesAplicadas || []).includes(op.Codigo_Modif));
-  let maldsDisponiveis = opcoesMaldicoes.filter(op => !(maldicoesAplicadas || []).includes(op.Codigo_Mald));
+  const modsDisponiveis = opcoesModificacoes.filter(op => !modsSafe.includes(op.Codigo_Modif));
+  let maldsDisponiveis = opcoesMaldicoes.filter(op => !maldsSafe.includes(op.Codigo_Mald));
   
   if (subAbaElemento !== 'Todos') {
     maldsDisponiveis = maldsDisponiveis.filter(m => {
