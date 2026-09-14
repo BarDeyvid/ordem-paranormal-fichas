@@ -3,7 +3,6 @@ import { useRPG } from '../context/RPGContext';
 import { InputOtimizado } from './InputOtimizado';
 import type { Origem } from '../types';
 import { Collapse } from './Collapse';
-import { CustomSelect } from './CustomSelect';
 
 interface ModalMudarOrigemProps {
   onClose: () => void;
@@ -21,7 +20,7 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
 
   const [busca, setBusca] = useState('');
   const [escolhasRegra6, setEscolhasRegra6] = useState<Record<number, 'p2' | 'pesp'>>({});
-  const [escolhasElemento, setEscolhasElemento] = useState<Record<number, string>>({});
+  const [escolhendoElementoPara, setEscolhendoElementoPara] = React.useState<number | null>(null);
 
   const origensFiltradas = origens.filter(o => 
     o.Nome.toLowerCase().includes(busca.toLowerCase()) || 
@@ -66,17 +65,54 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    {origem.Codigo_Per_Regra !== 6 && origem.Codigo_Regra !== 18 && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          selecionarOrigem(origem);
-                          onClose();
-                        }}
-                        className="rounded-md bg-green-700 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
-                      >
-                        Selecionar
-                      </button>
+                    {origem.Codigo_Per_Regra !== 6 && (
+                      escolhendoElementoPara === origem.Codigo_Origem ? (
+                        <div className="flex flex-wrap gap-1 items-center bg-zinc-950 p-1.5 rounded border border-zinc-800">
+                          <span className="text-[0.55rem] text-zinc-500 uppercase font-bold px-1 hidden sm:inline">Elemento:</span>
+                          {['Sangue', 'Morte', 'Conhecimento', 'Energia'].map(elem => {
+                            return (
+                              <button
+                                key={elem}
+                                onClick={(e) => { 
+                                  e.stopPropagation(); 
+                                  setEscolhendoElementoPara(null); 
+                                  selecionarOrigem(origem, undefined, elem);
+                                  onClose();
+                                }}
+                                className={`rounded px-1.5 py-0.5 text-[0.55rem] font-bold uppercase transition border border-zinc-700 hover:scale-105 ${
+                                  elem === 'Sangue' ? 'text-red-500 bg-transparent' :
+                                  elem === 'Morte' ? 'bg-black/50 text-white px-2' :
+                                  elem === 'Conhecimento' ? 'text-yellow-500 bg-transparent' :
+                                  'text-purple-500 bg-transparent'
+                                }`}
+                              >
+                                {elem}
+                              </button>
+                            );
+                          })}
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setEscolhendoElementoPara(null); }}
+                            className="rounded px-2 py-0.5 text-[0.55rem] font-bold uppercase transition border border-zinc-700 bg-zinc-800 text-zinc-400 hover:text-zinc-200"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (origem.Codigo_Regra === 18) {
+                              setEscolhendoElementoPara(origem.Codigo_Origem);
+                              return;
+                            }
+                            selecionarOrigem(origem);
+                            onClose();
+                          }}
+                          className="rounded-md bg-green-700 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
+                        >
+                          Selecionar
+                        </button>
+                      )
                     )}
                     <span className="text-xl font-light text-zinc-500">{estaExpandida ? '−' : '+'}</span>
                   </div>
@@ -113,34 +149,7 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
                     )}
 
 
-                    {origem.Codigo_Regra === 18 && (
-                      <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4">
-                        <div className="flex gap-4 items-center">
-                          <label className="text-sm font-bold text-zinc-300">Escolha o Elemento:</label>
-                          <CustomSelect
-                            value={escolhasElemento[origem.Codigo_Origem] || ''}
-                            onChange={(val) => setEscolhasElemento(prev => ({ ...prev, [origem.Codigo_Origem]: val }))}
-                            options={[
-                              { value: '', label: 'Selecione...' },
-                              { value: 'Sangue', label: 'Sangue' },
-                              { value: 'Morte', label: 'Morte' },
-                              { value: 'Conhecimento', label: 'Conhecimento' },
-                              { value: 'Energia', label: 'Energia' }
-                            ]}
-                          />
-                        </div>
-                        <button
-                          onClick={() => {
-                            selecionarOrigem(origem, undefined, escolhasElemento[origem.Codigo_Origem]);
-                            onClose();
-                          }}
-                          disabled={!escolhasElemento[origem.Codigo_Origem]}
-                          className={`rounded-md px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 transition ${!escolhasElemento[origem.Codigo_Origem] ? 'bg-zinc-700 opacity-50 cursor-not-allowed' : 'bg-green-700 hover:bg-green-600'}`}
-                        >
-                          Confirmar Origem
-                        </button>
-                      </div>
-                    )}
+                    
 
                     {origem.Codigo_Per_Regra === 6 && (
                       <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4">
@@ -167,7 +176,12 @@ export const ModalMudarOrigem: React.FC<ModalMudarOrigemProps> = ({ onClose }) =
                           </label>
                         </div>
                         <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (origem.Codigo_Regra === 18) {
+                              setEscolhendoElementoPara(origem.Codigo_Origem);
+                              return;
+                            }
                             selecionarOrigem(origem, escolhasRegra6[origem.Codigo_Origem]);
                             onClose();
                           }}
