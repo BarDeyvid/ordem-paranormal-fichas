@@ -1440,7 +1440,7 @@ export const AbasPanel: React.FC = () => {
                           const isExtra = chave?.startsWith('extra_');
                           const nivelNum = isOrigemSlot ? 0 : (isExtra ? nex : parseInt(chave || '0', 10));
                           const nivelParaLabel = (isRegra61 || isRegra62) ? (slot as any).nex : nivelNum;
-                          const labelNex = isOrigemSlot ? 'Poder da Origem' : (isRegra61 ? `Recompensa Racional (${regras['nex_experiencia'] ? `Nível ${calcularNivel(nivelParaLabel)}` : `NEX ${nivelParaLabel}%`})` : (isRegra62 ? `Recompensa Racional, Afinidade (${regras['nex_experiencia'] ? `Nível ${calcularNivel(nivelParaLabel)}` : `NEX ${nivelParaLabel}%`})` : (regras['nex_experiencia'] ? `Poder Nível ${calcularNivel(nivelParaLabel)}` : `Poder NEX ${nivelParaLabel}%`)));
+                          const labelNex = isOrigemSlot ? 'Origem' : (isRegra61 ? `Recompensa Racional (${regras['nex_experiencia'] ? `Nível ${calcularNivel(nivelParaLabel)}` : `NEX ${nivelParaLabel}%`})` : (isRegra62 ? `Recompensa Racional, Afinidade (${regras['nex_experiencia'] ? `Nível ${calcularNivel(nivelParaLabel)}` : `NEX ${nivelParaLabel}%`})` : (regras['nex_experiencia'] ? `Poder Nível ${calcularNivel(nivelParaLabel)}` : `Poder NEX ${nivelParaLabel}%`)));
                           return (
                             <div
                               key={`vazio_poder_${chave}_${idx}`}
