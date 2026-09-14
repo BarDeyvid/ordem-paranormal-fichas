@@ -120,7 +120,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   modsAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Modif || '';
-    if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || m.Nome_Modificacao?.toLowerCase() === 'cruel') {
+    const nome = m.Nome_Modif?.toLowerCase() || '';
+    if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || nome.includes('cruel')) {
        extrasStr += `+2`;
     }
     const match = desc.match(/\+?\s*(\d+d\d+)/i);
@@ -131,14 +132,43 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
   const multCrit = arma.Multiplicador_Arma || 2;
   const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
-  const danoStrOrig = arma.Dano_Arma || '';
-  const danoStrFull = danoStrOrig ? danoStrOrig + extrasStr : extrasStr;
   
-  const parsedDano = parseDanoString(danoStrFull, tipoBase);
-  const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
-  const danoMedioSecundario = arma.Dano_Secundario ? calcularDanoMedio(arma.Dano_Secundario, multCrit) : null;
+  let danoStrOrig = arma.Dano_Arma || '';
+  let extraDadoSec = '';
+  if (danoStrOrig.includes('/')) {
+    const parts = danoStrOrig.split('/');
+    danoStrOrig = parts[0].trim();
+    extraDadoSec = parts[1].trim();
+  }
 
-  const bonusAtaqueStr = modsAtivas.find((m: any) => m?.Descricao_Modif?.toLowerCase().includes('+2 em testes de ataque')) ? '2' : '0';
+  const danoStrFull = danoStrOrig ? danoStrOrig + extrasStr : extrasStr;
+  const parsedDano = parseDanoString(danoStrFull, tipoBase);
+  
+  if (extraDadoSec) {
+    parsedDano.splice(1, 0, { label: 'Dado Sec.', valor: extraDadoSec, tipo: tipoBase });
+  }
+
+  let danoSecStr = arma.Dano_Secundario || '';
+  if (!danoSecStr || danoSecStr.trim() === '-') {
+    if (extraDadoSec) {
+      danoSecStr = extraDadoSec;
+    }
+  }
+  const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
+
+  const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
+  const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
+
+  let bonusAtaque = 0;
+  modsAtivas.forEach(m => {
+    if (!m) return;
+    const desc = m.Descricao_Modif?.toLowerCase() || '';
+    const nome = m.Nome_Modif?.toLowerCase() || '';
+    if (desc.includes('+2 em testes de ataque') || desc.includes('+2 nas rolagens de ataque') || nome.includes('certeira') || nome.includes('alongad')) {
+      bonusAtaque += 2;
+    }
+  });
+  const bonusAtaqueStr = bonusAtaque > 0 ? bonusAtaque.toString() : '0';
 
   return (
     <div className="bg-zinc-950/60 border border-zinc-800 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col">
@@ -188,8 +218,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 hideIcon={true}
               />
             </div>
-            {arma.Dano_Secundario && arma.Dano_Secundario.trim() !== '-' && (
-              <span className="text-zinc-300 col-span-2"><span className="font-bold text-green-400">Dano Secundário:</span> {arma.Dano_Secundario}</span>
+            {danoSecFull && (
+              <span className="text-zinc-300 col-span-2"><span className="font-bold text-green-400">Dano Secundário:</span> {danoSecFull.replace(/\[.*?\]/g, '')}</span>
             )}
           </div>
 
