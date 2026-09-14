@@ -112,7 +112,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <svg className="w-5 h-5 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
-          <span className={\`text-xs text-zinc-600 transition-transform mt-0.5 \${estaExpandida ? 'rotate-180' : ''}\`}>▼</span>
+          <span className={`text-xs text-zinc-600 transition-transform mt-0.5 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
         </div>
       </div>
 
