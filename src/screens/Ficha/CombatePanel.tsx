@@ -244,8 +244,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           {/* 2. STATS DA ARMA ESPALHADAS (GRID) */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-2 mt-1 border-t border-zinc-800/50">
             <span className="text-zinc-300"><span className="font-bold text-green-400">Ataque Bônus:</span> +{bonusAtaqueStr}</span>
-            <span className="text-zinc-300"><span className="font-bold text-green-400">Alcance:</span> {arma.Alcance_Item || 'Curto'}</span>
             <span className="text-zinc-300"><span className="font-bold text-green-400">Perícia:</span> {pericia}</span>
+            {arma.Alcance_Item && arma.Alcance_Item.trim() !== '-' && (
+              <span className="text-zinc-300"><span className="font-bold text-green-400">Alcance:</span> {arma.Alcance_Item}</span>
+            )}
             <div className="flex items-center gap-1 text-zinc-300">
               <span className="font-bold text-green-400">Atributo:</span>
               <CustomSelect
