@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRPG } from '../../context/RPGContext';
 import type { ArmaInventario } from '../../types';
+import { Collapse } from '../../components/Collapse';
 
 function calcularDanoMedio(danoStr: string, multCritico: number): { normal: number, critico: number } {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') {
@@ -43,6 +44,11 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
 }
 
 export const CombatePanel: React.FC = () => {
+  const [expandidos, setExpandidos] = React.useState<Record<string, boolean>>({});
+
+  const toggleExpandir = (id: string) => {
+    setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
+  };
   const { armasHook, modificacoesHook, maldicoesHook } = useRPG();
   const armas = armasHook?.armasInventario || [];
 
