@@ -47,6 +47,18 @@ import { calcularCategoriaFinal } from '../../utils/rpgRules';
     return 'text-zinc-400';
   };
 
+  const getBadgeElemento = (elemento: string) => {
+    if (!elemento) return 'bg-zinc-900 text-zinc-400';
+    const e = elemento.toLowerCase();
+    if (e.includes('morte')) return 'bg-black/50 text-white';
+    if (e.includes('medo')) return 'bg-zinc-200/80 text-zinc-950';
+    if (e.includes('sangue')) return 'bg-red-950/20 text-red-500';
+    if (e.includes('energia')) return 'bg-purple-950/20 text-purple-500';
+    if (e.includes('conhec')) return 'bg-yellow-950/20 text-yellow-500';
+    if (e.includes('varia') || e.includes('lista')) return 'bg-blue-950/20 text-blue-500';
+    return 'bg-zinc-900 text-zinc-400';
+  };
+
 const restrictToTopAndVerticalAxis: Modifier = ({ transform, activeNodeRect }) => {
   if (!activeNodeRect) {
     return { ...transform, x: 0 };
@@ -287,7 +299,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
+                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1511,7 +1523,7 @@ function SortableArmaItem({
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
+                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1700,7 +1712,7 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
+                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
@@ -1896,7 +1908,7 @@ function SortableProtecaoItem({
                         <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
                           <div className="flex gap-1 items-center">
                             <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className="text-zinc-500 text-[10px]">({m.Elemento_Mald})</span>
+                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
                           </div>
                           {m.Descricao_Mald && (
                             <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
