@@ -1146,7 +1146,7 @@ export function InventarioPanel() {
       {armaEditandoId && (
         <ModalEditarArma
           armaInventario={armasHook?.armasInventario.find(a => a.id === armaEditandoId)!}
-          onSave={(id, dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
+          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
             armasHook?.editarArma(armaEditandoId, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
           }}
           onClose={() => setArmaEditandoId(null)}
