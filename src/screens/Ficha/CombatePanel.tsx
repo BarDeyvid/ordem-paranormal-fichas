@@ -163,6 +163,17 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   });
   const bonusAtaqueStr = bonusAtaque > 0 ? bonusAtaque.toString() : '0';
 
+  const getCorElementoTexto = (el: string) => {
+    const e = el?.toLowerCase() || '';
+    if (e.includes('sangue')) return 'text-red-500';
+    if (e.includes('morte')) return 'text-zinc-400 font-bold';
+    if (e.includes('energia')) return 'text-purple-500';
+    if (e.includes('conhec')) return 'text-yellow-500';
+    if (e.includes('medo')) return 'text-white';
+    if (e.includes('varia') || e.includes('lista')) return 'text-blue-500';
+    return 'text-zinc-400';
+  };
+
   return (
     <div className="bg-zinc-950/60 border border-zinc-800 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col">
       {/* CABEÇALHO */}
@@ -170,11 +181,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         className="flex items-start justify-between cursor-pointer select-none"
         onClick={toggleExpandir}
       >
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1">
-            <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
+        <div className="flex flex-col gap-1 w-full min-w-0 pr-3">
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
             {danoOptions.length > 1 && (
-              <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                 <CustomSelect
                   value={danoSelecionado}
                   onChange={(val) => setDanoIdx(danoOptions.indexOf(val as string))}
@@ -191,8 +202,29 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <span className="mx-2 text-zinc-700">|</span>
             <span className="font-bold text-green-400">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
           </span>
+          {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
+            <div className="flex items-center mt-0.5 min-w-0">
+              <span className="text-[11px] text-zinc-400 truncate italic">
+                {modsAtivas.length > 0 && modsAtivas.map((m: any) => m!.Nome_Modif).join(' • ')}
+                {modsAtivas.length > 0 && maldicoesAtivas.length > 0 && <span> • </span>}
+                {maldicoesAtivas.map((m: any, i: number) => {
+                    let el = m!.Elemento_Mald;
+                    if (el?.toLowerCase().includes('varia') || el?.toLowerCase().includes('lista')) {
+                      el = armaInv.maldicoes_elementos?.[m!.Codigo_Mald] || el;
+                    }
+                    const cor = getCorElementoTexto(el);
+                    return (
+                      <span key={m!.Codigo_Mald}>
+                        {i > 0 && <span> • </span>}
+                        <span className={cor}>{m!.Nome_Mald}</span>
+                      </span>
+                    )
+                })}
+              </span>
+            </div>
+          )}
         </div>
-        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
+        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
       <Collapse isOpen={estaExpandida}>
@@ -227,35 +259,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             </div>
           </div>
 
-          {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
-            <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-zinc-800/50">
-              {modsAtivas.map((m: any) => (
-                <span key={m!.Codigo_Modif} className="rounded border border-zinc-700 bg-zinc-800/50 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-zinc-300">
-                  {m!.Nome_Modif}
-                </span>
-              ))}
-              {maldicoesAtivas.map((m: any) => {
-                let el = m.Elemento_Mald;
-                if (el?.toLowerCase().includes('varia') || el?.toLowerCase().includes('lista')) {
-                  el = armaInv.maldicoes_elementos?.[m.Codigo_Mald] || el;
-                }
-                let cores = 'border-purple-900 bg-purple-950/20 text-purple-500';
-                const elStr = el?.toLowerCase() || '';
-                if (elStr.includes('morte')) cores = 'border-zinc-700 bg-black/50 text-white';
-                else if (elStr.includes('medo')) cores = 'border-zinc-500 bg-zinc-200/80 text-zinc-950';
-                else if (elStr.includes('sangue')) cores = 'border-red-900 bg-red-950/20 text-red-500';
-                else if (elStr.includes('energia')) cores = 'border-purple-900 bg-purple-950/20 text-purple-500';
-                else if (elStr.includes('conhec')) cores = 'border-yellow-900 bg-yellow-950/20 text-yellow-500';
-                else if (elStr.includes('varia') || elStr.includes('lista')) cores = 'border-blue-900 bg-blue-950/20 text-blue-500';
-                
-                return (
-                  <span key={m!.Codigo_Mald} className={`rounded border px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider ${cores}`}>
-                    {m!.Nome_Mald}
-                  </span>
-                );
-              })}
-            </div>
-          )}
+
 
           {/* 4. MÉDIA DE DANO ESCONDIDA */}
           <button
