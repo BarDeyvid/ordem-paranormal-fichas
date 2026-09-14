@@ -383,7 +383,7 @@ export function ModalEditarArma({
                 </div>
                 
                 <div>
-                  <InputLabel label="Dano Secundário" />
+                  <InputLabel label="Dado Bônus" />
                   <InputOtimizado
                     value={danoSecundario}
                     onChange={setDanoSecundario}
