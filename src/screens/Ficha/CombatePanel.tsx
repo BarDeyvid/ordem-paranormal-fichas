@@ -132,6 +132,23 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     }
   });
 
+  // Calcula bônus de atributo para o DANO
+  let bonusDanoAtributo = 0;
+  const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
+  if (!isFogoDisparo) {
+    if (atributoDano === 'FOR') {
+      bonusDanoAtributo = (atributosFinais.FOR || 0);
+    } else if (atributoDano === 'AGI' && isAgil) {
+      bonusDanoAtributo = (atributosFinais.AGI || 0);
+    }
+  }
+
+  if (bonusDanoAtributo > 0) {
+    extrasStr += `+${bonusDanoAtributo}`;
+  } else if (bonusDanoAtributo < 0) {
+    extrasStr += `${bonusDanoAtributo}`;
+  }
+
   const multCrit = arma.Multiplicador_Arma || 2;
   const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   
@@ -154,18 +171,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
 
   let bonusAtaque = 0;
-  
-  // 1. Adiciona bônus de atributo
-  const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
-  if (!isFogoDisparo) {
-    if (atributoDano === 'FOR') {
-      bonusAtaque += (atributosFinais.FOR || 0);
-    } else if (atributoDano === 'AGI' && isAgil) {
-      bonusAtaque += (atributosFinais.AGI || 0);
-    }
-  }
-
-  // 2. Adiciona bônus de modificações
+  // Bônus de ataque vem apenas de modificações (como Certeira, Alongada, etc.)
   modsAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Modif?.toLowerCase() || '';
