@@ -90,8 +90,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
-  const modsAtivas = (modificacoes || []).map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
-  const maldicoesAtivas = (maldicoes || []).map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Mald === id)).filter(Boolean);
+  const modsSafe = Array.isArray(modificacoes) ? modificacoes : [];
+  const maldsSafe = Array.isArray(maldicoes) ? maldicoes : [];
+  
+  const modsAtivas = modsSafe.map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
+  const maldicoesAtivas = maldsSafe.map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Mald === id)).filter(Boolean);
 
   const isPontaria = ['arremesso', 'disparo', 'fogo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
   const pericia = isPontaria ? 'Pontaria' : 'Luta';
@@ -139,14 +142,14 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const bonusAtaqueStr = modsAtivas.find((m: any) => m?.Descricao_Modif?.toLowerCase().includes('+2 em testes de ataque')) ? '2' : '0';
 
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-zinc-700 transition-all flex flex-col">
+    <div className="bg-zinc-950/60 border border-zinc-800 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col">
       {/* CABEÇALHO */}
       <div 
         className="flex items-start justify-between cursor-pointer select-none"
         onClick={toggleExpandir}
       >
         <div className="flex flex-col gap-1">
-          <span className="font-bold text-sm text-zinc-200">{arma.Nome_Item}</span>
+          <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
           <span className="text-xs text-zinc-400">
             <span className="font-bold text-green-400">Dano:</span> {danoStrFull.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
@@ -163,10 +166,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           {parsedDano.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {parsedDano.map((pd, index) => (
-                <div key={index} className="flex-1 min-w-[110px] bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                <div key={index} className="flex-1 min-w-[110px] bg-zinc-950/50 rounded px-3 py-2 flex flex-col border border-zinc-800/30">
                   <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">{pd.label}</span>
                   <span className="text-sm text-zinc-300">
-                    {pd.valor} <span className="text-[0.65rem] text-zinc-500">({arma.Tipo_Dano_Arma || 'Físico'})</span>
+                    {pd.valor} <span className="text-[0.65rem] text-zinc-500">({pd.tipo})</span>
                   </span>
                 </div>
               ))}
@@ -175,26 +178,27 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
           {/* 2. STATS DA ARMA ESPALHADAS (GRID) */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+            <div className="bg-zinc-950/50 border border-zinc-800/30 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Ataque Bônus</span>
-              <span className="text-sm text-zinc-300">{bonusAtaqueStr}</span>
+              <span className="text-sm text-zinc-300">+{bonusAtaqueStr}</span>
             </div>
-            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+            <div className="bg-zinc-950/50 border border-zinc-800/30 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Alcance</span>
               <span className="text-sm text-zinc-300">{arma.Alcance_Item || 'Curto'}</span>
             </div>
-            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+            <div className="bg-zinc-950/50 border border-zinc-800/30 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Perícia</span>
               <span className="text-sm text-zinc-300">{pericia}</span>
             </div>
-            <div className="bg-zinc-950/50 rounded px-3 py-1.5 flex justify-between items-center">
+            <div className="bg-zinc-950/50 border border-zinc-800/30 rounded px-3 py-1.5 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Atributo</span>
-              <div className="w-24">
+              <div className="w-16">
                 <CustomSelect
                   value={atributoDano}
                   onChange={setAtributoDano}
                   options={ATRIBUTO_OPTIONS}
-                  className="!py-0.5 !min-h-0 text-xs"
+                  className="!p-0 !min-h-0 !border-transparent !bg-transparent text-sm text-zinc-300 font-bold hover:!text-white transition-colors"
+                  wrapperClassName="w-full text-right"
                   hideIcon={true}
                 />
               </div>
@@ -213,14 +217,29 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <div className="flex flex-wrap gap-1 mt-1">
               {modsAtivas.map((m: any) => (
                 <span key={m!.Codigo_Modif} className="rounded border border-zinc-700 bg-zinc-800/50 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-zinc-300">
-                  {m!.Nome_Modificacao}
+                  {m!.Nome_Modif}
                 </span>
               ))}
-              {maldicoesAtivas.map((m: any) => (
-                <span key={m!.Codigo_Mald} className="rounded border border-purple-900/50 bg-purple-950/30 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-purple-400">
-                  {m!.Nome_Maldicao}
-                </span>
-              ))}
+              {maldicoesAtivas.map((m: any) => {
+                let el = m.Elemento_Mald;
+                if (el?.toLowerCase().includes('varia') || el?.toLowerCase().includes('lista')) {
+                  el = armaInv.maldicoes_elementos?.[m.Codigo_Mald] || el;
+                }
+                let cores = 'border-purple-900 bg-purple-950/20 text-purple-500';
+                const elStr = el?.toLowerCase() || '';
+                if (elStr.includes('morte')) cores = 'border-zinc-700 bg-black/50 text-white';
+                else if (elStr.includes('medo')) cores = 'border-zinc-500 bg-zinc-200/80 text-zinc-950';
+                else if (elStr.includes('sangue')) cores = 'border-red-900 bg-red-950/20 text-red-500';
+                else if (elStr.includes('energia')) cores = 'border-purple-900 bg-purple-950/20 text-purple-500';
+                else if (elStr.includes('conhec')) cores = 'border-yellow-900 bg-yellow-950/20 text-yellow-500';
+                else if (elStr.includes('varia') || elStr.includes('lista')) cores = 'border-blue-900 bg-blue-950/20 text-blue-500';
+                
+                return (
+                  <span key={m!.Codigo_Mald} className={`rounded border px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider ${cores}`}>
+                    {m!.Nome_Mald}
+                  </span>
+                );
+              })}
             </div>
           )}
 
@@ -292,7 +311,7 @@ export const CombatePanel: React.FC = () => {
     if (lista.length === 0) return null;
     return (
       <div className="flex flex-col gap-2">
-        <h3 className="font-bold text-zinc-400 uppercase tracking-wider text-sm border-b border-zinc-800 pb-1 mt-2 mb-1">{titulo}</h3>
+        <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-1 mt-2 mb-1 border-b border-zinc-800/50 pb-1">{titulo}</h3>
         {lista.map((armaInv: ArmaInventario) => (
           <ArmaCombateCard 
             key={armaInv.id} 
