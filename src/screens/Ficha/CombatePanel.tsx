@@ -23,17 +23,26 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
   const parts = normalized.split('+');
   let avgNormal = 0;
   let sumMaxMult = 0;
+  let extraMax = 0;
   let flatBonus = 0;
+  let firstDie = true;
   for (const part of parts) {
     if (!part) continue;
-    const match = part.match(/^(-?)(\d+)d(\d+)$/);
+    const match = part.match(/^(-?)(\d+)d(\d+)(\*?)$/);
     if (match) {
       const sign = match[1] === '-' ? -1 : 1;
       const count = parseInt(match[2], 10);
       const faces = parseInt(match[3], 10);
+      const hasStar = match[4] === '*';
       const lowAvg = Math.floor(faces / 2);
       avgNormal += sign * (count * lowAvg);
-      sumMaxMult += sign * (count * faces);
+      
+      if (firstDie || hasStar) {
+        sumMaxMult += sign * (count * faces);
+      } else {
+        extraMax += sign * (count * faces);
+      }
+      firstDie = false;
     } else {
       const val = parseInt(part, 10);
       if (!isNaN(val)) {
@@ -43,15 +52,15 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
   }
   const normal = Math.max(0, avgNormal + flatBonus);
   const factor = multCritico >= 2 ? multCritico / 2 : 1;
-  const critico = Math.max(0, Math.floor(factor * sumMaxMult) + flatBonus);
+  const critico = Math.max(0, Math.floor(factor * sumMaxMult) + extraMax + flatBonus);
   return { normal, critico };
 }
 
 function parseDanoString(danoStr: string, tipoDanoBase: string) {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') return [];
   
-  // Separa por + ou - mantendo o sinal. Ex: 1d8+1d6[Sangue]+2
-  const regex = /([+-]?\s*\d+d\d+(?:\[.*?\])?)|([+-]?\s*\d+(?:\[.*?\])?)/gi;
+  // Separa por + ou - mantendo o sinal. Ex: 1d8+1d6*[Sangue]+2
+  const regex = /([+-]?\s*\d+d\d+\*?(?:\[.*?\])?)|([+-]?\s*\d+(?:\[.*?\])?)/gi;
   const matches = danoStr.match(regex);
   if (!matches) return [{ label: 'Dado', valor: danoStr, tipo: tipoDanoBase }];
 
@@ -124,7 +133,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   maldicoesAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Mald || '';
-    const match = desc.match(/\+?\s*(\d+d\d+)/i);
+    const match = desc.match(/\+?\s*(\d+d\d+\*?)/i);
     if (match) {
       let elemento = m.Elemento_Mald || 'Paranormal';
       if (elemento.toLowerCase() === 'varia' || elemento.toLowerCase() === 'variável') {
@@ -141,7 +150,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || nome.includes('cruel')) {
        extrasStr += `+2`;
     }
-    const match = desc.match(/\+?\s*(\d+d\d+)/i);
+    const match = desc.match(/\+?\s*(\d+d\d+\*?)/i);
     if (match) {
       extrasStr += `+${match[1]}`;
     }
