@@ -74,6 +74,7 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
+  const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
   const modsAtivas = (modificacoes || []).map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
@@ -96,90 +97,77 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
   return (
     <div className="bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-zinc-700 transition-all flex flex-col">
+      {/* CABEÇALHO */}
       <div 
-        className="flex items-start justify-between gap-3 cursor-pointer select-none"
+        className="flex items-start justify-between cursor-pointer select-none"
         onClick={toggleExpandir}
       >
-        <div className="flex flex-col gap-0.5">
-          <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
-          <span className="text-[0.7rem] text-zinc-300">
-            <span className="text-purple-400 font-bold">Dano:</span> {danoStr || '-'} &nbsp;&nbsp;&nbsp;
-            <span className="text-purple-400 font-bold">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
+        <div className="flex flex-col gap-1">
+          <span className="font-bold text-sm text-zinc-200">{arma.Nome_Item}</span>
+          <span className="text-xs text-zinc-400">
+            <span className="font-bold text-green-400">Dano:</span> {danoStr || '-'} 
+            <span className="mx-2 text-zinc-700">|</span>
+            <span className="font-bold text-green-400">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          {/* O user enviou uma imagem com icone de dado, usando um svg simples como placeholder */}
-          <svg className="w-5 h-5 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
-          <span className={`text-xs text-zinc-600 transition-transform mt-0.5 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
-        </div>
+        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
       <Collapse isOpen={estaExpandida}>
-        <div className="mt-3 pt-3 border-t border-zinc-800/50 flex flex-col gap-1.5">
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-purple-400 font-bold">Ataque Bônus:</span>
-            <span className="text-zinc-200">{bonusAtaqueStr}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-purple-400 font-bold">Tipo de Dano:</span>
-            <span className="text-zinc-200">{arma.Tipo_Dano_Arma || 'Físico'}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-purple-400 font-bold">Alcance:</span>
-            <span className="text-zinc-200">{arma.Alcance_Item || 'Curto'}</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-purple-400 font-bold">Perícia:</span>
-            <span className="text-zinc-200">{pericia}</span>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs mt-0.5">
-            <span className="text-purple-400 font-bold">Atributo Dano:</span>
-            <div className="w-32">
-              <CustomSelect
-                value={atributoDano}
-                onChange={setAtributoDano}
-                options={ATRIBUTO_OPTIONS}
-                className="!py-0.5 !min-h-0 text-xs"
-              />
-            </div>
-          </div>
-
+        <div className="mt-3 pt-3 border-t border-zinc-800/50 flex flex-col gap-3">
+          
+          {/* 1. DANO EXPLICADO NO TOPO */}
           {parsedDano.length > 0 && (
-            <div className="mt-2 pt-2 border-t border-zinc-800/50 flex flex-col gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {parsedDano.map((pd, index) => (
-                <div key={index} className="flex items-center gap-1.5 text-xs">
-                  <span className="text-purple-400 font-bold">{pd.label}:</span>
-                  <span className="text-zinc-200">{pd.valor} <span className="text-zinc-500 italic">({arma.Tipo_Dano_Arma || 'Físico'})</span></span>
+                <div key={index} className="flex-1 min-w-[110px] bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">{pd.label}</span>
+                  <span className="text-sm font-bold text-zinc-200">
+                    {pd.valor} <span className="text-[0.65rem] font-normal text-zinc-500">({arma.Tipo_Dano_Arma || 'Físico'})</span>
+                  </span>
                 </div>
               ))}
             </div>
           )}
 
+          {/* 2. STATS DA ARMA ESPALHADAS (GRID) */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Ataque Bônus</span>
+              <span className="text-sm font-bold text-zinc-200">{bonusAtaqueStr}</span>
+            </div>
+            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Alcance</span>
+              <span className="text-sm font-bold text-zinc-200">{arma.Alcance_Item || 'Curto'}</span>
+            </div>
+            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Perícia</span>
+              <span className="text-sm font-bold text-zinc-200">{pericia}</span>
+            </div>
+            <div className="bg-zinc-950/50 rounded px-3 py-1.5 flex justify-between items-center">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Atributo</span>
+              <div className="w-24">
+                <CustomSelect
+                  value={atributoDano}
+                  onChange={setAtributoDano}
+                  options={ATRIBUTO_OPTIONS}
+                  className="!py-0.5 !min-h-0 text-xs"
+                  hideIcon={true}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 3. DANO SECUNDÁRIO E MODIFICAÇÕES */}
           {arma.Dano_Secundario && arma.Dano_Secundario.trim() !== '-' && (
-            <div className="flex items-center gap-1.5 text-xs mt-1">
-              <span className="text-purple-400 font-bold">Dano Secundário:</span>
-              <span className="text-zinc-200">{arma.Dano_Secundario}</span>
+            <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
+              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Dano Secundário</span>
+              <span className="text-sm font-bold text-zinc-200">{arma.Dano_Secundario}</span>
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 text-xs mt-1">
-            <span className="text-purple-400 font-bold">Média Dano (Normal):</span>
-            <span className="text-zinc-200">{danoMedioPrincipal.normal}</span>
-          </div>
-          
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-purple-400 font-bold">Média Dano (Crítico):</span>
-            <span className="text-zinc-200">{danoMedioPrincipal.critico}</span>
-          </div>
-
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
-            <div className="flex flex-wrap gap-1 mt-2 pt-2 border-t border-zinc-800/50">
+            <div className="flex flex-wrap gap-1 mt-1">
               {modsAtivas.map((m: any) => (
                 <span key={m!.Codigo_Modif} className="rounded border border-zinc-700 bg-zinc-800/50 px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider text-zinc-300">
                   {m!.Nome_Modificacao}
@@ -192,6 +180,41 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               ))}
             </div>
           )}
+
+          {/* 4. MÉDIA DE DANO ESCONDIDA */}
+          <button
+            onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
+            className="mt-1 flex w-fit items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+          >
+            <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>▼</span>
+            Média de Dano
+          </button>
+          
+          <Collapse isOpen={mostrarDanoMedio}>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Normal (x1 / x2 / x3)</span>
+                <span className="text-sm font-bold text-zinc-200">{danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
+              </div>
+              <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Média Crítica</span>
+                <span className="text-sm font-bold text-green-400">{danoMedioPrincipal.critico}</span>
+              </div>
+            </div>
+            {danoMedioSecundario && (
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Secundária (Normal)</span>
+                  <span className="text-sm font-bold text-zinc-200">{danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
+                </div>
+                <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
+                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Secundária (Crítica)</span>
+                  <span className="text-sm font-bold text-green-400">{danoMedioSecundario.critico}</span>
+                </div>
+              </div>
+            )}
+          </Collapse>
+
         </div>
       </Collapse>
     </div>
