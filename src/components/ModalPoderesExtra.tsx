@@ -536,11 +536,7 @@ export const ModalPoderesExtra: React.FC<ModalPoderesExtraProps> = ({
                         </div>
                       )}
 
-                      {!val.atende && val.motivo && (
-                        <div className="block rounded bg-green-900/20 px-3 py-2 text-xs italic text-green-400">
-                          <strong>Aviso de Requisitos:</strong> Oficialmente requer {val.motivo} (Adição livre)
-                        </div>
-                      )}
+                      
 
                       {poder.Fonte && (
                         <div className="text-[0.6rem] uppercase tracking-wider text-zinc-600">
