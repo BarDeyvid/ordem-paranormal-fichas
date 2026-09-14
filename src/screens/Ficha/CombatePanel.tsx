@@ -5,12 +5,12 @@ import { Collapse } from '../../components/Collapse';
 import { CustomSelect } from '../../components/CustomSelect';
 
 const ATRIBUTO_OPTIONS = [
-  { label: 'Força', value: 'FOR' },
-  { label: 'Agilidade', value: 'AGI' },
-  { label: 'Intelecto', value: 'INT' },
-  { label: 'Presença', value: 'PRE' },
-  { label: 'Vigor', value: 'VIG' },
-  { label: 'Nenhum', value: 'NENHUM' }
+  { label: 'FOR', value: 'FOR' },
+  { label: 'AGI', value: 'AGI' },
+  { label: 'INT', value: 'INT' },
+  { label: 'PRE', value: 'PRE' },
+  { label: 'VIG', value: 'VIG' },
+  { label: 'NENHUM', value: 'NENHUM' }
 ];
 
 function calcularDanoMedio(danoStr: string, multCritico: number): { normal: number, critico: number } {
@@ -122,8 +122,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               {parsedDano.map((pd, index) => (
                 <div key={index} className="flex-1 min-w-[110px] bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
                   <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">{pd.label}</span>
-                  <span className="text-sm font-bold text-zinc-200">
-                    {pd.valor} <span className="text-[0.65rem] font-normal text-zinc-500">({arma.Tipo_Dano_Arma || 'Físico'})</span>
+                  <span className="text-sm text-zinc-300">
+                    {pd.valor} <span className="text-[0.65rem] text-zinc-500">({arma.Tipo_Dano_Arma || 'Físico'})</span>
                   </span>
                 </div>
               ))}
@@ -134,15 +134,15 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <div className="grid grid-cols-2 gap-2">
             <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Ataque Bônus</span>
-              <span className="text-sm font-bold text-zinc-200">{bonusAtaqueStr}</span>
+              <span className="text-sm text-zinc-300">{bonusAtaqueStr}</span>
             </div>
             <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Alcance</span>
-              <span className="text-sm font-bold text-zinc-200">{arma.Alcance_Item || 'Curto'}</span>
+              <span className="text-sm text-zinc-300">{arma.Alcance_Item || 'Curto'}</span>
             </div>
             <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Perícia</span>
-              <span className="text-sm font-bold text-zinc-200">{pericia}</span>
+              <span className="text-sm text-zinc-300">{pericia}</span>
             </div>
             <div className="bg-zinc-950/50 rounded px-3 py-1.5 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Atributo</span>
@@ -162,7 +162,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           {arma.Dano_Secundario && arma.Dano_Secundario.trim() !== '-' && (
             <div className="bg-zinc-950/50 rounded px-3 py-2 flex justify-between items-center">
               <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Dano Secundário</span>
-              <span className="text-sm font-bold text-zinc-200">{arma.Dano_Secundario}</span>
+              <span className="text-sm text-zinc-300">{arma.Dano_Secundario}</span>
             </div>
           )}
 
@@ -184,7 +184,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           {/* 4. MÉDIA DE DANO ESCONDIDA */}
           <button
             onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
-            className="mt-1 flex w-fit items-center gap-2 rounded-md border border-zinc-800 bg-zinc-900/50 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-200"
+            className="mt-1 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
           >
             <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>▼</span>
             Média de Dano
@@ -194,22 +194,22 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <div className="grid grid-cols-2 gap-2 mt-2">
               <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
                 <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Normal (x1 / x2 / x3)</span>
-                <span className="text-sm font-bold text-zinc-200">{danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
+                <span className="text-sm text-zinc-300">{danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
               </div>
               <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
                 <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Média Crítica</span>
-                <span className="text-sm font-bold text-green-400">{danoMedioPrincipal.critico}</span>
+                <span className="text-sm text-green-400">{danoMedioPrincipal.critico}</span>
               </div>
             </div>
             {danoMedioSecundario && (
               <div className="grid grid-cols-2 gap-2 mt-2">
                 <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
                   <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Secundária (Normal)</span>
-                  <span className="text-sm font-bold text-zinc-200">{danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
+                  <span className="text-sm text-zinc-300">{danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
                 </div>
                 <div className="bg-zinc-950/50 rounded px-3 py-2 flex flex-col">
                   <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500">Secundária (Crítica)</span>
-                  <span className="text-sm font-bold text-green-400">{danoMedioSecundario.critico}</span>
+                  <span className="text-sm text-green-400">{danoMedioSecundario.critico}</span>
                 </div>
               </div>
             )}
