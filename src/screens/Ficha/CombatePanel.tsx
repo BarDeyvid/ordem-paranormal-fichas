@@ -101,6 +101,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const defaultAtributo = isAgil ? 'AGI' : 'FOR';
 
   const [atributoDano, setAtributoDano] = React.useState(defaultAtributo);
+  const [danoIdx, setDanoIdx] = React.useState(0);
 
   let extrasStr = '';
   
@@ -133,31 +134,20 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const multCrit = arma.Multiplicador_Arma || 2;
   const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   
-  let danoStrOrig = arma.Dano_Arma || '';
-  let extraDadoSec = '';
-  if (danoStrOrig.includes('/')) {
-    const parts = danoStrOrig.split('/');
-    danoStrOrig = parts[0].trim();
-    extraDadoSec = parts[1].trim();
-  }
+  const rawDano = arma.Dano_Arma || '';
+  const danoOptions = rawDano.includes('/') ? rawDano.split('/').map(s => s.trim()) : [rawDano];
+  const currentDanoIdx = danoIdx >= danoOptions.length ? 0 : danoIdx;
+  const danoSelecionado = danoOptions[currentDanoIdx];
 
-  const danoStrFull = danoStrOrig ? danoStrOrig + extrasStr : extrasStr;
+  const danoStrFull = danoSelecionado ? danoSelecionado + extrasStr : extrasStr;
   const parsedDano = parseDanoString(danoStrFull, tipoBase);
-  
-  if (extraDadoSec) {
-    parsedDano.splice(1, 0, { label: 'Dano Secundário', valor: extraDadoSec, tipo: tipoBase });
-  }
 
-  let danoSecStr = arma.Dano_Secundario || '';
-  if (!danoSecStr || danoSecStr.trim() === '-') {
-    if (extraDadoSec) {
-      danoSecStr = extraDadoSec;
-    }
-  } else if (!extraDadoSec) {
-    parsedDano.splice(1, 0, { label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
+  const danoSecStr = arma.Dano_Secundario || '';
+  if (danoSecStr && danoSecStr.trim() !== '-') {
+    parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
-  const danoHeader = (arma.Dano_Arma || '') + extrasStr;
+  const danoHeader = danoStrFull;
 
   const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
@@ -181,7 +171,21 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         onClick={toggleExpandir}
       >
         <div className="flex flex-col gap-1">
-          <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
+          <div className="flex items-center gap-1">
+            <span className="font-bold text-sm text-zinc-100">{arma.Nome_Item}</span>
+            {danoOptions.length > 1 && (
+              <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+                <CustomSelect
+                  value={danoSelecionado}
+                  onChange={(val) => setDanoIdx(danoOptions.indexOf(val as string))}
+                  options={danoOptions.map(o => ({ label: `(${o})`, value: o }))}
+                  className="!p-0 !min-h-0 !border-transparent !bg-transparent text-sm text-zinc-400 font-bold hover:!text-white transition-colors"
+                  hideIcon={true}
+                  wrapperClassName="w-fit"
+                />
+              </div>
+            )}
+          </div>
           <span className="text-xs text-zinc-400">
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
