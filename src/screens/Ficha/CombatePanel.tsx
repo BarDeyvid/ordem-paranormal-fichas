@@ -388,8 +388,8 @@ export const CombatePanel: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 p-2">
-      {renderWeaponList(armasCorpoACorpo, 'Armas Corpo a Corpo')}
-      {renderWeaponList(armasFogo, 'Armas de Fogo e Disparo')}
+      {renderWeaponList(armasCorpoACorpo, 'Ataques Corpo a Corpo')}
+      {renderWeaponList(armasFogo, 'Ataques à Distância')}
     </div>
   );
 };
