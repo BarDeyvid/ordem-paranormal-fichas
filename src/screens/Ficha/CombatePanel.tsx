@@ -296,7 +296,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <span className="text-xs text-zinc-400">
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
-            <span className="font-bold text-green-400">Crítico:</span> {critico === 20 && multCrit === 2 ? 'x2' : critico !== 20 && multCrit === 2 ? critico : `${critico}/x${multCrit}`}
+            <span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}
           </span>
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">
