@@ -614,7 +614,7 @@ export function InventarioPanel() {
     }
   };
 
-  let armasExibidas = [...(armasHook?.armasInventario || [])];
+  let armasExibidas = [...(armasHook?.armasInventario || [])].filter(a => a.id !== 'coronhada-virtual');
 
   armasExibidas = armasExibidas.filter((item: ArmaInventario) => {
     if (buscaItem && !item.arma.Nome_Item.toLowerCase().includes(buscaItem.toLowerCase())) return false;
