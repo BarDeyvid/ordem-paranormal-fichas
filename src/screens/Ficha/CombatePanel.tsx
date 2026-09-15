@@ -138,6 +138,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const [danoIdx, setDanoIdx] = React.useState(0);
 
   let extrasStr = '';
+  let critico = Number(arma.Critico_Arma || 20);
+  let multCrit = Number(arma.Multiplicador_Arma || 2);
+  let alcance = arma.Alcance_Item || 'Corpo a Corpo';
   
   maldicoesAtivas.forEach(m => {
     if (!m) return;
@@ -156,6 +159,13 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (!m) return;
     const desc = m.Descricao_Modif || '';
     const nome = m.Nome_Modif?.toLowerCase() || '';
+    if (nome === 'mira laser' || nome === 'perigosa') critico -= 2;
+    if (nome === 'dum dum') multCrit += 1;
+    if (nome === 'mira telescópica' || nome === 'mira telescopica') {
+      const ord = ['Curto', 'Medio', 'Longo', 'Extremo', 'Ilimitado'];
+      const idx = ord.indexOf(alcance);
+      if (idx !== -1 && idx < ord.length - 1) alcance = ord[idx + 1];
+    }
     if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || nome.includes('cruel')) {
        extrasStr += `+2`;
     }
@@ -182,7 +192,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     extrasStr += `${bonusDanoAtributo}`;
   }
 
-  const multCrit = arma.Multiplicador_Arma || 2;
+  
   const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   
   const rawDano = arma.Dano_Arma || '';
@@ -286,7 +296,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <span className="text-xs text-zinc-400">
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
-            <span className="font-bold text-green-400">Crítico:</span> {arma.Critico_Arma || 20}/x{multCrit}
+            <span className="font-bold text-green-400">Crítico:</span> {critico === 20 && multCrit === 2 ? 'x2' : critico !== 20 && multCrit === 2 ? critico : `${critico}/x${multCrit}`}
           </span>
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">
@@ -332,7 +342,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <span className="text-zinc-300"><span className="font-bold text-green-400">Ataque Bônus:</span> {bonusAtaqueStr}</span>
             <span className="text-zinc-300"><span className="font-bold text-green-400">Perícia:</span> {pericia}</span>
             {arma.Alcance_Item && arma.Alcance_Item.trim() !== '-' && (
-              <span className="text-zinc-300"><span className="font-bold text-green-400">Alcance:</span> {arma.Alcance_Item}</span>
+              <span className="text-zinc-300"><span className="font-bold text-green-400">Alcance:</span> {alcance}</span>
             )}
             <div className="flex items-center gap-1 text-zinc-300">
               <span className="font-bold text-green-400">Atributo:</span>
