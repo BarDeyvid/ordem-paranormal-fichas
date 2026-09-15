@@ -1209,11 +1209,15 @@ function SortableArmaItem({
     let multiplicador = arma.Multiplicador_Arma || 2;
     let danoSecundario = arma.Dano_Secundario || '';
 
+    if (regrasAutomaticasAtivas?.has(86) && (arma.Tipo_Arma?.toLowerCase() === 'corpo a corpo' || arma.Tipo_Arma?.toLowerCase() === 'corpo-a-corpo') && arma.Nome_Item !== 'Ataque Desarmado') {
+      dano = dano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
+    }
+
     // Mods da arma
     for (const mod of modsAtuais) {
       const nome = mod.Nome_Modif.trim().toLowerCase();
       if (nome === 'calibre grosso') {
-        dano = dano.replace(/(\d+)d(\d+)/i, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
+        dano = dano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
       }
 
       if (nome === 'ferrolho automático') {

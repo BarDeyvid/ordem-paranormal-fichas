@@ -110,7 +110,7 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
-  const { atributosFinais, proficienciasTotais } = useRPG();
+  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
