@@ -122,7 +122,7 @@ export const AtributosScreen: React.FC = () => {
 
       <button
         onClick={() => setTelaAtual('origens')}
-        className="rounded-md bg-green-700 px-8 py-3 text-lg font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
+        className="mt-12 rounded-md bg-green-700 px-8 py-3 text-lg font-bold uppercase tracking-wider text-zinc-100 transition hover:bg-green-600"
       >
         Avançar para Origens ➔
       </button>
