@@ -142,9 +142,42 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   let multCrit = Number(arma.Multiplicador_Arma || 2);
   let alcance = arma.Alcance_Item || 'Corpo a Corpo';
   
+  modsAtivas.forEach(m => {
+    if (!m) return;
+    const nome = m.Nome_Modif?.toLowerCase() || '';
+    if (nome.includes('automátic') || nome.includes('automatica')) {
+      automatica = true;
+    }
+  });
+  const defaultAtributo = isAgil ? 'AGI' : 'FOR';
+
+  const [atributoDano, setAtributoDano] = React.useState(defaultAtributo);
+  const [danoIdx, setDanoIdx] = React.useState(0);
+
+  let extrasStr = '';
+  let critico = Number(arma.Critico_Arma || 20);
+  let multCrit = Number(arma.Multiplicador_Arma || 2);
+  let alcance = arma.Alcance_Item || 'Corpo a Corpo';
+  
   maldicoesAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Mald || '';
+    const nomeM = m.Nome_Mald?.trim().toLowerCase() || '';
+    if (nomeM === 'predadora') {
+      const margem = 21 - critico;
+      critico = 21 - (margem * 2);
+      const ord = ['Curto', 'Medio', 'Longo', 'Extremo', 'Ilimitado'];
+      const idx = ord.indexOf(alcance);
+      if (idx !== -1 && idx < ord.length - 1) alcance = ord[idx + 1];
+    }
+    if (nomeM === 'empuxo') {
+      const ord = ['Curto', 'Medio', 'Longo', 'Extremo', 'Ilimitado'];
+      if (!alcance || alcance.toLowerCase() === 'corpo a corpo') alcance = 'Curto';
+      else {
+        const idx = ord.indexOf(alcance);
+        if (idx !== -1 && idx < ord.length - 1) alcance = ord[idx + 1];
+      }
+    }
     const match = desc.match(/\+?\s*(\d+d\d+\*?)/i);
     if (match) {
       let elemento = m.Elemento_Mald || 'Paranormal';
@@ -175,6 +208,23 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     }
   });
 
+  modsAtivas.forEach(m => {
+    if (!m) return;
+    const nome = m.Nome_Modif?.toLowerCase() || '';
+    if (nome.includes('automátic') || nome.includes('automatica')) {
+      automatica = true;
+    }
+  });
+  const defaultAtributo = isAgil ? 'AGI' : 'FOR';
+
+  const [atributoDano, setAtributoDano] = React.useState(defaultAtributo);
+  const [danoIdx, setDanoIdx] = React.useState(0);
+
+  let extrasStr = '';
+  let critico = Number(arma.Critico_Arma || 20);
+  let multCrit = Number(arma.Multiplicador_Arma || 2);
+  let alcance = arma.Alcance_Item || 'Corpo a Corpo';
+  
   // Calcula bônus de atributo para o DANO
   let bonusDanoAtributo = 0;
   const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
