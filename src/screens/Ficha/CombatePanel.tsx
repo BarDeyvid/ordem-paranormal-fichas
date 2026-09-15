@@ -226,7 +226,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   };
 
   return (
-    <div className="bg-zinc-950/60 border border-zinc-800 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col">
+    <div className="bg-zinc-950/60 border border-zinc-800 border-l-4 border-l-green-700 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 hover:border-l-green-600 transition-all flex flex-col">
       {/* CABEÇALHO */}
       <div 
         className="flex items-start justify-between cursor-pointer select-none"
