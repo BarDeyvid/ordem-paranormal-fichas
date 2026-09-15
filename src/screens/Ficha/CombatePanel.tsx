@@ -349,8 +349,26 @@ export const CombatePanel: React.FC = () => {
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
   };
-  const { armasHook, modificacoesHook, maldicoesHook } = useRPG();
-  const armas = armasHook?.armasInventario || [];
+  const { armasHook, modificacoesHook, maldicoesHook, itensHook } = useRPG();
+  let armas = [...(armasHook?.armasInventario || [])];
+
+  const soqueira = itensHook?.itensInventario.find(i => i.item.Nome_Item.toLowerCase().includes('soqueira'));
+  if (soqueira) {
+    const desarmadoIndex = armas.findIndex(a => a.id === 'ataque-desarmado-virtual');
+    if (desarmadoIndex !== -1) {
+      const desarmado = armas[desarmadoIndex];
+      armas[desarmadoIndex] = {
+        ...desarmado,
+        arma: {
+          ...desarmado.arma,
+          Dano_Arma: desarmado.arma.Dano_Arma + '+1'
+        },
+        modificacoes: soqueira.modificacoes || [],
+        maldicoes: soqueira.maldicoes || [],
+        maldicoes_elementos: soqueira.maldicoes_elementos || {}
+      };
+    }
+  }
 
   const armasCorpoACorpo = armas.filter(a => a.arma.Tipo_Arma?.toLowerCase() === 'corpo a corpo' || a.arma.Tipo_Arma?.toLowerCase() === 'corpo-a-corpo');
   const armasFogo = armas.filter(a => a.arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && a.arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo');

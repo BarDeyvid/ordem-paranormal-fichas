@@ -119,6 +119,12 @@ export function ModalEditarItem({
     };
 
     const getOpcoesMaldicoes = () => {
+      if (nome.toLowerCase().includes('soqueira')) {
+        return maldicoesHook.maldicoes.filter(m => {
+          const cat = m.Categoria_Mald.trim().toLowerCase();
+          return cat.includes('arma') || cat.includes('corpo a corpo');
+        });
+      }
       return maldicoesHook.maldicoes.filter(m => m.Categoria_Mald.trim().toLowerCase().includes('vestiment') || m.Categoria_Mald.trim().toLowerCase().includes('utens') || m.Categoria_Mald.trim().toLowerCase().includes('acess'));
     };
 
