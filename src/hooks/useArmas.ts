@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../services/supabase';
 import type { Arma, ArmaInventario } from '../types';
 
-export function useArmas() {
+export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> = new Set()) {
   const [armas, setArmas] = useState<Arma[]>([]);
   const [armasInventario, setArmasInventario] = useState<ArmaInventario[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,19 @@ export function useArmas() {
       let next = [...prev];
 
       // 1. Ataque Desarmado
-      const hasDesarmado = next.some(a => a.id === 'ataque-desarmado-virtual');
+      let danoDesarmado = '1d3';
+      let tipoDanoDesarmado = 'Impacto (Não letal)';
+      let agilDesarmado = false;
+
+      if (regrasAutomaticasAtivas.has(84)) { // Artista Marcial
+        danoDesarmado = nex >= 70 ? '1d10' : nex >= 35 ? '1d8' : '1d6';
+        tipoDanoDesarmado = 'Impacto';
+        agilDesarmado = true;
+      }
+
+      const desarmadoIndex = next.findIndex(a => a.id === 'ataque-desarmado-virtual');
+      const hasDesarmado = desarmadoIndex !== -1;
+
       if (!hasDesarmado) {
         next.push({
           id: 'ataque-desarmado-virtual',
@@ -43,14 +55,14 @@ export function useArmas() {
             Proficiencia: 'Armas Simples',
             Tipo_Arma: 'Corpo a Corpo',
             Empunhadura_Arma: 'Uma Mão',
-            Dano_Arma: '1d3',
+            Dano_Arma: danoDesarmado,
             Critico_Arma: 20,
             Multiplicador_Arma: 2,
-            Tipo_Dano_Arma: 'Impacto (Não letal)',
+            Tipo_Dano_Arma: tipoDanoDesarmado,
             Alcance_Item: null,
             Categoria_Item: '0',
             'Espaços_Item': 0,
-            'Agil?': false,
+            'Agil?': agilDesarmado,
             Capacidade_Municao: null,
             dt_item: null,
             'Automatica?': false,
@@ -60,6 +72,24 @@ export function useArmas() {
           municoesAcopladas: []
         });
         changed = true;
+      } else {
+        const desarmado = next[desarmadoIndex];
+        if (
+          desarmado.arma.Dano_Arma !== danoDesarmado ||
+          desarmado.arma.Tipo_Dano_Arma !== tipoDanoDesarmado ||
+          desarmado.arma['Agil?'] !== agilDesarmado
+        ) {
+          next[desarmadoIndex] = {
+            ...desarmado,
+            arma: {
+              ...desarmado.arma,
+              Dano_Arma: danoDesarmado,
+              Tipo_Dano_Arma: tipoDanoDesarmado,
+              'Agil?': agilDesarmado
+            }
+          };
+          changed = true;
+        }
       }
 
       // 2. Coronhada
@@ -126,7 +156,7 @@ export function useArmas() {
 
       return changed ? next : prev;
     });
-  }, [armasInventario.map(a => `${a.id}-${a.arma.Dano_Arma}-${a.arma.Tipo_Arma}-${a.arma.Empunhadura_Arma}`).join(',')]);
+  }, [armasInventario.map(a => `${a.id}-${a.arma.Dano_Arma}-${a.arma.Tipo_Arma}-${a.arma.Empunhadura_Arma}`).join(','), nex, regrasAutomaticasAtivas.has(84)]);
 
   const adicionarArma = (arma: Arma) => {
     const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);

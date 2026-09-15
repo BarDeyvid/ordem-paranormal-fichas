@@ -226,13 +226,6 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const poderesHook = usePoderes(classe);
   const origensHook = useOrigem();
   const inventarioHook = useInventario(origensHook.origemSelecionada?.Codigo_Regra);
-  const armasHook = useArmas();
-  const municoesHook = useMunicoes();
-  const protecoesHook = useProtecoes();
-  const rituaisHook = useRituais();
-
-  const modificacoesHook = useModificacoes();
-  const maldicoesHook = useMaldicoes();
 
   // Computa o conjunto de regras automáticas ativas
   const regrasAutomaticasAtivas = useMemo(() => {
@@ -245,6 +238,14 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
     });
     return set;
   }, [origensHook.origemSelecionada, poderesHook.poderesEscolhidos]);
+
+  const armasHook = useArmas(nex, regrasAutomaticasAtivas);
+  const municoesHook = useMunicoes();
+  const protecoesHook = useProtecoes();
+  const rituaisHook = useRituais();
+
+  const modificacoesHook = useModificacoes();
+  const maldicoesHook = useMaldicoes();
 
   const itensHook = useItens(regrasAutomaticasAtivas.has(23) ? 3 : 2);
   const itensAmaldicoadosHook = useItensAmaldicoados();
