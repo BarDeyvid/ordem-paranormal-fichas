@@ -211,7 +211,18 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   
   const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   
-  const rawDano = arma.Dano_Arma || '';
+  let rawDano = arma.Dano_Arma || '';
+  
+  modsAtivas.forEach(m => {
+    if (m?.Nome_Modif?.trim().toLowerCase() === 'calibre grosso') {
+       rawDano = rawDano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
+    }
+  });
+
+  if (regrasAutomaticasAtivas?.has(86) && (arma.Tipo_Arma?.toLowerCase() === 'corpo a corpo' || arma.Tipo_Arma?.toLowerCase() === 'corpo-a-corpo') && armaInv.id !== 'ataque-desarmado-virtual') {
+    rawDano = rawDano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
+  }
+
   const danoOptions = rawDano.includes('/') ? rawDano.split('/').map(s => s.trim()) : [rawDano];
   const currentDanoIdx = danoIdx >= danoOptions.length ? 0 : danoIdx;
   const danoSelecionado = danoOptions[currentDanoIdx];
