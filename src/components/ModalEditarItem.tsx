@@ -32,7 +32,7 @@ export function ModalEditarItem({
   const [dt, setDt] = useState(item.Dt_Item || '');
   const [grupo, setGrupo] = useState(item.Grupo_Item || '');
 
-  const { modificacoesHook, periciasHook } = useRPG();
+  const { modificacoesHook, periciasHook, maldicoesHook } = useRPG();
   const [modificacoes, setModificacoes] = useState<number[]>(itemInventario.modificacoes || []);
   const [maldicoes, setMaldicoes] = useState<number[]>(itemInventario.maldicoes || []);
   const [maldicoesElementos, setMaldicoesElementos] = useState<Record<number, string>>(itemInventario.maldicoes_elementos || {});
