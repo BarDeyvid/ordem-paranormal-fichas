@@ -28,8 +28,43 @@ export function useArmas() {
 
   useEffect(() => {
     setArmasInventario(prev => {
-      const armasDeFogo = prev.filter(a => a.id !== 'coronhada-virtual' && a.arma.Tipo_Arma?.toLowerCase().includes('fogo'));
-      const coronhadaIndex = prev.findIndex(a => a.id === 'coronhada-virtual');
+      let changed = false;
+      let next = [...prev];
+
+      // 1. Ataque Desarmado
+      const hasDesarmado = next.some(a => a.id === 'ataque-desarmado-virtual');
+      if (!hasDesarmado) {
+        next.push({
+          id: 'ataque-desarmado-virtual',
+          arma: {
+            Codigo_Arma: -2,
+            Nome_Item: 'Ataque Desarmado',
+            Descricao_Item: 'Um soco, chute ou outro golpe com o próprio corpo.',
+            Proficiencia: 'Armas Simples',
+            Tipo_Arma: 'Corpo a Corpo',
+            Empunhadura_Arma: 'Uma Mão',
+            Dano_Arma: '1d3',
+            Critico_Arma: 20,
+            Multiplicador_Arma: 2,
+            Tipo_Dano_Arma: 'Impacto (Não letal)',
+            Alcance_Item: null,
+            Categoria_Item: '0',
+            'Espaços_Item': 0,
+            'Agil?': false,
+            Capacidade_Municao: null,
+            dt_item: null,
+            'Automatica?': false,
+            Fonte_Arma: 'Sistema'
+          },
+          modificacoes: [],
+          municoesAcopladas: []
+        });
+        changed = true;
+      }
+
+      // 2. Coronhada
+      const armasDeFogo = next.filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual' && a.arma.Tipo_Arma?.toLowerCase().includes('fogo'));
+      const coronhadaIndex = next.findIndex(a => a.id === 'coronhada-virtual');
       const hasCoronhada = coronhadaIndex !== -1;
 
       if (armasDeFogo.length > 0) {
@@ -48,7 +83,7 @@ export function useArmas() {
         }
 
         if (!hasCoronhada) {
-          const coronhadaVirtual: ArmaInventario = {
+          next.push({
             id: 'coronhada-virtual',
             arma: {
               Codigo_Arma: -1,
@@ -72,23 +107,24 @@ export function useArmas() {
             },
             modificacoes: [],
             municoesAcopladas: []
-          };
-          return [...prev, coronhadaVirtual];
+          });
+          changed = true;
         } else {
-          const coronhada = prev[coronhadaIndex];
+          const coronhada = next[coronhadaIndex];
           if (coronhada.arma.Dano_Arma !== danoCoronhada) {
-            const next = [...prev];
             next[coronhadaIndex] = {
               ...coronhada,
               arma: { ...coronhada.arma, Dano_Arma: danoCoronhada, Empunhadura_Arma: empunhadura }
             };
-            return next;
+            changed = true;
           }
         }
       } else if (hasCoronhada) {
-        return prev.filter(a => a.id !== 'coronhada-virtual');
+        next = next.filter(a => a.id !== 'coronhada-virtual');
+        changed = true;
       }
-      return prev;
+
+      return changed ? next : prev;
     });
   }, [armasInventario.map(a => `${a.id}-${a.arma.Dano_Arma}-${a.arma.Tipo_Arma}-${a.arma.Empunhadura_Arma}`).join(',')]);
 
