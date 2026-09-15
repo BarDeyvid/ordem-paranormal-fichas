@@ -175,7 +175,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
           <div className="flex flex-col gap-1 flex-1 min-w-0 justify-center">
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{item.item.Nome_Item}</span>
             {!(item.item.Grupo_Item?.toLowerCase().includes('explosivo') || stringDT) && (
-              <span className="text-xs text-zinc-400 font-medium truncate">Categoria {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, item.item.Codigo_Item === 71)}</span>
+              <span className="text-xs text-zinc-400 font-medium truncate">Categoria {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, item.item.Codigo_Item === 71, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             )}
             
 
@@ -222,7 +222,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
       <Collapse isOpen={isExpanded}>
         <div className="border-t border-zinc-800 px-3 py-3 text-xs bg-zinc-950/80 flex flex-col gap-2 relative z-10" onClick={e => e.stopPropagation()}>
           <div className="flex flex-col gap-1 mt-1">
-            <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes)}</span>
+            <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, false, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             <span><span className="text-green-400 font-bold">Espaços:</span> {calcularEspacosFinais(item.item.Espacos_Itens, item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43))}</span>
             {modsAtuais.length > 0 && (
               <div className="mt-3">
