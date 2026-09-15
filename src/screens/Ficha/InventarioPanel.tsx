@@ -814,10 +814,10 @@ export function InventarioPanel() {
             🔦
           </button>
           <button
-            onClick={() => setCategoriaFiltro('Medicamento')}
-            title="Medicamento"
+            onClick={() => setCategoriaFiltro('Medicamentos')}
+            title="Medicamentos"
             className={`w-12 h-12 flex items-center justify-center rounded-t text-2xl transition border-b-2 ${
-              categoriaFiltro === 'Medicamento' 
+              categoriaFiltro === 'Medicamentos' 
                 ? 'bg-zinc-900 text-green-400 border-b-green-500' 
                 : 'text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900/50 border-b-transparent'
             }`}
@@ -1080,7 +1080,7 @@ export function InventarioPanel() {
                         {categoriaFiltro === 'Acessórios' ? 'Nenhum acessório no inventário.' :
                          categoriaFiltro === 'Explosivos' ? 'Nenhum explosivo no inventário.' :
                          categoriaFiltro === 'Itens Operacionais' ? 'Nenhum item operacional no inventário.' :
-                         categoriaFiltro === 'Medicamento' ? 'Nenhum medicamento no inventário.' :
+                         categoriaFiltro === 'Medicamentos' ? 'Nenhum medicamento no inventário.' :
                          categoriaFiltro === 'Itens Paranormais' ? 'Nenhum item paranormal no inventário.' :
                          `Nenhum item no inventário.`}
                       </p>
