@@ -421,7 +421,7 @@ export const CombatePanel: React.FC = () => {
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
   };
-  const { armasHook, modificacoesHook, maldicoesHook, itensHook } = useRPG();
+  const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas } = useRPG();
   let armas = [...(armasHook?.armasInventario || [])];
 
   const soqueira = itensHook?.itensInventario.find(i => i.item.Nome_Item.toLowerCase().includes('soqueira'));
@@ -433,7 +433,7 @@ export const CombatePanel: React.FC = () => {
         ...desarmado,
         arma: {
           ...desarmado.arma,
-          Dano_Arma: desarmado.arma.Dano_Arma + '+1'
+          Dano_Arma: (regrasAutomaticasAtivas?.has(86) ? desarmado.arma.Dano_Arma.replace(/(\d+)d(\d+)/gi, (m, p1, p2) => `${Number(p1) + 1}d${p2}`) : desarmado.arma.Dano_Arma) + '+1'
         },
         modificacoes: soqueira.modificacoes || [],
         maldicoes: soqueira.maldicoes || [],
