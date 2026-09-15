@@ -55,7 +55,7 @@ export function ModalEditarItem({
   };
 
   const aplicarAprimoradoNaPericia = (target: string, modId: number) => {
-    setModificacoes(prev => [...prev, modId]);
+    setModificacoes(prev => [...(prev || []), modId]);
     setNome(prev => {
        const match = prev.match(/\((.*?)\)/);
        if (match) {
@@ -103,15 +103,15 @@ export function ModalEditarItem({
   
     const handleAddMald = (id: number, elementoVaria?: string) => {
       if (podeAdicionarMald) {
-        setMaldicoes(prev => [...prev, id]);
+        setMaldicoes(prev => [...(prev || []), id]);
         if (elementoVaria) {
-          setMaldicoesElementos(prev => ({ ...prev, [id]: elementoVaria }));
+          setMaldicoesElementos(prev => ({ ...(prev || {}), [id]: elementoVaria }));
         }
       }
     };
   
     const handleRemoveMald = (index: number) => {
-      setMaldicoes(prev => {
+      setMaldicoes(prev => { if (!prev) return [];
         const removedId = prev[index];
         if (removedId !== undefined) {
           setMaldicoesElementos(elemPrev => {
@@ -156,7 +156,7 @@ export function ModalEditarItem({
           setEscolhendoAprimorado(id);
         }
       } else {
-        setModificacoes(prev => [...prev, id]);
+        setModificacoes(prev => [...(prev || []), id]);
       }
     }
   };
@@ -191,7 +191,7 @@ export function ModalEditarItem({
         });
       }
     }
-    setModificacoes(prev => prev.filter((_, i) => i !== index));
+    setModificacoes(prev => (prev || []).filter((_, i) => i !== index));
   };
 
   const getOpcoesModificacoes = () => {
@@ -410,7 +410,7 @@ export function ModalEditarItem({
                 value=""
                 onChange={val => {
                   if (val) {
-                    setModificacoes(prev => [...prev, escolhendoFuncaoAdicional]);
+                    setModificacoes(prev => [...(prev || []), escolhendoFuncaoAdicional]);
                     const match = nome.match(/\((.*?)\)/);
                     if (match) {
                       setNome(prev => prev.replace(/\((.*?)\)/, `($1, ${val})`));
