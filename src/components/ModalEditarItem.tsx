@@ -91,8 +91,14 @@ export function ModalEditarItem({
   const espacosFinais = temDiscreto ? Math.max(0, baseEspacos - 1) : baseEspacos;
 
   const catNum = categoriaRomanParaNum(categoria);
-  const catFinal = catNum + modificacoes.length;
+  let custoMaldicoes = 0;
+  if (maldicoes.length > 0) {
+    custoMaldicoes = 2 + (maldicoes.length - 1);
+  }
+  const catFinal = catNum + modificacoes.length + custoMaldicoes;
   const podeAdicionarMod = catFinal < 4;
+  const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
+  const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
 
   
     const handleAddMald = (id: number, elementoVaria?: string) => {
