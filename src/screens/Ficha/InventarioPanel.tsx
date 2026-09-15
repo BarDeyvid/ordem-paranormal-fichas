@@ -701,7 +701,8 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
                               toggleExpandir={(id) => setExpandidos(prev => ({ ...prev, [id]: !prev[id] }))}
                               stringDT={calcularDT(item.item.Dt_Item, item.item.Grupo_Item?.toLowerCase().includes('explosivos'))}
                               removerItem={itensHook?.removerItem || (() => {})}
-                              onEditar={() => { setEditingItem({ id: item.id, tipo: 'item' });
+                              onEditar={() => {
+                                setEditingItem({ id: item.id, tipo: 'item' });
                               }}
                               toggleEquipado={itensHook?.toggleEquipado || (() => {})}
                             />
@@ -721,7 +722,8 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
                           toggleExpandir={(id) => setExpandidos(prev => ({ ...prev, [id]: !prev[id] }))}
                           stringDT={calcularDT(item.item.Dt_Item, item.item.Grupo_Item?.toLowerCase().includes('explosivos'))}
                           removerItem={itensHook?.removerItem || (() => {})}
-                          onEditar={() => { setEditingItem({ id: item.id, tipo: 'item' });
+                          onEditar={() => {
+                            setEditingItem({ id: item.id, tipo: 'item' });
                           }}
                           toggleEquipado={itensHook?.toggleEquipado || (() => {})}
                         />
