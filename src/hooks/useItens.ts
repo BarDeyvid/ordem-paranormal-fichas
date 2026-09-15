@@ -44,7 +44,7 @@ export function useItens(maxVestimentas: number = 2) {
     });
   };
 
-  const editarItem = (id: string, novosDados: Partial<ItemGeral>, novasModificacoes?: number[]) => {
+  const editarItem = (id: string, novosDados: Partial<ItemGeral>, novasModificacoes?: number[], novasMaldicoes?: number[], novasMaldicoesElementos?: Record<number, string>) => {
     setItensInventario(prev => prev.map(item => {
       if (item.id === id) {
         const ret: ItemGeralInventario = {
