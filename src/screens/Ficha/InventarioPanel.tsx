@@ -1136,7 +1136,7 @@ export function InventarioPanel() {
       {editingItem?.tipo === 'item' && getItemParaEditar() && (
         <ModalEditarItem
           itemInventario={getItemParaEditar()!}
-          onSave={(id, dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
+          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
             itensHook.editarItem(editingItem.id, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
             setEditingItem(null);
           }}
