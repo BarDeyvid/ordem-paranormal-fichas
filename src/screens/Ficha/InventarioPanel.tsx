@@ -174,36 +174,10 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
         >
           <div className="flex flex-col gap-1 flex-1 min-w-0 justify-center">
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{item.item.Nome_Item}</span>
-            {!(item.item.Grupo_Item?.toLowerCase().includes('explosivo') || stringDT || (item.item.Nome_Item.toLowerCase().includes('soqueira') && modsAtuais.length > 0)) && (
+            {!(item.item.Grupo_Item?.toLowerCase().includes('explosivo') || stringDT) && (
               <span className="text-xs text-zinc-400 font-medium truncate">Categoria {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, item.item.Codigo_Item === 71)}</span>
             )}
             
-            {(() => {
-              if (item.item.Nome_Item.toLowerCase().includes('soqueira') && modsAtuais.length > 0) {
-                let critico = Number((item.item as any).Critico_Arma || 20);
-                let multiplicador = Number((item.item as any).Multiplicador_Arma || 2);
-                let danoBase = (item.item as any).Dano_Arma || '1d3';
-                let alcance = (item.item as any).Alcance_Item || 'Corpo a Corpo';
-                let tipoDano = (item.item as any).Tipo_Dano_Arma || 'Impacto';
-                
-                for (const mod of modsAtuais) {
-                  const nome = mod.Nome_Modif.trim().toLowerCase();
-                  if (nome === 'perigosa') critico -= 2;
-                }
-                
-                const critText = (critico === 20 && multiplicador === 2) ? 'x2' : 
-                                 (critico !== 20 && multiplicador === 2) ? `${critico}` : 
-                                 `${critico}/x${multiplicador}`;
-                
-                return (
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300 mt-0.5">
-                    <span><span className="font-bold text-green-400">Dano:</span> {danoBase}</span>
-                    <span><span className="font-bold text-zinc-400">Crítico:</span> {critText}</span>
-                  </div>
-                );
-              }
-              return null;
-            })()}
 
             {stringDT && (
               <div className="flex items-center gap-4 text-xs text-zinc-300 mt-0.5">
@@ -250,12 +224,6 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
           <div className="flex flex-col gap-1 mt-1">
             <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes)}</span>
             <span><span className="text-green-400 font-bold">Espaços:</span> {calcularEspacosFinais(item.item.Espacos_Itens, item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43))}</span>
-            {item.item.Nome_Item.toLowerCase().includes('soqueira') && modsAtuais.length > 0 && (
-              <>
-                <span><span className="text-green-400 font-bold">Alcance:</span> {(item.item as any).Alcance_Item || 'Corpo a Corpo'}</span>
-                <span><span className="text-green-400 font-bold">Tipo:</span> {(item.item as any).Tipo_Dano_Arma || 'Impacto'}</span>
-              </>
-            )}
             {modsAtuais.length > 0 && (
               <div className="mt-3">
                 <div 
@@ -391,32 +359,7 @@ export function InventarioPanel() {
   const getItemParaEditar = () => editingItem?.tipo === 'item' ? itensHook.itensInventario.find(i => i.id === editingItem.id) : null;
   const getMunicaoParaEditar = () => editingItem?.tipo === 'municao' ? municoesHook.municoesInventario.find(i => i.id === editingItem.id) : null;
   const getItemAmaldicoadoParaEditar = () => editingItem?.tipo === 'amaldicoado' ? itensAmaldicoadosHook.itensAmaldicoadosInventario.find(i => i.id === editingItem.id) : null;
-  const getSoqueiraComoArmaParaEditar = () => {
-    if ((editingItem?.tipo as string) === 'soqueira-arma') {
-      const soqueira = itensHook.itensInventario.find(i => i.id === editingItem?.id);
-      if (!soqueira) return null;
-      return {
-        id: soqueira.id,
-        arma: {
-          Codigo_Arma: soqueira.item.Codigo_Item,
-          Nome_Item: soqueira.item.Nome_Item,
-          Descricao_Item: soqueira.item.Desc_Item,
-          Categoria_Item: soqueira.item.Categoria_Item,
-          'Espaços_Item': soqueira.item.Espacos_Itens,
-          Dano_Arma: (soqueira.item as any).Dano_Arma || '1d3',
-          Critico_Arma: (soqueira.item as any).Critico_Arma || 20,
-          Multiplicador_Arma: (soqueira.item as any).Multiplicador_Arma || 2,
-          Alcance_Item: (soqueira.item as any).Alcance_Item || 'Corpo a Corpo',
-          Tipo_Dano_Arma: (soqueira.item as any).Tipo_Dano_Arma || 'Impacto',
-          Tipo_Arma: 'Corpo a Corpo',
-          Proficiencia: 'Armas Simples'
-        },
-        modificacoes: soqueira.modificacoes,
-        equipado: soqueira.equipado
-      } as any;
-    }
-    return null;
-  };
+  const getSoqueiraComoArmaParaEditar = () => null;
 
   const cargaMaxima = 5 + (atributosFinais.FOR * 5) + (regrasAutomaticasAtivas.has(23) ? 5 : 0) + (regrasAutomaticasAtivas.has(43) ? atributosFinais.INT : 0);
   
@@ -1040,11 +983,7 @@ export function InventarioPanel() {
                               stringDT={calcularDT(item.item.Dt_Item, item.item.Grupo_Item?.toLowerCase().includes('explosivos'))}
                               removerItem={itensHook?.removerItem || (() => {})}
                               onEditar={() => {
-                                if (item.item.Nome_Item.toLowerCase().includes('soqueira') && (item.modificacoes?.length || 0) > 0) {
-                                  setEditingItem({ id: item.id, tipo: 'soqueira-arma' as any });
-                                } else {
-                                  setEditingItem({ id: item.id, tipo: 'item' });
-                                }
+                                setEditingItem({ id: item.id, tipo: 'item' });
                               }}
                               toggleEquipado={itensHook?.toggleEquipado || (() => {})}
                             />
@@ -1065,11 +1004,7 @@ export function InventarioPanel() {
                           stringDT={calcularDT(item.item.Dt_Item, item.item.Grupo_Item?.toLowerCase().includes('explosivos'))}
                           removerItem={itensHook?.removerItem || (() => {})}
                           onEditar={() => {
-                            if (item.item.Nome_Item.toLowerCase().includes('soqueira') && (item.modificacoes?.length || 0) > 0) {
-                              setEditingItem({ id: item.id, tipo: 'soqueira-arma' as any });
-                            } else {
-                              setEditingItem({ id: item.id, tipo: 'item' });
-                            }
+                            setEditingItem({ id: item.id, tipo: 'item' });
                           }}
                           toggleEquipado={itensHook?.toggleEquipado || (() => {})}
                         />
@@ -1220,29 +1155,6 @@ export function InventarioPanel() {
         />
       )}
 
-      {(editingItem?.tipo as string) === 'soqueira-arma' && getSoqueiraComoArmaParaEditar() && (
-        <ModalEditarArma
-          armaInventario={getSoqueiraComoArmaParaEditar()!}
-          onClose={() => setEditingItem(null)}
-          onSave={(dadosEditados, novasMods) => {
-            const soqueiraOrigin = itensHook.itensInventario.find(i => i.id === editingItem?.id);
-            if (soqueiraOrigin) {
-              itensHook.editarItem(editingItem!.id, {
-                Nome_Item: dadosEditados.Nome_Item || soqueiraOrigin.item.Nome_Item,
-                Desc_Item: dadosEditados.Descricao_Item || soqueiraOrigin.item.Desc_Item,
-                Categoria_Item: dadosEditados.Categoria_Item || soqueiraOrigin.item.Categoria_Item,
-                Espacos_Itens: dadosEditados['Espaços_Item'] || soqueiraOrigin.item.Espacos_Itens,
-                Dano_Arma: dadosEditados.Dano_Arma,
-                Critico_Arma: dadosEditados.Critico_Arma,
-                Multiplicador_Arma: dadosEditados.Multiplicador_Arma,
-                Alcance_Item: dadosEditados.Alcance_Item,
-                Tipo_Dano_Arma: dadosEditados.Tipo_Dano_Arma,
-              } as any, novasMods);
-            }
-            setEditingItem(null);
-          }}
-        />
-      )}
     </div>
   );
 }
