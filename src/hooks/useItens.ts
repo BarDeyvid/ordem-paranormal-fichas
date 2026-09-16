@@ -28,7 +28,7 @@ export function useItens(maxVestimentas: number = 2) {
 
   const adicionarItem = (item: ItemGeral) => {
     const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
-    setItensInventario(prev => [...prev, { id: newId, item }]);
+    setItensInventario(prev => [...prev, { id: newId, item }]);\n    return newId;
   };
 
   const removerItem = (id: string) => {

@@ -1957,12 +1957,15 @@ function SortableProtecaoItem({
               <button onClick={() => setModalGranadasAberto(false)} className="text-zinc-500 hover:text-zinc-300">&times;</button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[60vh] flex flex-col gap-2">
-              {itensHook?.itensInventario.filter(i => i.item.Nome_Item.toLowerCase().includes('granada')).map(inv => (
-                <div key={inv.id} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
-                  <span className="text-sm font-bold text-zinc-300">{inv.item.Nome_Item}</span>
+              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).map(itemGeral => (
+                <div key={itemGeral.Codigo_Item || itemGeral.Nome_Item} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
+                  <span className="text-sm font-bold text-zinc-300">{itemGeral.Nome_Item}</span>
                   <button 
                     onClick={() => {
-                      if (granadaTargetArmaId) armasHook?.acoplarMunicao(granadaTargetArmaId, inv.id);
+                      const newId = itensHook?.adicionarItem(itemGeral);
+                      if (granadaTargetArmaId && newId) {
+                         armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
+                      }
                       setModalGranadasAberto(false);
                     }}
                     className="text-xs bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-bold transition"
@@ -1971,8 +1974,8 @@ function SortableProtecaoItem({
                   </button>
                 </div>
               ))}
-              {itensHook?.itensInventario.filter(i => i.item.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
-                <p className="text-center text-zinc-500 text-sm">Nenhuma granada no inventário.</p>
+              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
+                <p className="text-center text-zinc-500 text-sm">Nenhuma granada encontrada no banco de dados.</p>
               )}
             </div>
           </div>
