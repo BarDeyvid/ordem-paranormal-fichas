@@ -423,16 +423,21 @@ export function InventarioPanel() {
     const isAtributo = ['FOR', 'AGI', 'INT', 'PRE', 'VIG'].includes(val.toUpperCase());
     
     if (isAtributo) {
-      calculado = 10 + status.peTurnoDT + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
+      calculado = 10 + (status?.peTurno || 0) + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
     } else {
       const numVal = Number(val);
-      calculado = isNaN(numVal) ? val : numVal;
+        if (isNaN(numVal) || val.toLowerCase().includes('veja') || val.toLowerCase().includes('texto') || val.trim() === '') {
+          calculado = '-';
+        } else {
+          calculado = numVal;
+        }
     }
     
     if (isExplosivo && regrasAutomaticasAtivas.has(29) && typeof calculado === 'number') {
       calculado += atributosFinais.INT;
     }
     
+    if (calculado === '-') return '-';
     if (pericia) {
       return `${pericia} ${calculado}`;
     }
