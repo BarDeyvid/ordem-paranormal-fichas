@@ -69,7 +69,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                 {granadasFiltradas.filter((_, i) => i % 2 === 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
-                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[130px] max-h-[3000px]' : 'min-h-[130px] max-h-[130px]'} cursor-pointer`}>
+                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[175px] max-h-[3000px]' : 'min-h-[175px] max-h-[175px]'} cursor-pointer`}>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-bold text-zinc-200 group-hover:text-orange-400 transition select-none flex-1 mt-0.5 truncate">
                         {granada.Nome_Item}
@@ -81,8 +81,8 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                         <span className="italic text-zinc-400">{granada.Dano_Item?.split(',')[0]} Dano</span>
                       </div>
                       
-                      <Collapse isOpen={isExpanded} previewHeight="3em">
-                        <p className="text-[11px] text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">
+                      <Collapse isOpen={isExpanded} previewHeight="4.5em">
+                        <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed whitespace-pre-wrap select-none min-h-[4.5em]">
                           {formatarTexto(granada.Descricao_Item || '')}
                         </p>
                       </Collapse>
@@ -113,7 +113,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                 {granadasFiltradas.filter((_, i) => i % 2 !== 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
-                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[130px] max-h-[3000px]' : 'min-h-[130px] max-h-[130px]'} cursor-pointer`}>
+                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[175px] max-h-[3000px]' : 'min-h-[175px] max-h-[175px]'} cursor-pointer`}>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-bold text-zinc-200 group-hover:text-orange-400 transition select-none flex-1 mt-0.5 truncate">
                         {granada.Nome_Item}
@@ -125,8 +125,8 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                         <span className="italic text-zinc-400">{granada.Dano_Item?.split(',')[0]} Dano</span>
                       </div>
                       
-                      <Collapse isOpen={isExpanded} previewHeight="3em">
-                        <p className="text-[11px] text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">
+                      <Collapse isOpen={isExpanded} previewHeight="4.5em">
+                        <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed whitespace-pre-wrap select-none min-h-[4.5em]">
                           {formatarTexto(granada.Descricao_Item || '')}
                         </p>
                       </Collapse>

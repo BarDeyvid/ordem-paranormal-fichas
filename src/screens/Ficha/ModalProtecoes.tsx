@@ -78,7 +78,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
 
         {/* Header */}
         <div className="flex flex-col border-b border-zinc-800 p-5 pb-4 bg-zinc-900/50">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-display text-lg uppercase tracking-wide text-zinc-100">
                 ADICIONAR PROTEÇÃO
@@ -160,7 +160,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                 const isExpanded = expandidos.includes(protecao.Codigo_Protecao);
                 const hasProficiencia = proficienciasTotais.includes(protecao.Proficiencia);
                 return (
-                  <div key={protecao.Codigo_Protecao} onClick={() => toggleExpandir(protecao.Codigo_Protecao)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[185px] max-h-[3000px]' : 'min-h-[185px] max-h-[185px]'} cursor-pointer`}
+                  <div key={protecao.Codigo_Protecao} onClick={() => toggleExpandir(protecao.Codigo_Protecao)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[205px] max-h-[3000px]' : 'min-h-[205px] max-h-[205px]'} cursor-pointer`}
                   >
                     {/* Bloco fechado */}
                     <div
@@ -184,20 +184,20 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                       </div>
                     </div>
 
-                    <div className="flex-1 flex flex-col shrink-0">
+                    <div className="flex-1  flex flex-col" >
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
                         <span>
                           <span className="font-bold text-green-400">Defesa:</span> {String(protecao.Defesa_Protecao).startsWith('+') ? protecao.Defesa_Protecao : `+${protecao.Defesa_Protecao}`}
                         </span>
                       </div>
 
-                      <div className="text-[11px] mb-2 block text-zinc-400">
+                      <div className="text-[11px] mb-3 block text-zinc-400">
                         <span className="font-bold text-zinc-200">{protecao.Proficiencia}</span>
                       </div>
                       
                       {protecao.Descricao_Protecao && (
-                        <div className="flex flex-col gap-1 mt-1 mb-2">
-                          <Collapse isOpen={isExpanded} previewHeight="36px">
+                        <div className="flex flex-col gap-1 mt-1 mb-3">
+                          <Collapse isOpen={isExpanded} previewHeight="54px">
                             <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none ">{formatarTexto(protecao.Descricao_Protecao)}</p>
                           </Collapse>
                         </div>
@@ -228,7 +228,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                 const isExpanded = expandidos.includes(protecao.Codigo_Protecao);
                 const hasProficiencia = proficienciasTotais.includes(protecao.Proficiencia);
                 return (
-                  <div key={protecao.Codigo_Protecao} onClick={() => toggleExpandir(protecao.Codigo_Protecao)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[185px] max-h-[3000px]' : 'min-h-[185px] max-h-[185px]'} cursor-pointer`}
+                  <div key={protecao.Codigo_Protecao} onClick={() => toggleExpandir(protecao.Codigo_Protecao)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[205px] max-h-[3000px]' : 'min-h-[205px] max-h-[205px]'} cursor-pointer`}
                   >
                     {/* Bloco fechado */}
                     <div
@@ -252,20 +252,20 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                       </div>
                     </div>
 
-                    <div className="flex-1 flex flex-col shrink-0">
+                    <div className="flex-1  flex flex-col" >
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
                         <span>
                           <span className="font-bold text-green-400">Defesa:</span> {String(protecao.Defesa_Protecao).startsWith('+') ? protecao.Defesa_Protecao : `+${protecao.Defesa_Protecao}`}
                         </span>
                       </div>
 
-                      <div className="text-[11px] mb-2 block text-zinc-400">
+                      <div className="text-[11px] mb-3 block text-zinc-400">
                         <span className="font-bold text-zinc-200">{protecao.Proficiencia}</span>
                       </div>
                       
                       {protecao.Descricao_Protecao && (
-                        <div className="flex flex-col gap-1 mt-1 mb-2">
-                          <Collapse isOpen={isExpanded} previewHeight="36px">
+                        <div className="flex flex-col gap-1 mt-1 mb-3">
+                          <Collapse isOpen={isExpanded} previewHeight="54px">
                             <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none ">{formatarTexto(protecao.Descricao_Protecao)}</p>
                           </Collapse>
                         </div>

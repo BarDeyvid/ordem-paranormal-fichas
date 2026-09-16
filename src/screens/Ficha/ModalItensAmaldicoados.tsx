@@ -11,7 +11,7 @@ interface ModalItensAmaldicoadosProps {
 
 export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoadosProps) {
 
-  const { itensAmaldicoadosHook, poderesHook, trilhasHook, nex } = useRPG();
+  const { itensAmaldicoadosHook } = useRPG();
   const { itens, adicionarItem, loading } = itensAmaldicoadosHook;
 
   React.useEffect(() => {
@@ -25,11 +25,6 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     }
   }, [aberto]);
   
-  
-  const temCriarSelo = useMemo(() => {
-    return Object.values(poderesHook.poderesEscolhidos).some(p => p.nome.toLowerCase().includes('criar selo')) || (trilhasHook.trilhaSelecionada?.Nome_Trilha === 'Criptologista do Oculto' && nex >= 10);
-  }, [poderesHook.poderesEscolhidos, trilhasHook.trilhaSelecionada, nex]);
-
   const [busca, setBusca] = useState('');
   const [abaElemento, setAbaElemento] = useState<string | null>(null);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
@@ -93,7 +88,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
         onClick={e => e.stopPropagation()}
       >
         <div className="flex flex-col border-b border-zinc-800 p-5 pb-4 bg-zinc-900/50">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-display text-lg uppercase tracking-wide text-zinc-100 flex items-center gap-2">
                 <span>💀</span> ADICIONAR ITEM AMALDIÇOADO
@@ -175,8 +170,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                   return (
                     <div 
                       key={item.Codigo_Item_Ama}
-                      onClick={() => toggleExpandir(item.Codigo_Item_Ama)}
-                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[130px] max-h-[3000px]' : 'min-h-[130px] max-h-[130px]'} cursor-pointer`}
+                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[175px] max-h-[3000px]' : 'min-h-[175px] max-h-[175px]'} cursor-pointer`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2  " >
                         <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
@@ -202,8 +196,8 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                       </div>
                       
                       <div className="flex-1 " >
-                        <Collapse isOpen={isExpanded} previewHeight="36px">
-                          <p className="text-xs text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none ">
+                        <Collapse isOpen={isExpanded} previewHeight="54px">
+                          <p className="text-xs text-zinc-400 mb-4 leading-relaxed whitespace-pre-wrap select-none ">
                             {formatarTexto(item.Desc_Ama)}
                           </p>
                         </Collapse>
@@ -217,30 +211,16 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           • <span className="text-zinc-400 font-semibold">Categoria:</span> <span className={`uppercase tracking-wider text-zinc-400`}>{item.Categoria_Ama}</span>
                         </span>
                         
-                        
-                        {item.Nome_Ama === 'Selos Paranormais' && !temCriarSelo ? (
-                          <button 
-                            disabled
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                            title="Requer o poder 'Criar Selo' ou trilha Criptologista do Oculto."
-                            className="ml-auto shrink-0 px-3 py-1 bg-zinc-800 text-zinc-500 rounded font-bold text-[10px] uppercase tracking-wider cursor-not-allowed"
-                          >
-                            Bloqueado
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              adicionarItem(item);
-                              fechar();
-                            }}
-                            className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
-                          >
-                            + Adicionar
-                          </button>
-                        )}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            adicionarItem(item);
+                            fechar();
+                          }}
+                          className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                        >
+                          + Adicionar
+                        </button>
                       </div>
                     </div>
                   );
@@ -252,8 +232,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                   return (
                     <div 
                       key={item.Codigo_Item_Ama}
-                      onClick={() => toggleExpandir(item.Codigo_Item_Ama)}
-                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[130px] max-h-[3000px]' : 'min-h-[130px] max-h-[130px]'} cursor-pointer`}
+                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'min-h-[175px] max-h-[3000px]' : 'min-h-[175px] max-h-[175px]'} cursor-pointer`}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2  " >
                         <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
@@ -279,8 +258,8 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                       </div>
                       
                       <div className="flex-1 " >
-                        <Collapse isOpen={isExpanded} previewHeight="36px">
-                          <p className="text-xs text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none ">
+                        <Collapse isOpen={isExpanded} previewHeight="54px">
+                          <p className="text-xs text-zinc-400 mb-4 leading-relaxed whitespace-pre-wrap select-none ">
                             {formatarTexto(item.Desc_Ama)}
                           </p>
                         </Collapse>
@@ -294,30 +273,16 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           • <span className="text-zinc-400 font-semibold">Categoria:</span> <span className={`uppercase tracking-wider text-zinc-400`}>{item.Categoria_Ama}</span>
                         </span>
                         
-                        
-                        {item.Nome_Ama === 'Selos Paranormais' && !temCriarSelo ? (
-                          <button 
-                            disabled
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                            title="Requer o poder 'Criar Selo' ou trilha Criptologista do Oculto."
-                            className="ml-auto shrink-0 px-3 py-1 bg-zinc-800 text-zinc-500 rounded font-bold text-[10px] uppercase tracking-wider cursor-not-allowed"
-                          >
-                            Bloqueado
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              adicionarItem(item);
-                              fechar();
-                            }}
-                            className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
-                          >
-                            + Adicionar
-                          </button>
-                        )}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            adicionarItem(item);
+                            fechar();
+                          }}
+                          className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                        >
+                          + Adicionar
+                        </button>
                       </div>
                     </div>
                   );

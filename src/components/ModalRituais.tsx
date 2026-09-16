@@ -4,7 +4,6 @@ import { sortPorElementoENome } from '../utils/rpgRules';
 import { Collapse } from './Collapse';
 
 interface ModalRituaisProps {
-  simbolosRituais: Map<number, string>;
   rituais: Ritual[];
   onClose: () => void;
   onSelect: (ritual: Ritual, elemento?: string) => void;
@@ -60,8 +59,7 @@ function formatarDescricao(texto: string): string {
   return resultado;
 }
 
-export const ModalRituais: React.FC<ModalRituaisProps> = ({ 
-  simbolosRituais,
+export const ModalRituais: React.FC<ModalRituaisProps> = ({
   rituais,
   onClose,
   onSelect,
@@ -131,7 +129,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
         
         {/* CABEÇALHO */}
         <div className="flex flex-col border-b border-zinc-800 p-5 pb-4 bg-zinc-900/50">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex flex-col">
               <h3 className="font-display m-0 text-lg uppercase tracking-wide text-zinc-100">
                 APRENDER RITUAL
@@ -166,7 +164,7 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
           >
             Todos
           </button>
-          {['Sangue', 'Morte', 'Conhecimento', 'Energia', 'Medo'].map(elem => {
+          {ELEMENTOS.map(elem => {
             const ativo = abaElemento === elem;
             return (
               <button
@@ -227,77 +225,82 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                 const codigo = ritual.Codigo_Ritual;
                 const expandido = expandidos.includes(codigo);
                 const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
-                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
                 const isEscolhendo = escolhendoElementoId === codigo;
                 const elementoSendoEscolhido = isVaria ? 'Varia' : ritual.Elemento_Ritual;
                 const corElemento = obterCorBadge(elementoSendoEscolhido);
 
                 return (
-                  <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out h-full cursor-pointer`} style={{ borderLeftColor: corElemento }}>
-                    <div className="flex justify-between gap-3 px-4 py-3 relative items-center">
-                      {/* LADO ESQUERDO */}
-                      <div className="flex items-center">
+                  <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out ${expandido ? 'min-h-[225px] max-h-[3000px]' : 'min-h-[225px] max-h-[225px]'} cursor-pointer`} style={{ borderLeftColor: corElemento }}>
+                    <div
+                      
+                      className="flex  items-start justify-between gap-3 p-3"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2.5">
+                          <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
+                              {(() => {
+                                const elStr = elementoSendoEscolhido;
+                                if (elStr.includes(' e ')) {
+                                  const partes = elStr.split(' e ');
+                                  const p1 = partes[0].trim();
+                                  const p2 = partes[1].trim();
+                                  
+                                  const c1 = (() => {
+                                    const l1 = p1.toLowerCase();
+                                    if(l1.includes('sangue')) return 'text-red-500';
+                                    if(l1.includes('conhecimento')) return 'text-yellow-500';
+                                    if(l1.includes('energia')) return 'text-purple-500';
+                                    if(l1.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                    if(l1.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                    return 'text-zinc-400';
+                                  })();
+                                  
+                                  const c2 = (() => {
+                                    const l2 = p2.toLowerCase();
+                                    if(l2.includes('sangue')) return 'text-red-500';
+                                    if(l2.includes('conhecimento')) return 'text-yellow-500';
+                                    if(l2.includes('energia')) return 'text-purple-500';
+                                    if(l2.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                    if(l2.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                    return 'text-zinc-400';
+                                  })();
+                                  
+                                  return (
+                                    <>
+                                      <span className={`text-[9px] font-bold ${c1}`}>{p1} <span className="text-zinc-400 font-normal lowercase">e</span></span>
+                                      <span className={`text-[9px] font-bold ${c2}`}>{p2}</span>
+                                      <span className={`text-[11px] font-black ${c2}`}>{ritual.Circulo_Ritual}</span>
+                                    </>
+                                  );
+                                }
                                 
-                        <div className="flex flex-col gap-1 justify-center py-1">
-                          <span className="text-sm font-bold text-zinc-200 group-hover:text-green-400 transition">{ritual.Nome_Ritual}</span>
+                                const c1 = (() => {
+                                  const l1 = elStr.toLowerCase();
+                                  if(l1.includes('sangue')) return 'text-red-500';
+                                  if(l1.includes('conhecimento')) return 'text-yellow-500';
+                                  if(l1.includes('energia')) return 'text-purple-500';
+                                  if(l1.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                  if(l1.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                  return 'text-zinc-400';
+                                })();
+                                
+                                return (
+                                  <>
+                                    <span className={`text-[9px] font-bold ${c1}`}>{elStr}</span>
+                                    <span className={`text-[11px] font-black ${c1}`}>{ritual.Circulo_Ritual}</span>
+                                  </>
+                                );
+                              })()}
+                            </span>
+                          <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
-
-                      {/* LADO DIREITO */}
-                      <div className="flex items-center shrink-0 ml-2 gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
-                          {(() => {
-                            const elStr = elementoSendoEscolhido;
-                            
-                            const getClasses = (el) => {
-                              const l = el.toLowerCase();
-                              if(l.includes('sangue')) return 'text-red-500';
-                              if(l.includes('conhecimento')) return 'text-yellow-500';
-                              if(l.includes('energia')) return 'text-purple-500';
-                              if(l.includes('morte')) return 'bg-black/50 text-white px-1 rounded';
-                              if(l.includes('medo')) return 'bg-zinc-200/80 text-zinc-950 px-1 rounded';
-                              return 'text-zinc-400';
-                            };
-
-                            if (elStr.includes(' e ')) {
-                              const partes = elStr.split(' e ');
-                              const p1 = partes[0].trim();
-                              const p2 = partes[1].trim();
-                              
-                              const c1 = getClasses(p1);
-                              const c2 = getClasses(p2);
-                              
-                              return (
-                                <>
-                                  <span className={`text-[9px] font-bold flex items-center gap-1 ${c1}`}>{p1}</span>
-                                  <span className="text-zinc-500 text-[10px] lowercase font-bold">e</span>
-                                  <span className={`text-[9px] font-bold flex items-center gap-1 ${c2}`}>
-                                    {p2}
-                                    <span className="text-[11px] font-black">{ritual.Circulo_Ritual}</span>
-                                  </span>
-                                </>
-                              );
-                            }
-                            
-                            const c1 = getClasses(elStr);
-                            
-                            return (
-                              <span className={`text-[9px] font-bold flex items-center gap-1.5 ${c1}`}>
-                                {elStr}
-                                <span className="text-[11px] font-black">{ritual.Circulo_Ritual}</span>
-                              </span>
-                            );
-                          })()}
-                        </span>
-                        
-                        <span className="text-zinc-500 text-xs">{expandido ? '▲' : '▼'}</span>
-                      </div>
+                      <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
                     </div>
 
-                    <div className="px-3 pb-3 shrink-0">
+                    <div className="px-3 pb-3">
                       <Collapse isOpen={expandido}>
-                        <div className="mb-3 flex gap-4 items-center border-b border-zinc-800/50 pb-3">
-                        <div className="flex flex-col gap-1 flex-1">
+                        <div className="mb-3 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
                           {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual?.split('/')[0].trim()}</span></div>}
@@ -306,16 +309,8 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           {ritual.Efeito_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Efeito: </span><span className="text-zinc-300">{ritual.Efeito_Ritual.split('/')[0].trim()}</span></div>}
                           {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual?.split('/')[0].trim()}</span></div>}
                         </div>
-                        {simboloImg && (
-                          <img
-                            src={simboloImg} loading="lazy"
-                            alt=""
-                            className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
-                          />
-                        )}
-                      </div>
-                    </Collapse>
-                      <Collapse isOpen={expandido} previewHeight="60px">
+                      </Collapse>
+                      <Collapse isOpen={expandido} previewHeight="90px">
                         <div className="text-xs leading-relaxed text-zinc-400 ">
                           {ritual.Descricao_Ritual.split('\n').map((linha, idx) => (
                             <span key={idx} className="block mb-1" dangerouslySetInnerHTML={{ __html: formatarDescricao(linha) }} />
@@ -363,77 +358,82 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                 const codigo = ritual.Codigo_Ritual;
                 const expandido = expandidos.includes(codigo);
                 const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
-                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
                 const isEscolhendo = escolhendoElementoId === codigo;
                 const elementoSendoEscolhido = isVaria ? 'Varia' : ritual.Elemento_Ritual;
                 const corElemento = obterCorBadge(elementoSendoEscolhido);
 
                 return (
-                  <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out h-full cursor-pointer`} style={{ borderLeftColor: corElemento }}>
-                    <div className="flex justify-between gap-3 px-4 py-3 relative items-center">
-                      {/* LADO ESQUERDO */}
-                      <div className="flex items-center">
+                  <div key={codigo} onClick={() => setExpandidos(prev => prev.includes(codigo) ? prev.filter(id => id !== codigo) : [...prev, codigo])} className={`bg-zinc-900/40 border border-zinc-800/80 rounded hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col border-l-4  overflow-hidden transition-all duration-300 ease-in-out ${expandido ? 'min-h-[225px] max-h-[3000px]' : 'min-h-[225px] max-h-[225px]'} cursor-pointer`} style={{ borderLeftColor: corElemento }}>
+                    <div
+                      
+                      className="flex  items-start justify-between gap-3 p-3"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2.5">
+                          <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
+                              {(() => {
+                                const elStr = elementoSendoEscolhido;
+                                if (elStr.includes(' e ')) {
+                                  const partes = elStr.split(' e ');
+                                  const p1 = partes[0].trim();
+                                  const p2 = partes[1].trim();
+                                  
+                                  const c1 = (() => {
+                                    const l1 = p1.toLowerCase();
+                                    if(l1.includes('sangue')) return 'text-red-500';
+                                    if(l1.includes('conhecimento')) return 'text-yellow-500';
+                                    if(l1.includes('energia')) return 'text-purple-500';
+                                    if(l1.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                    if(l1.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                    return 'text-zinc-400';
+                                  })();
+                                  
+                                  const c2 = (() => {
+                                    const l2 = p2.toLowerCase();
+                                    if(l2.includes('sangue')) return 'text-red-500';
+                                    if(l2.includes('conhecimento')) return 'text-yellow-500';
+                                    if(l2.includes('energia')) return 'text-purple-500';
+                                    if(l2.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                    if(l2.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                    return 'text-zinc-400';
+                                  })();
+                                  
+                                  return (
+                                    <>
+                                      <span className={`text-[9px] font-bold ${c1}`}>{p1} <span className="text-zinc-400 font-normal lowercase">e</span></span>
+                                      <span className={`text-[9px] font-bold ${c2}`}>{p2}</span>
+                                      <span className={`text-[11px] font-black ${c2}`}>{ritual.Circulo_Ritual}</span>
+                                    </>
+                                  );
+                                }
                                 
-                        <div className="flex flex-col gap-1 justify-center py-1">
-                          <span className="text-sm font-bold text-zinc-200 group-hover:text-green-400 transition">{ritual.Nome_Ritual}</span>
+                                const c1 = (() => {
+                                  const l1 = elStr.toLowerCase();
+                                  if(l1.includes('sangue')) return 'text-red-500';
+                                  if(l1.includes('conhecimento')) return 'text-yellow-500';
+                                  if(l1.includes('energia')) return 'text-purple-500';
+                                  if(l1.includes('morte')) return 'text-white bg-black/50 px-1 rounded';
+                                  if(l1.includes('medo')) return 'text-zinc-950 bg-zinc-200/80 px-1 rounded';
+                                  return 'text-zinc-400';
+                                })();
+                                
+                                return (
+                                  <>
+                                    <span className={`text-[9px] font-bold ${c1}`}>{elStr}</span>
+                                    <span className={`text-[11px] font-black ${c1}`}>{ritual.Circulo_Ritual}</span>
+                                  </>
+                                );
+                              })()}
+                            </span>
+                          <span className="font-bold text-zinc-200 group-hover:text-green-400 transition text-sm">{ritual.Nome_Ritual}</span>
                         </div>
                       </div>
-
-                      {/* LADO DIREITO */}
-                      <div className="flex items-center shrink-0 ml-2 gap-3">
-                        <span className="inline-flex items-center gap-1.5 rounded uppercase tracking-wider leading-tight">
-                          {(() => {
-                            const elStr = elementoSendoEscolhido;
-                            
-                            const getClasses = (el) => {
-                              const l = el.toLowerCase();
-                              if(l.includes('sangue')) return 'text-red-500';
-                              if(l.includes('conhecimento')) return 'text-yellow-500';
-                              if(l.includes('energia')) return 'text-purple-500';
-                              if(l.includes('morte')) return 'bg-black/50 text-white px-1 rounded';
-                              if(l.includes('medo')) return 'bg-zinc-200/80 text-zinc-950 px-1 rounded';
-                              return 'text-zinc-400';
-                            };
-
-                            if (elStr.includes(' e ')) {
-                              const partes = elStr.split(' e ');
-                              const p1 = partes[0].trim();
-                              const p2 = partes[1].trim();
-                              
-                              const c1 = getClasses(p1);
-                              const c2 = getClasses(p2);
-                              
-                              return (
-                                <>
-                                  <span className={`text-[9px] font-bold flex items-center gap-1 ${c1}`}>{p1}</span>
-                                  <span className="text-zinc-500 text-[10px] lowercase font-bold">e</span>
-                                  <span className={`text-[9px] font-bold flex items-center gap-1 ${c2}`}>
-                                    {p2}
-                                    <span className="text-[11px] font-black">{ritual.Circulo_Ritual}</span>
-                                  </span>
-                                </>
-                              );
-                            }
-                            
-                            const c1 = getClasses(elStr);
-                            
-                            return (
-                              <span className={`text-[9px] font-bold flex items-center gap-1.5 ${c1}`}>
-                                {elStr}
-                                <span className="text-[11px] font-black">{ritual.Circulo_Ritual}</span>
-                              </span>
-                            );
-                          })()}
-                        </span>
-                        
-                        <span className="text-zinc-500 text-xs">{expandido ? '▲' : '▼'}</span>
-                      </div>
+                      <span className="text-zinc-500 text-xs mt-1">{expandido ? '▲' : '▼'}</span>
                     </div>
 
-                    <div className="px-3 pb-3 shrink-0">
+                    <div className="px-3 pb-3">
                       <Collapse isOpen={expandido}>
-                        <div className="mb-3 flex gap-4 items-center border-b border-zinc-800/50 pb-3">
-                        <div className="flex flex-col gap-1 flex-1">
+                        <div className="mb-3 flex flex-col gap-1 border-b border-zinc-800/50 pb-3">
                           {ritual.Execucao_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Execução: </span><span className="text-zinc-300">{ritual.Execucao_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Alcance_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Alcance: </span><span className="text-zinc-300">{ritual.Alcance_Ritual?.split('/')[0].trim()}</span></div>}
                           {ritual.Area_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Área: </span><span className="text-zinc-300">{ritual.Area_Ritual?.split('/')[0].trim()}</span></div>}
@@ -442,16 +442,8 @@ export const ModalRituais: React.FC<ModalRituaisProps> = ({
                           {ritual.Efeito_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Efeito: </span><span className="text-zinc-300">{ritual.Efeito_Ritual.split('/')[0].trim()}</span></div>}
                           {ritual.Resistencia_Ritual && <div className="text-xs"><span className="font-bold text-zinc-500">Resistência: </span><span className="text-zinc-300">{ritual.Resistencia_Ritual?.split('/')[0].trim()}</span></div>}
                         </div>
-                        {simboloImg && (
-                          <img
-                            src={simboloImg} loading="lazy"
-                            alt=""
-                            className="w-48 h-48 object-contain shrink-0 drop-shadow-lg"
-                          />
-                        )}
-                      </div>
-                    </Collapse>
-                      <Collapse isOpen={expandido} previewHeight="60px">
+                      </Collapse>
+                      <Collapse isOpen={expandido} previewHeight="90px">
                         <div className="text-xs leading-relaxed text-zinc-400 ">
                           {ritual.Descricao_Ritual.split('\n').map((linha, idx) => (
                             <span key={idx} className="block mb-1" dangerouslySetInnerHTML={{ __html: formatarDescricao(linha) }} />
