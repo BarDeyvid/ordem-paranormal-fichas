@@ -110,7 +110,7 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
-  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas } = useRPG();
+  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, itensHook, status } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   
@@ -281,6 +281,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         <div className="flex flex-col gap-1 w-full min-w-0 pr-3">
           <div className="flex items-center gap-1 min-w-0">
             <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
+            {isLancadorGranadas && granadaAcoplada && (
+              <span className="ml-1 px-1.5 py-0.5 bg-orange-950/40 border border-orange-900/50 rounded text-[9px] font-bold text-orange-400 whitespace-nowrap">
+                {granadaAcoplada.Nome_Item}
+              </span>
+            )}
             
             {arma['Agil?'] && (
               <span className="relative group/agil cursor-help">
@@ -323,7 +328,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <span className="text-xs text-zinc-400">
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
-            <span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}
+            {isLancadorGranadas ? (
+              <><span className="font-bold text-green-400">DT:</span> {dtGranada}</>
+            ) : (
+              <><span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}</>
+            )}
           </span>
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">

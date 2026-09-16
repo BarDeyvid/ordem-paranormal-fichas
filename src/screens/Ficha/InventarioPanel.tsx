@@ -341,6 +341,8 @@ export function InventarioPanel() {
   const [municaoFiltroNome, setMunicaoFiltroNome] = useState<string | undefined>(undefined);
   const [municaoFiltroCategoria, setMunicaoFiltroCategoria] = useState<string | undefined>(undefined);
   const [municaoTargetArmaId, setMunicaoTargetArmaId] = useState<string | undefined>(undefined);
+  const [modalGranadasAberto, setModalGranadasAberto] = useState(false);
+  const [granadaTargetArmaId, setGranadaTargetArmaId] = useState<string | undefined>(undefined);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
   
   useEffect(() => {
@@ -1199,7 +1201,11 @@ function SortableArmaItem({
     const maldicoesAtuais = (Array.isArray(item.maldicoes) ? item.maldicoes : []).map(id => maldicoesHook?.maldicoes.find(m => m.Codigo_Mald === id)).filter(Boolean) as any[];
 
   const municoesAcopladasList = (item.municoesAcopladas || []).map(mid => {
-    return municoesHook?.municoesInventario.find(m => m.id === mid);
+    let m = municoesHook?.municoesInventario.find(m => m.id === mid);
+    if (m) return m;
+    let i = itensHook?.itensInventario.find(i => i.id === mid);
+    if (i) return { id: i.id, municao: i.item, qtd: i.qtd };
+    return null;
   }).filter(Boolean) as any[];
 
   const calcularEstatisticasFinaisArma = () => {
@@ -1465,21 +1471,34 @@ function SortableArmaItem({
             {id !== 'coronhada-virtual' && (
                 <>
                   {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
+                      {(arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? (
                       <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
-                        if (compativeis.length === 1) {
-                          const idM = municoesHook?.adicionarMunicao(compativeis[0]);
-                          if (idM) armasHook?.acoplarMunicao(id, idM);
-                        } else if (onAddMunicao) {
-                          onAddMunicao();
-                        }
-                      }}
-                      className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-blue-700 hover:bg-blue-900/20 text-zinc-300 hover:text-blue-400 transition-colors"
-                    >
-                      + Munição
-                    </button>
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setGranadaTargetArmaId(id);
+                          setModalGranadasAberto(true);
+                        }}
+                        className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-orange-700 hover:bg-orange-900/20 text-zinc-300 hover:text-orange-400 transition-colors"
+                      >
+                        + Granada
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
+                          if (compativeis.length === 1) {
+                            const idM = municoesHook?.adicionarMunicao(compativeis[0]);
+                            if (idM) armasHook?.acoplarMunicao(id, idM);
+                          } else if (onAddMunicao) {
+                            onAddMunicao();
+                          }
+                        }}
+                        className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-blue-700 hover:bg-blue-900/20 text-zinc-300 hover:text-blue-400 transition-colors"
+                      >
+                        + Munição
+                      </button>
+                    )}
                   )}
                   <button
                     onClick={(e) => {
@@ -1928,6 +1947,39 @@ function SortableProtecaoItem({
         </div>
       
       </Collapse>
+
+      {/* Modal Granadas */}
+      {modalGranadasAberto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950 p-4">
+              <h2 className="text-lg font-bold text-zinc-100">Selecionar Granada</h2>
+              <button onClick={() => setModalGranadasAberto(false)} className="text-zinc-500 hover:text-zinc-300">&times;</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[60vh] flex flex-col gap-2">
+              {itensHook?.itensInventario.filter(i => i.item.Nome_Item.toLowerCase().includes('granada')).map(inv => (
+                <div key={inv.id} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
+                  <span className="text-sm font-bold text-zinc-300">{inv.item.Nome_Item}</span>
+                  <button 
+                    onClick={() => {
+                      if (granadaTargetArmaId) armasHook?.acoplarMunicao(granadaTargetArmaId, inv.id);
+                      setModalGranadasAberto(false);
+                    }}
+                    className="text-xs bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-bold transition"
+                  >
+                    Acoplar
+                  </button>
+                </div>
+              ))}
+              {itensHook?.itensInventario.filter(i => i.item.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
+                <p className="text-center text-zinc-500 text-sm">Nenhuma granada no inventário.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
+
 }
