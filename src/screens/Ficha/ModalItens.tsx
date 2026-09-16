@@ -185,8 +185,8 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
                   className="w-full rounded border border-zinc-700 bg-zinc-950 px-2 py-1 text-xs text-zinc-300 outline-none"
                   options={[
                     { value: 'Todos', label: 'Todos' },
-                    { value: 'Itens Operacionais', label: 'Só Operacionais' },
-                    { value: 'Recursos', label: 'Só Recursos' }
+                    { value: 'Itens Operacionais', label: 'Itens Operacionais' },
+                    { value: 'Recursos', label: 'Recursos' }
                   ]}
                 />
               </div>
