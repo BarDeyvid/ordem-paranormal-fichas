@@ -884,10 +884,15 @@ export function InventarioPanel() {
                     removerArma={armasHook?.removerArma || (() => {})}
                       onEditar={() => setArmaEditandoId(item.id)}
                       onAddMunicao={() => {
-                        setMunicaoTargetArmaId(item.id);
-                        setMunicaoFiltroNome(item.arma.Nome_Item);
-                        setMunicaoFiltroCategoria(item.arma.Categoria_Item);
-                        setModalMunicoesAberto(true);
+                        if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                          setGranadaTargetArmaId(item.id);
+                          setModalGranadasAberto(true);
+                        } else {
+                          setMunicaoTargetArmaId(item.id);
+                          setMunicaoFiltroNome(item.arma.Nome_Item);
+                          setMunicaoFiltroCategoria(item.arma.Categoria_Item);
+                          setModalMunicoesAberto(true);
+                        }
                       }}
                     />
                 ))}
@@ -1157,6 +1162,40 @@ export function InventarioPanel() {
           }}
           onClose={() => setEditingItem(null)}
         />
+      )}
+
+      {/* Modal Granadas */}
+      {modalGranadasAberto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950 p-4">
+              <h2 className="text-lg font-bold text-zinc-100">Selecionar Granada</h2>
+              <button onClick={() => setModalGranadasAberto(false)} className="text-zinc-500 hover:text-zinc-300">&times;</button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[60vh] flex flex-col gap-2">
+              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).map(itemGeral => (
+                <div key={itemGeral.Codigo_Item || itemGeral.Nome_Item} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
+                  <span className="text-sm font-bold text-zinc-300">{itemGeral.Nome_Item}</span>
+                  <button 
+                    onClick={() => {
+                      const newId = itensHook?.adicionarItem(itemGeral);
+                      if (granadaTargetArmaId && newId) {
+                         armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
+                      }
+                      setModalGranadasAberto(false);
+                    }}
+                    className="text-xs bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-bold transition"
+                  >
+                    Acoplar
+                  </button>
+                </div>
+              ))}
+              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
+                <p className="text-center text-zinc-500 text-sm">Nenhuma granada encontrada no banco de dados.</p>
+              )}
+            </div>
+          </div>
+        </div>
       )}
 
     </div>
@@ -1471,21 +1510,12 @@ function SortableArmaItem({
             {id !== 'coronhada-virtual' && (
                 <>
                   {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
-                      (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setGranadaTargetArmaId(id);
-                          setModalGranadasAberto(true);
-                        }}
-                        className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-orange-700 hover:bg-orange-900/20 text-zinc-300 hover:text-orange-400 transition-colors"
-                      >
-                        + Granada
-                      </button>
-                    ) : (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                          onAddMunicao?.();
+                        } else {
                           const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
                           if (compativeis.length === 1) {
                             const idM = municoesHook?.adicionarMunicao(compativeis[0]);
@@ -1493,12 +1523,16 @@ function SortableArmaItem({
                           } else if (onAddMunicao) {
                             onAddMunicao();
                           }
-                        }}
-                        className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-blue-700 hover:bg-blue-900/20 text-zinc-300 hover:text-blue-400 transition-colors"
-                      >
-                        + Munição
-                      </button>
-                    )
+                        }
+                      }}
+                      className={`text-xs px-3 py-1.5 rounded bg-zinc-900 border transition-colors ${
+                        (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas'))
+                          ? 'border-zinc-700 hover:border-orange-700 hover:bg-orange-900/20 text-zinc-300 hover:text-orange-400'
+                          : 'border-zinc-700 hover:border-blue-700 hover:bg-blue-900/20 text-zinc-300 hover:text-blue-400'
+                      }`}
+                    >
+                      {(arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? '+ Granada' : '+ Munição'}
+                    </button>
                   )}
                   <button
                     onClick={(e) => {
@@ -1948,39 +1982,7 @@ function SortableProtecaoItem({
       
       </Collapse>
 
-      {/* Modal Granadas */}
-      {modalGranadasAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950 p-4">
-              <h2 className="text-lg font-bold text-zinc-100">Selecionar Granada</h2>
-              <button onClick={() => setModalGranadasAberto(false)} className="text-zinc-500 hover:text-zinc-300">&times;</button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[60vh] flex flex-col gap-2">
-              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).map(itemGeral => (
-                <div key={itemGeral.Codigo_Item || itemGeral.Nome_Item} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
-                  <span className="text-sm font-bold text-zinc-300">{itemGeral.Nome_Item}</span>
-                  <button 
-                    onClick={() => {
-                      const newId = itensHook?.adicionarItem(itemGeral);
-                      if (granadaTargetArmaId && newId) {
-                         armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
-                      }
-                      setModalGranadasAberto(false);
-                    }}
-                    className="text-xs bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-bold transition"
-                  >
-                    Acoplar
-                  </button>
-                </div>
-              ))}
-              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
-                <p className="text-center text-zinc-500 text-sm">Nenhuma granada encontrada no banco de dados.</p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+
 
     </div>
   );
