@@ -1264,7 +1264,7 @@ function SortableArmaItem({
         }
         let calc: string | number = 0;
         if (['FOR','AGI','INT','PRE','VIG'].includes(val.toUpperCase())) {
-          calc = 10 + (statusHook.status?.peTurno || 0) + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
+          calc = 10 + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
         } else {
           calc = Number(val);
           if (isNaN(calc)) calc = '-';
