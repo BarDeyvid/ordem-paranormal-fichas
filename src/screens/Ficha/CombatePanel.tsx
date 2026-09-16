@@ -380,7 +380,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
             {isLancadorGranadas ? (
-              <><span className="font-bold text-green-400">DT:</span> {dtGranada}{granadaAcoplada && (<><span className="mx-2 text-zinc-700">|</span><span className="font-bold text-green-400">Granada:</span> <span className="text-zinc-300">{granadaAcoplada.Nome_Item}</span></>)}</>
+              <><span className="font-bold text-green-400">DT:</span> {dtGranada}</>
             ) : (
               <><span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}</>
             )}
