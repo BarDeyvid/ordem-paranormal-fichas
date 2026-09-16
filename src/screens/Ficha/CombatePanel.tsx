@@ -2,6 +2,8 @@ import React from 'react';
 import { useRPG } from '../../context/RPGContext';
 import type { ArmaInventario } from '../../types';
 import { Collapse } from '../../components/Collapse';
+import { ModalMunicoes } from './ModalMunicoes';
+import { ModalGranadas } from './ModalGranadas';
 import { CustomSelect } from '../../components/CustomSelect';
 
 const ATRIBUTO_OPTIONS = [
@@ -109,10 +111,17 @@ interface ArmaCombateCardProps {
   maldicoesHook: any;
 }
 
-const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook }) => {
-  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, itensHook, status } = useRPG();
+const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook, onAddMunicao, municoesHook, itensHook, armasHook }) => {
+  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, status } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
+  const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
+    let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
+    if (m) return m;
+    let i = itensHook?.itensInventario.find((x: any) => x.id === mid);
+    if (i) return { id: i.id, municao: i.item, qtd: i.qtd };
+    return null;
+  }).filter(Boolean) as any[];
   
   const modsSafe = Array.isArray(modificacoes) ? modificacoes : [];
   const maldsSafe = Array.isArray(maldicoes) ? maldicoes : [];
@@ -398,7 +407,52 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             </div>
           )}
         </div>
-        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
+        {(armaInv.municoesAcopladas && armaInv.municoesAcopladas.length > 0) && (
+              <div className="flex flex-wrap items-center gap-1.5 mt-1 relative z-20" onClick={e => e.stopPropagation()}>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Munições:</span>
+                {municoesAcopladasList.map(minv => (
+                  <div key={minv.id} className="flex items-center gap-1 bg-green-950/40 border border-green-900/50 rounded-full pl-2 pr-1 py-0.5 group">
+                    <span className="text-[11px] font-bold text-green-400 truncate max-w-[150px]">{minv.municao.Nome_Item}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        armasHook?.desacoplarMunicao(armaInv.id, minv.id);
+                        municoesHook?.removerMunicao(minv.id);
+                      }}
+                      title="Remover Munição"
+                      className="flex items-center justify-center w-4 h-4 rounded-full text-green-600 hover:text-red-400 hover:bg-green-900/50 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {arma.Categoria_Item && ['munição', 'municao'].some(c => !arma.Categoria_Item?.toLowerCase().includes(c)) && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                    onAddMunicao?.();
+                  } else {
+                    const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
+                    if (compativeis.length === 1) {
+                      const idM = municoesHook?.adicionarMunicao(compativeis[0]);
+                      if (idM) armasHook?.acoplarMunicao(armaInv.id, idM);
+                    } else if (onAddMunicao) {
+                      onAddMunicao();
+                    }
+                  }
+                }}
+                className="w-5 h-5 rounded flex items-center justify-center bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-green-400 hover:border-green-700 transition-colors z-20 relative"
+                title="Acoplar Munição/Granada"
+              >
+                +
+              </button>
+            )}
+          <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
       <Collapse isOpen={estaExpandida}>
@@ -472,7 +526,7 @@ export const CombatePanel: React.FC = () => {
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
   };
-  const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas } = useRPG();
+  const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas, municoesHook } = useRPG();
   let armas = [...(armasHook?.armasInventario || [])];
 
   const soqueira = itensHook?.itensInventario.find(i => i.item.Nome_Item.toLowerCase().includes('soqueira'));
@@ -521,7 +575,21 @@ export const CombatePanel: React.FC = () => {
             toggleExpandir={() => toggleExpandir(armaInv.id)} 
             modificacoesHook={modificacoesHook}
             maldicoesHook={maldicoesHook}
-          />
+              armasHook={armasHook}
+              municoesHook={municoesHook}
+              itensHook={itensHook}
+              onAddMunicao={() => {
+                if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                  setGranadaTargetArmaId(armaInv.id);
+                  setModalGranadasAberto(true);
+                } else {
+                  setMunicaoTargetArmaId(armaInv.id);
+                  setMunicaoFiltroNome(armaInv.arma.Nome_Item);
+                  setMunicaoFiltroCategoria(armaInv.arma.Categoria_Item);
+                  setModalMunicoesAberto(true);
+                }
+              }}
+            />
         ))}
       </div>
     );
@@ -531,6 +599,32 @@ export const CombatePanel: React.FC = () => {
     <div className="flex flex-col gap-6 p-2">
       {renderWeaponList(armasCorpoACorpo, 'Ataques Corpo a Corpo')}
       {renderWeaponList(armasFogo, 'Ataques à Distância')}
+      {modalMunicoesAberto && (
+        <ModalMunicoes
+          onFechar={() => setModalMunicoesAberto(false)}
+          armaFiltroNome={municaoFiltroNome}
+          armaFiltroCategoria={municaoFiltroCategoria}
+          onSelect={municao => {
+            const idGerado = municoesHook?.adicionarMunicao(municao);
+            if (idGerado && municaoTargetArmaId) {
+              armasHook?.acoplarMunicao(municaoTargetArmaId, idGerado);
+            }
+            setModalMunicoesAberto(false);
+          }}
+        />
+      )}
+      {modalGranadasAberto && (
+        <ModalGranadas
+          onFechar={() => setModalGranadasAberto(false)}
+          onSelect={(granada) => {
+            const newId = itensHook?.adicionarItem(granada);
+            if (granadaTargetArmaId && newId) {
+              armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
+            }
+            setModalGranadasAberto(false);
+          }}
+        />
+      )}
     </div>
   );
 };
