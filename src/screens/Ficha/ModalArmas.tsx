@@ -220,6 +220,11 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
               {armasFiltradas.filter((_, i) => i % 2 === 0).map((arma: Arma) => {
                 const isExpanded = expandidos.includes(arma.Codigo_Arma);
                 const critico = formatarCritico(arma.Critico_Arma, arma.Multiplicador_Arma);
+                  const isLancadorGranadas = arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lançador de granadas');
+                  let danoPrint = arma.Dano_Arma || '-';
+                  if (danoPrint.toLowerCase().includes('veja') || danoPrint.toLowerCase().includes('texto')) {
+                    danoPrint = '-';
+                  }
                 const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
                 return (
                   <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
@@ -320,6 +325,11 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
               {armasFiltradas.filter((_, i) => i % 2 !== 0).map((arma: Arma) => {
                 const isExpanded = expandidos.includes(arma.Codigo_Arma);
                 const critico = formatarCritico(arma.Critico_Arma, arma.Multiplicador_Arma);
+                  const isLancadorGranadas = arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lançador de granadas');
+                  let danoPrint = arma.Dano_Arma || '-';
+                  if (danoPrint.toLowerCase().includes('veja') || danoPrint.toLowerCase().includes('texto')) {
+                    danoPrint = '-';
+                  }
                 const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
                 return (
                   <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
