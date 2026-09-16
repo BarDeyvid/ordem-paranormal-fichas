@@ -64,7 +64,7 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
     const isAtributo = ['FOR', 'AGI', 'INT', 'PRE', 'VIG'].includes(val.toUpperCase());
     
     if (isAtributo) {
-      calculado = 10 + status.peTurnoDT + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
+      calculado = 10 + status.peTurno + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
     } else {
       const numVal = Number(val);
       calculado = isNaN(numVal) ? val : numVal;
