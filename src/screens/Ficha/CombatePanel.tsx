@@ -429,8 +429,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {arma.Categoria_Item && ['munição', 'municao'].some(c => !arma.Categoria_Item?.toLowerCase().includes(c)) && (
+          <div className="flex items-center gap-2 flex-shrink-0 mt-1 mb-1">
+            {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
