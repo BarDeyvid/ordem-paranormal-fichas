@@ -31,6 +31,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { restrictToWindowEdges, restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
 import type { Modifier } from '@dnd-kit/core';
 import { ModalMunicoes } from './ModalMunicoes';
+import { ModalGranadas } from './ModalGranadas';
 import { ModalEditarArma } from '../../components/ModalEditarArma';
 import { SortableItemAmaldicoado } from '../../components/SortableItemAmaldicoado';
 
@@ -88,7 +89,7 @@ interface SortableItemGeralProps {
   isOverlay?: boolean;
 }
 
-export const calcularEspacosFinais = (espacoBase: number | string, modificacoesIds?: number[], todasModificacoes?: any[], isRegra43Ativa?: boolean) => {
+const calcularEspacosFinais = (espacoBase: number | string, modificacoesIds?: number[], todasModificacoes?: any[], isRegra43Ativa?: boolean) => {
   let val = Number(String(espacoBase).replace(',', '.').replace(/[^0-9.-]+/g, ''));
   if (isNaN(val)) val = 0;
   
@@ -1166,36 +1167,16 @@ export function InventarioPanel() {
 
       {/* Modal Granadas */}
       {modalGranadasAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="flex w-full max-w-md flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950 p-4">
-              <h2 className="text-lg font-bold text-zinc-100">Selecionar Granada</h2>
-              <button onClick={() => setModalGranadasAberto(false)} className="text-zinc-500 hover:text-zinc-300">&times;</button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[60vh] flex flex-col gap-2">
-              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).map(itemGeral => (
-                <div key={itemGeral.Codigo_Item || itemGeral.Nome_Item} className="flex justify-between items-center p-3 rounded bg-zinc-950 border border-zinc-800 hover:border-orange-500/50">
-                  <span className="text-sm font-bold text-zinc-300">{itemGeral.Nome_Item}</span>
-                  <button 
-                    onClick={() => {
-                      const newId = itensHook?.adicionarItem(itemGeral);
-                      if (granadaTargetArmaId && newId) {
-                         armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
-                      }
-                      setModalGranadasAberto(false);
-                    }}
-                    className="text-xs bg-orange-700 hover:bg-orange-600 text-white px-3 py-1 rounded font-bold transition"
-                  >
-                    Acoplar
-                  </button>
-                </div>
-              ))}
-              {itensHook?.itens.filter(i => i.Nome_Item.toLowerCase().includes('granada')).length === 0 && (
-                <p className="text-center text-zinc-500 text-sm">Nenhuma granada encontrada no banco de dados.</p>
-              )}
-            </div>
-          </div>
-        </div>
+        <ModalGranadas
+          onFechar={() => setModalGranadasAberto(false)}
+          onSelect={(granada) => {
+            const newId = itensHook?.adicionarItem(granada);
+            if (granadaTargetArmaId && newId) {
+               armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
+            }
+            setModalGranadasAberto(false);
+          }}
+        />
       )}
 
     </div>
@@ -1231,7 +1212,7 @@ function SortableArmaItem({
     isDragging,
   } = useSortable({ id, data: { type: 'arma' } });
 
-  const { municoesHook, armasHook, proficienciasTotais, modificacoesHook, maldicoesHook, atributosFinais, status, regrasAutomaticasAtivas, regras } = useRPG();
+  const { municoesHook, armasHook, proficienciasTotais, modificacoesHook, maldicoesHook, atributosFinais, status, regrasAutomaticasAtivas, regras, itensHook } = useRPG();
   const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
   const [expandirMods, setExpandirMods] = useState(false);
     const [expandirMalds, setExpandirMalds] = useState(false);
