@@ -40,8 +40,8 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
         <div className="flex flex-col gap-3 border-b border-zinc-800 bg-zinc-900/50 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-black uppercase tracking-widest text-orange-500 flex items-center gap-2">
-                <span className="text-2xl">💣</span>
+              <h2 className="text-xl font-black uppercase tracking-widest text-green-500 flex items-center gap-2">
+                <span className="text-2xl">📦</span>
                 Selecionar Granada
               </h2>
               <p className="mt-1 text-xs text-zinc-400">Selecione uma granada para acoplar ao lançador.</p>
@@ -55,7 +55,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
               placeholder="Buscar granada..."
               value={busca}
               onChange={e => setBusca(e.target.value)}
-              className="flex-1 rounded border border-zinc-700 bg-zinc-950 px-3 py-1.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-orange-700"
+              className="flex-1 rounded border border-zinc-700 bg-zinc-950 px-3 py-1.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-green-700"
             />
           </div>
         </div>
@@ -69,31 +69,31 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                 {granadasFiltradas.filter((_, i) => i % 2 === 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
-                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}>
+                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-zinc-200 group-hover:text-orange-400 transition select-none flex-1 mt-0.5 truncate">
+                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
                         {granada.Nome_Item}
                       </h3>
                     </div>
                     
                     <div className="flex-1">
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
-                        <span className="italic text-zinc-400">{granada.Dano_Item?.split(',')[0]} Dano</span>
+                        <span className="italic text-zinc-400">Granada</span>
                       </div>
                       
                       <Collapse isOpen={isExpanded} previewHeight="3em">
                         <p className="text-[11px] text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">
-                          {formatarTexto(granada.Descricao_Item || '')}
+                          {formatarTexto(granada.Desc_Item || '')}
                         </p>
                       </Collapse>
                     </div>
 
                     <div className="flex flex-nowrap items-center gap-2 mt-auto overflow-hidden transition-all duration-300 ease-in-out text-[11px] border-t border-zinc-800/50 pt-2">
                       <span className="text-zinc-500">
-                        <span className="text-orange-400 font-semibold">Espaços:</span> {(regrasAutomaticasAtivas?.has(43) && (granada.Espacos_Itens === 0.5 || String(granada.Espacos_Itens) === '0,5' || String(granada.Espacos_Itens) === '0.5')) ? 0.25 : granada.Espacos_Itens}
+                        <span className="text-green-400 font-semibold">Espaços:</span> {(regrasAutomaticasAtivas?.has(43) && (granada.Espacos_Itens === 0.5 || String(granada.Espacos_Itens) === '0,5' || String(granada.Espacos_Itens) === '0.5')) ? 0.25 : granada.Espacos_Itens}
                       </span>
                       <span className="text-zinc-500 flex items-center gap-1">
-                        • <span className="text-orange-400 font-semibold">Categoria:</span> <span className="uppercase tracking-wider text-zinc-400">{granada.Categoria_Item}</span>
+                        • <span className="text-green-400 font-semibold">Categoria:</span> <span className="uppercase tracking-wider text-zinc-400">{granada.Categoria_Item}</span>
                       </span>
                       
                       <button
@@ -101,7 +101,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                           e.stopPropagation();
                           onSelect(granada);
                         }}
-                        className="ml-auto shrink-0 px-3 py-1 bg-orange-700 hover:bg-orange-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                        className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
                       >
                         Acoplar
                       </button>
@@ -113,31 +113,31 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                 {granadasFiltradas.filter((_, i) => i % 2 !== 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
-                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-orange-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}>
+                  <div key={granada.Codigo_Item || granada.Nome_Item} onClick={() => toggleExpandir(String(granada.Codigo_Item || granada.Nome_Item))} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-zinc-200 group-hover:text-orange-400 transition select-none flex-1 mt-0.5 truncate">
+                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
                         {granada.Nome_Item}
                       </h3>
                     </div>
                     
                     <div className="flex-1">
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
-                        <span className="italic text-zinc-400">{granada.Dano_Item?.split(',')[0]} Dano</span>
+                        <span className="italic text-zinc-400">Granada</span>
                       </div>
                       
                       <Collapse isOpen={isExpanded} previewHeight="3em">
                         <p className="text-[11px] text-zinc-400 mb-2 leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">
-                          {formatarTexto(granada.Descricao_Item || '')}
+                          {formatarTexto(granada.Desc_Item || '')}
                         </p>
                       </Collapse>
                     </div>
 
                     <div className="flex flex-nowrap items-center gap-2 mt-auto overflow-hidden transition-all duration-300 ease-in-out text-[11px] border-t border-zinc-800/50 pt-2">
                       <span className="text-zinc-500">
-                        <span className="text-orange-400 font-semibold">Espaços:</span> {(regrasAutomaticasAtivas?.has(43) && (granada.Espacos_Itens === 0.5 || String(granada.Espacos_Itens) === '0,5' || String(granada.Espacos_Itens) === '0.5')) ? 0.25 : granada.Espacos_Itens}
+                        <span className="text-green-400 font-semibold">Espaços:</span> {(regrasAutomaticasAtivas?.has(43) && (granada.Espacos_Itens === 0.5 || String(granada.Espacos_Itens) === '0,5' || String(granada.Espacos_Itens) === '0.5')) ? 0.25 : granada.Espacos_Itens}
                       </span>
                       <span className="text-zinc-500 flex items-center gap-1">
-                        • <span className="text-orange-400 font-semibold">Categoria:</span> <span className="uppercase tracking-wider text-zinc-400">{granada.Categoria_Item}</span>
+                        • <span className="text-green-400 font-semibold">Categoria:</span> <span className="uppercase tracking-wider text-zinc-400">{granada.Categoria_Item}</span>
                       </span>
                       
                       <button
@@ -145,7 +145,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                           e.stopPropagation();
                           onSelect(granada);
                         }}
-                        className="ml-auto shrink-0 px-3 py-1 bg-orange-700 hover:bg-orange-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
+                        className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
                       >
                         Acoplar
                       </button>
