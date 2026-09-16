@@ -1228,6 +1228,14 @@ function SortableArmaItem({
     return null;
   }).filter(Boolean) as any[];
 
+  const isLancadorGranadas = arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas');
+  let granadaAcoplada: any = null;
+  if (isLancadorGranadas && item.municoesAcopladas && item.municoesAcopladas.length > 0) {
+    const mid = item.municoesAcopladas[0];
+    const itemInv = itensHook?.itensInventario.find((i: any) => String(i.id) === String(mid));
+    if (itemInv) granadaAcoplada = itemInv.item;
+  }
+
   const calcularEstatisticasFinaisArma = () => {
     let dano = arma.Dano_Arma || '';
     let espacos = calcularEspacosFinais(arma['Espaços_Item'], item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43));
