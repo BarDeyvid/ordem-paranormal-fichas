@@ -521,6 +521,12 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 };
 
 export const CombatePanel: React.FC = () => {
+  const [modalMunicoesAberto, setModalMunicoesAberto] = React.useState(false);
+  const [municaoTargetArmaId, setMunicaoTargetArmaId] = React.useState<string | undefined>(undefined);
+  const [municaoFiltroNome, setMunicaoFiltroNome] = React.useState<string | undefined>(undefined);
+  const [municaoFiltroCategoria, setMunicaoFiltroCategoria] = React.useState<string | undefined>(undefined);
+  const [modalGranadasAberto, setModalGranadasAberto] = React.useState(false);
+  const [granadaTargetArmaId, setGranadaTargetArmaId] = React.useState<string | undefined>(undefined);
   const [expandidos, setExpandidos] = React.useState<Record<string, boolean>>({});
 
   const toggleExpandir = (id: string) => {
