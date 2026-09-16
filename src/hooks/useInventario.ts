@@ -17,7 +17,7 @@ export interface UseInventarioReturn {
 
 const NIVEIS_CREDITO: LimiteCredito[] = ['Baixo', 'Médio', 'Alto', 'Ilimitado'];
 
-export function useInventario(codigoRegra?: number | null): UseInventarioReturn {
+export function useInventario(codigoRegra?: number | null, grauProfissao: number = 0): UseInventarioReturn {
   const [prestigio, setPrestigioState] = useState<number>(0);
   
   const [patenteOverride, setPatenteOverride] = useState<Patente | null>(null);
