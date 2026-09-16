@@ -209,9 +209,44 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   }
 
   
-  const tipoBase = arma.Tipo_Dano_Arma || 'Físico';
-  
+  const isLancadorGranadas = arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas');
+  let granadaAcoplada: any = null;
+  if (isLancadorGranadas && armaInv.municoesAcopladas && armaInv.municoesAcopladas.length > 0) {
+    const mid = armaInv.municoesAcopladas[0];
+    const itemInv = itensHook?.itensInventario.find((i: any) => i.id === mid);
+    if (itemInv) granadaAcoplada = itemInv.item;
+  }
+
+  let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   let rawDano = arma.Dano_Arma || '';
+
+  if (isLancadorGranadas && granadaAcoplada) {
+    const p = granadaAcoplada.Dano_Item?.split(',') || [];
+    rawDano = p[0]?.trim() || '-';
+    if (p.length > 1) tipoBase = p[1].trim();
+  }
+
+  let dtGranada = '-';
+  if (isLancadorGranadas && granadaAcoplada) {
+    const dtItem = granadaAcoplada.DT_Item;
+    if (dtItem) {
+      let val = dtItem.trim();
+      let periciaStr = '';
+      if (val.includes(',')) {
+        const arr = val.split(',');
+        val = arr.pop()!.trim();
+        periciaStr = arr.join(',').trim();
+      }
+      let calc: string | number = 0;
+      if (['FOR','AGI','INT','PRE','VIG'].includes(val.toUpperCase())) {
+        calc = 10 + (status?.peTurno || 0) + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
+      } else {
+        const num = Number(val);
+        calc = isNaN(num) ? val : num;
+      }
+      dtGranada = periciaStr ? `${periciaStr} ${calc}` : `${calc}`;
+    }
+  }
   
   modsAtivas.forEach(m => {
     if (m?.Nome_Modif?.trim().toLowerCase() === 'calibre grosso') {
