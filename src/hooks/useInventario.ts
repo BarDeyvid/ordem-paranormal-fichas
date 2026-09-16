@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 
 export type Patente = 'Recruta' | 'Operador' | 'Agente Especial' | 'Oficial de Operações' | 'Agente de Elite';
 export type LimiteCredito = 'Baixo' | 'Médio' | 'Alto' | 'Ilimitado';
@@ -62,7 +62,14 @@ export function useInventario(codigoRegra?: number | null): UseInventarioReturn 
     }
   }
 
-  const limitesItens = (limitesItensOverride || valoresBase.l) as [number, number, number, number];
+    const limitesItens = React.useMemo(() => {
+    if (limitesItensOverride) return limitesItensOverride as [number, number, number, number];
+    const lims = [...valoresBase.l] as [number, number, number, number];
+    if (grauProfissao >= 15) lims[2] += 1;
+    else if (grauProfissao >= 10) lims[1] += 1;
+    else if (grauProfissao >= 5) lims[0] += 1;
+    return lims;
+  }, [limitesItensOverride, valoresBase.l, grauProfissao]);
 
   const setLimiteItemCategoria = (index: number, val: number) => {
     const novosLimites = [...limitesItens] as [number, number, number, number];

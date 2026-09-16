@@ -225,7 +225,7 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const trilhasHook = useTrilhas(classe);
   const poderesHook = usePoderes(classe);
   const origensHook = useOrigem();
-  const inventarioHook = useInventario(origensHook.origemSelecionada?.Codigo_Regra);
+  
 
   // Computa o conjunto de regras automáticas ativas
   const regrasAutomaticasAtivas = useMemo(() => {
