@@ -219,6 +219,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
   let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
   let rawDano = arma.Dano_Arma || '';
+  if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
+    rawDano = '-';
+  }
 
   if (isLancadorGranadas && granadaAcoplada) {
     const p = granadaAcoplada.Dano_Item?.split(',') || [];
@@ -252,6 +255,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           }
       }
       dtGranada = calc === '-' ? '-' : (periciaStr ? `${periciaStr} ${calc}` : `${calc}`);
+      if (!dtGranada) dtGranada = '-';
     }
   }
   
