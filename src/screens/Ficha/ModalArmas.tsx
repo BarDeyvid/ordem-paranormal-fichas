@@ -265,13 +265,9 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                     <div className="flex-1 flex flex-col shrink-0">
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
                         <span>
-                          <span className="font-bold text-green-400">Dano:</span> {arma.Dano_Arma}
+                          <span className="font-bold text-green-400">Dano:</span> {danoPrint}
                         </span>
-                        {critico && (
-                          <span>
-                            <span className="font-bold text-zinc-400">Crítico:</span> {critico}
-                          </span>
-                        )}
+                        {isLancadorGranadas ? (<span><span className="font-bold text-green-400">DT:</span> -</span>) : (critico && (<span><span className="font-bold text-zinc-400">Crítico:</span> {critico}</span>))}
                         {arma.dt_item && <span><span className="font-bold text-green-400">DT:</span> {calcularDT(arma.dt_item, arma.Categoria_Item?.toLowerCase().includes('explosivos') || arma.Nome_Item?.toLowerCase().includes('explosivo'))}</span>}
                       </div>
                       
@@ -369,13 +365,9 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                     <div className="flex-1 flex flex-col shrink-0">
                       <div className="flex items-center flex-nowrap gap-3 text-xs overflow-hidden transition-all duration-300 ease-in-out text-zinc-300 mb-2">
                         <span>
-                          <span className="font-bold text-green-400">Dano:</span> {arma.Dano_Arma}
+                          <span className="font-bold text-green-400">Dano:</span> {danoPrint}
                         </span>
-                        {critico && (
-                          <span>
-                            <span className="font-bold text-zinc-400">Crítico:</span> {critico}
-                          </span>
-                        )}
+                        {isLancadorGranadas ? (<span><span className="font-bold text-green-400">DT:</span> -</span>) : (critico && (<span><span className="font-bold text-zinc-400">Crítico:</span> {critico}</span>))}
                         {arma.dt_item && <span><span className="font-bold text-green-400">DT:</span> {calcularDT(arma.dt_item, arma.Categoria_Item?.toLowerCase().includes('explosivos') || arma.Nome_Item?.toLowerCase().includes('explosivo'))}</span>}
                       </div>
                       

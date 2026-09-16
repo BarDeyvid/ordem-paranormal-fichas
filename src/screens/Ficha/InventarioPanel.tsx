@@ -1243,6 +1243,9 @@ function SortableArmaItem({
 
   const calcularEstatisticasFinaisArma = () => {
     let dano = arma.Dano_Arma || '';
+      if (dano.toLowerCase().includes('veja') || dano.toLowerCase().includes('texto')) {
+        dano = '-';
+      }
     let espacos = calcularEspacosFinais(arma['Espaços_Item'], item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43));
     let automatica = !!arma['Automatica?'];
     let critico = arma.Critico_Arma || 20;
@@ -1394,7 +1397,7 @@ function SortableArmaItem({
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300 mt-0.5">
               <span><span className="font-bold text-green-400">Dano:</span> {stats.dano}{stats.danoSecundario ? (stats.danoSecundario.trim().startsWith('+') ? stats.danoSecundario.trim() : '+' + stats.danoSecundario.trim()) : ''}</span>
               {isLancadorGranadas ? (
-                  <span><span className="font-bold text-green-400">DT:</span> {stats.dtGranada}</span>
+                  <span><span className="font-bold text-green-400">DT:</span> {stats.dtGranada || '-'}</span>
                 ) : (
                   <span><span className="font-bold text-zinc-400">Crítico:</span> {formatarCritico(stats.critico, stats.multiplicador)}</span>
                 )}
