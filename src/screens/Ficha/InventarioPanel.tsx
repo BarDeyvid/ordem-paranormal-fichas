@@ -589,7 +589,9 @@ export function InventarioPanel() {
 
   const itensGeral = (itensHook?.itensInventario || []).filter(iinv => {
     if (buscaItem && !iinv.item.Nome_Item.toLowerCase().includes(buscaItem.toLowerCase())) return false;
-    if (categoriaFiltro !== 'Geral' && iinv.item.Grupo_Item.trim() !== categoriaFiltro) return false;
+    if (categoriaFiltro === 'Itens Operacionais') {
+      if (iinv.item.Grupo_Item.trim() !== 'Itens Operacionais' && iinv.item.Grupo_Item.trim() !== 'Recursos') return false;
+    } else if (categoriaFiltro !== 'Geral' && iinv.item.Grupo_Item.trim() !== categoriaFiltro) return false;
     return true;
   });
 
@@ -747,7 +749,7 @@ export function InventarioPanel() {
           </button>
           <button
             onClick={() => setCategoriaFiltro('Itens Operacionais')}
-            title="Itens Operacionais"
+            title="Itens Operacionais / Recursos"
             className={`w-12 h-12 flex items-center justify-center rounded-t text-2xl transition border-b-2 ${
               categoriaFiltro === 'Itens Operacionais' 
                 ? 'bg-zinc-900 text-green-400 border-b-green-500' 
@@ -830,7 +832,7 @@ export function InventarioPanel() {
               + Adicionar
             </button>
           )}
-          {itensHook?.gruposUnicos.includes(categoriaFiltro) && (
+          {(itensHook?.gruposUnicos.includes(categoriaFiltro) || categoriaFiltro === 'Itens Operacionais') && (
             <button
               onClick={() => {
                 setAbaItensAberta(categoriaFiltro);
@@ -964,9 +966,9 @@ export function InventarioPanel() {
               </>
             )}
 
-            {(itensHook?.gruposUnicos.includes(categoriaFiltro) || categoriaFiltro === 'Geral') && (
+            {(itensHook?.gruposUnicos.includes(categoriaFiltro) || categoriaFiltro === 'Geral' || categoriaFiltro === 'Itens Operacionais') && (
               <>
-                {categoriaFiltro === 'Geral' ? (
+                {categoriaFiltro === 'Geral' || categoriaFiltro === 'Itens Operacionais' ? (
                   Array.from(new Set(itensGeral.map(i => i.item.Grupo_Item.trim()))).sort().map(grupo => {
                     const itensDoGrupo = itensGeral.filter(i => i.item.Grupo_Item.trim() === grupo);
                     if (itensDoGrupo.length === 0) return null;
@@ -1014,7 +1016,7 @@ export function InventarioPanel() {
                       <p className="text-center text-zinc-600 text-sm py-4">
                         {categoriaFiltro === 'Acessórios' ? 'Nenhum acessório no inventário.' :
                          categoriaFiltro === 'Explosivos' ? 'Nenhum explosivo no inventário.' :
-                         categoriaFiltro === 'Itens Operacionais' ? 'Nenhum item operacional no inventário.' :
+                         categoriaFiltro === 'Itens Operacionais' ? 'Nenhum item operacional ou recurso no inventário.' :
                          categoriaFiltro === 'Medicamentos' ? 'Nenhum medicamento no inventário.' :
                          categoriaFiltro === 'Itens Paranormais' ? 'Nenhum item paranormal no inventário.' :
                          `Nenhum item no inventário.`}
