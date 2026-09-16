@@ -487,6 +487,9 @@ const atributosFinais = useMemo(() => {
     (() => { const comb = {...bonusVestimentas.pericias}; Object.keys(bonusMaldicoes.pericias || {}).forEach(k => { comb[k] = (comb[k] || 0) + bonusMaldicoes.pericias[k]; }); return comb; })()
   );
 
+  const grauProfissao = periciasHook.pericias['Profissão']?.treino || 0;
+  const inventarioHook = useInventario(origensHook.origemSelecionada?.Codigo_Regra, grauProfissao);
+
   // ============================================================
   // LÓGICA DE ATRIBUTOS
   // ============================================================
