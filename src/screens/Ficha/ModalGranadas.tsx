@@ -37,13 +37,12 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" style={{ backgroundColor: 'rgba(0,0,0,0.85)' }}>
       <div className="flex h-full max-h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950 shadow-2xl relative">
-        <div className="flex flex-col gap-3 border-b border-zinc-800 bg-zinc-900/50 p-4">
-          <div className="flex items-center justify-between">
+        <div className="flex flex-col border-b border-zinc-800 p-5 pb-4 bg-zinc-900/50">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-black uppercase tracking-widest text-green-500 flex items-center gap-2">
-                <span className="text-2xl">📦</span>
-                Selecionar Granada
-              </h2>
+              <h3 className="font-display text-lg uppercase tracking-wide text-zinc-100">
+                ADICIONAR GRANADA
+              </h3>
               <p className="mt-1 text-xs text-zinc-400">Selecione uma granada para acoplar ao lançador.</p>
             </div>
             <button onClick={onFechar} className="border-none bg-transparent text-2xl text-zinc-500 transition hover:text-zinc-100">&times;</button>

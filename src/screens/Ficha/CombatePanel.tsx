@@ -223,12 +223,15 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   if (isLancadorGranadas && granadaAcoplada) {
     const p = granadaAcoplada.Dano_Item?.split(',') || [];
     rawDano = p[0]?.trim() || '-';
+      if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
+        rawDano = '-';
+      }
     if (p.length > 1) tipoBase = p[1].trim();
   }
 
   let dtGranada = '-';
   if (isLancadorGranadas && granadaAcoplada) {
-    const dtItem = granadaAcoplada.DT_Item;
+    const dtItem = granadaAcoplada.Dt_Item;
     if (dtItem) {
       let val = dtItem.trim();
       let periciaStr = '';
@@ -242,9 +245,13 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         calc = 10 + (status?.peTurno || 0) + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
       } else {
         const num = Number(val);
-        calc = isNaN(num) ? val : num;
+          if (isNaN(num) || val.toLowerCase().includes('veja') || val.toLowerCase().includes('texto') || val.trim() === '') {
+            calc = '-';
+          } else {
+            calc = num;
+          }
       }
-      dtGranada = periciaStr ? `${periciaStr} ${calc}` : `${calc}`;
+      dtGranada = calc === '-' ? '-' : (periciaStr ? `${periciaStr} ${calc}` : `${calc}`);
     }
   }
   
@@ -316,11 +323,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         <div className="flex flex-col gap-1 w-full min-w-0 pr-3">
           <div className="flex items-center gap-1 min-w-0">
             <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
-            {isLancadorGranadas && granadaAcoplada && (
-              <span className="ml-1 px-1.5 py-0.5 bg-orange-950/40 border border-orange-900/50 rounded text-[9px] font-bold text-orange-400 whitespace-nowrap">
-                {granadaAcoplada.Nome_Item}
-              </span>
-            )}
+            
             
             {arma['Agil?'] && (
               <span className="relative group/agil cursor-help">
@@ -364,7 +367,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
             {isLancadorGranadas ? (
-              <><span className="font-bold text-green-400">DT:</span> {dtGranada}</>
+              <><span className="font-bold text-green-400">DT:</span> {dtGranada}{granadaAcoplada && (<><span className="mx-2 text-zinc-700">|</span><span className="font-bold text-green-400">Granada:</span> <span className="text-zinc-300">{granadaAcoplada.Nome_Item}</span></>)}</>
             ) : (
               <><span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}</>
             )}

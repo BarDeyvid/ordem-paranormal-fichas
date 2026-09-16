@@ -1236,6 +1236,36 @@ function SortableArmaItem({
     let alcance = arma.Alcance_Item || '';
     let multiplicador = arma.Multiplicador_Arma || 2;
     let danoSecundario = arma.Dano_Secundario || '';
+    let dtGranada: string | null = null;
+    
+    if (isLancadorGranadas && granadaAcoplada) {
+      const p = granadaAcoplada.Dano_Item?.split(',') || [];
+      dano = p[0]?.trim() || '-';
+      if (dano.toLowerCase().includes('veja') || dano.toLowerCase().includes('texto')) {
+        dano = '-';
+      }
+      
+      const dtItem = granadaAcoplada.Dt_Item;
+      if (dtItem) {
+        let val = dtItem.trim();
+        let periciaStr = '';
+        if (val.includes(',')) {
+          const arr = val.split(',');
+          val = arr.pop()!.trim();
+          periciaStr = arr.join(',').trim();
+        }
+        let calc: string | number = 0;
+        if (['FOR','AGI','INT','PRE','VIG'].includes(val.toUpperCase())) {
+          calc = 10 + (statusHook.status?.peTurno || 0) + (atributosFinais[val.toUpperCase() as keyof typeof atributosFinais] || 0);
+        } else {
+          calc = Number(val);
+          if (isNaN(calc)) calc = '-';
+        }
+        dtGranada = calc === '-' ? '-' : `${calc}${periciaStr ? ` (${periciaStr})` : ''}`;
+      } else {
+        dtGranada = '-';
+      }
+    }
 
     if (regrasAutomaticasAtivas?.has(86) && (arma.Tipo_Arma?.toLowerCase() === 'corpo a corpo' || arma.Tipo_Arma?.toLowerCase() === 'corpo-a-corpo') && arma.Nome_Item !== 'Ataque Desarmado') {
       dano = dano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
@@ -1309,7 +1339,7 @@ function SortableArmaItem({
       }
     }
 
-    return { dano, espacos, automatica, critico, alcance, multiplicador, danoSecundario };
+    return { dano, espacos, automatica, critico, alcance, multiplicador, danoSecundario, dtGranada };
   };
 
   const stats = calcularEstatisticasFinaisArma();
@@ -1350,7 +1380,11 @@ function SortableArmaItem({
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{arma.Nome_Item}</span>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300 mt-0.5">
               <span><span className="font-bold text-green-400">Dano:</span> {stats.dano}{stats.danoSecundario ? (stats.danoSecundario.trim().startsWith('+') ? stats.danoSecundario.trim() : '+' + stats.danoSecundario.trim()) : ''}</span>
-              <span><span className="font-bold text-zinc-400">Crítico:</span> {formatarCritico(stats.critico, stats.multiplicador)}</span>
+              {isLancadorGranadas ? (
+                  <span><span className="font-bold text-green-400">DT:</span> {stats.dtGranada}</span>
+                ) : (
+                  <span><span className="font-bold text-zinc-400">Crítico:</span> {formatarCritico(stats.critico, stats.multiplicador)}</span>
+                )}
               {stringDT && <span><span className="font-bold text-green-400">DT:</span> {stringDT}</span>}
             </div>
             {(modsAtuais.length > 0 || maldicoesAtuais.length > 0) && (
@@ -1424,6 +1458,9 @@ function SortableArmaItem({
             <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(arma.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, arma.Codigo_Arma === 71, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             {stats.alcance && <span><span className="text-green-400 font-bold">Alcance:</span> {stats.alcance}</span>}
             <span><span className="text-green-400 font-bold">Tipo:</span> {arma.Tipo_Dano_Arma}</span>
+              {isLancadorGranadas && granadaAcoplada && (
+                <span><span className="text-green-400 font-bold">Granada:</span> {granadaAcoplada.Nome_Item}</span>
+              )}
             <span><span className="text-green-400 font-bold">Espaços:</span> {stats.espacos}</span>
             {modsAtuais.length > 0 && (
               <div className="mt-3">
