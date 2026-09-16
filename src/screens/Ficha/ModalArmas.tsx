@@ -222,7 +222,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                 const critico = formatarCritico(arma.Critico_Arma, arma.Multiplicador_Arma);
                 const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
                 return (
-                  <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
+                  <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
                   >
                     {/* Bloco fechado */}
                     <div
@@ -275,7 +275,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                         {arma.dt_item && <span><span className="font-bold text-green-400">DT:</span> {calcularDT(arma.dt_item, arma.Categoria_Item?.toLowerCase().includes('explosivos') || arma.Nome_Item?.toLowerCase().includes('explosivo'))}</span>}
                       </div>
                       
-                      <div className="text-[11px] mb-3 block text-zinc-400 truncate">
+                      <div className="text-[11px] mb-2 block text-zinc-400 truncate">
                         <span className="font-bold text-zinc-200">{arma.Proficiencia}</span>
                         <span className="text-zinc-600"> — </span>
                         <span className="italic">{arma.Tipo_Arma}</span>
@@ -287,8 +287,8 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                       </div>
 
                       <div className="flex flex-col gap-1 mt-1 mb-3">
-                            <Collapse isOpen={isExpanded} previewHeight="4.5em">
-                              <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none min-h-[4.5em]">{arma.Descricao_Item ? formatarTexto(arma.Descricao_Item) : 'Nenhuma descrição adicional.'}</p>
+                            <Collapse isOpen={isExpanded} previewHeight="3em">
+                              <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">{arma.Descricao_Item ? formatarTexto(arma.Descricao_Item) : 'Nenhuma descrição adicional.'}</p>
                             </Collapse>
                           </div>
                         <Collapse isOpen={isExpanded}>
@@ -326,7 +326,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                 const critico = formatarCritico(arma.Critico_Arma, arma.Multiplicador_Arma);
                 const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
                 return (
-                  <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-3 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
+                  <div key={arma.Codigo_Arma} onClick={() => toggleExpandir(arma.Codigo_Arma)} className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer  cursor-pointer`}
                   >
                     {/* Bloco fechado */}
                     <div
@@ -379,7 +379,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                         {arma.dt_item && <span><span className="font-bold text-green-400">DT:</span> {calcularDT(arma.dt_item, arma.Categoria_Item?.toLowerCase().includes('explosivos') || arma.Nome_Item?.toLowerCase().includes('explosivo'))}</span>}
                       </div>
                       
-                      <div className="text-[11px] mb-3 block text-zinc-400 truncate">
+                      <div className="text-[11px] mb-2 block text-zinc-400 truncate">
                         <span className="font-bold text-zinc-200">{arma.Proficiencia}</span>
                         <span className="text-zinc-600"> — </span>
                         <span className="italic">{arma.Tipo_Arma}</span>
@@ -391,8 +391,8 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                       </div>
 
                       <div className="flex flex-col gap-1 mt-1 mb-3">
-                            <Collapse isOpen={isExpanded} previewHeight="4.5em">
-                              <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none min-h-[4.5em]">{arma.Descricao_Item ? formatarTexto(arma.Descricao_Item) : 'Nenhuma descrição adicional.'}</p>
+                            <Collapse isOpen={isExpanded} previewHeight="3em">
+                              <p className="text-zinc-400 text-[11px] leading-relaxed whitespace-pre-wrap select-none min-h-[3em]">{arma.Descricao_Item ? formatarTexto(arma.Descricao_Item) : 'Nenhuma descrição adicional.'}</p>
                             </Collapse>
                           </div>
                         <Collapse isOpen={isExpanded}>
