@@ -1471,7 +1471,7 @@ function SortableArmaItem({
             {id !== 'coronhada-virtual' && (
                 <>
                   {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
-                      {(arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? (
+                      (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1498,7 +1498,7 @@ function SortableArmaItem({
                       >
                         + Munição
                       </button>
-                    )}
+                    )
                   )}
                   <button
                     onClick={(e) => {
