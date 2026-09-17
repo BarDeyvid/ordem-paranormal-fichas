@@ -142,7 +142,7 @@ export function ModalMunicoes({ onFechar, armaFiltroNome, armaFiltroCategoria, o
             <div className="text-center text-zinc-500 italic p-4">Nenhuma munição encontrada.</div>
           ) : (
             <div className="flex flex-col md:flex-row gap-3 items-start">
-              <div className="flex flex-col gap-3 w-full flex-1 min-w-[200px]">
+              <div className="flex flex-col gap-3 w-full flex-1 min-w-0">
                 {municoesFiltradas.filter((_, i) => i % 2 === 0).map((municao) => {
                   const isExpanded = !!expandidos[String(municao.Codigo_Municao)];
                   return (
@@ -193,7 +193,7 @@ export function ModalMunicoes({ onFechar, armaFiltroNome, armaFiltroCategoria, o
                   </div>
                 )})}
               </div>
-              <div className="flex flex-col gap-3 w-full flex-1 min-w-[200px]">
+              <div className="flex flex-col gap-3 w-full flex-1 min-w-0">
                 {municoesFiltradas.filter((_, i) => i % 2 !== 0).map((municao) => {
                   const isExpanded = !!expandidos[String(municao.Codigo_Municao)];
                   return (

@@ -64,7 +64,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
             <div className="text-center text-zinc-500 italic p-4">Nenhuma granada encontrada.</div>
           ) : (
             <div className="flex flex-col md:flex-row gap-3 items-start">
-              <div className="flex flex-col gap-3 w-full flex-1 min-w-[200px]">
+              <div className="flex flex-col gap-3 w-full flex-1 min-w-0">
                 {granadasFiltradas.filter((_, i) => i % 2 === 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
@@ -108,7 +108,7 @@ export function ModalGranadas({ onFechar, onSelect }: ModalGranadasProps) {
                   </div>
                 )})}
               </div>
-              <div className="flex flex-col gap-3 w-full flex-1 min-w-[200px]">
+              <div className="flex flex-col gap-3 w-full flex-1 min-w-0">
                 {granadasFiltradas.filter((_, i) => i % 2 !== 0).map((granada) => {
                   const isExpanded = !!expandidos[String(granada.Codigo_Item || granada.Nome_Item)];
                   return (
