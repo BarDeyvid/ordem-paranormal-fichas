@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import type { Modificacao, Maldicao } from '../types';
+import type { Modificacao, Maldição } from '../types';
 import { CustomSelect } from './CustomSelect';
 
 interface AprimoramentosSelectorProps {
-  // Modificaes
+  // Modificações
   modificacoesAplicadas: number[];
   opcoesModificacoes: Modificacao[];
   todasModificacoes: Modificacao[];
@@ -13,8 +13,8 @@ interface AprimoramentosSelectorProps {
 
   // Maldicoes
   maldicoesAplicadas: number[];
-  opcoesMaldicoes: Maldicao[];
-  todasMaldicoes: Maldicao[];
+  opcoesMaldicoes: Maldição[];
+  todasMaldicoes: Maldição[];
   maldicoesElementos?: Record<number, string>;
   onAddMald: (id: number, elemento?: string) => void;
   onRemoveMald: (index: number) => void;
@@ -52,7 +52,7 @@ export function AprimoramentosSelector({
   const [modalAberto, setModalAberto] = useState(false);
   const [abaModal, setAbaModal] = useState<'modificacoes' | 'maldicoes'>('modificacoes');
   
-  // Estado local para o seletor de elemento da maldicao
+  // Estado local para o seletor de elemento da maldição
   const [subAbaElemento, setSubAbaElemento] = useState<string>('Todos');
   const [elementosVaria, setElementosVaria] = useState<Record<number, string>>({});
   
@@ -66,7 +66,7 @@ export function AprimoramentosSelector({
 
   const maldsAplicadasFull = maldsSafe
     .map(id => todasMaldicoes.find(m => m.Codigo_Mald === id))
-    .filter(Boolean) as Maldicao[];
+    .filter(Boolean) as Maldição[];
 
   const temAprimoramentos = modsAplicadasFull.length > 0 || maldsAplicadasFull.length > 0;
 
@@ -109,7 +109,7 @@ export function AprimoramentosSelector({
               <button
                 type="button"
                 onClick={() => onRemoveMod(index)}
-                title="Remover Modificao"
+                title="Remover Modificação"
                 className="text-zinc-600 hover:text-red-400 p-2 opacity-60 group-hover:opacity-100 hover:bg-red-950/30 rounded transition-all flex-shrink-0"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -146,7 +146,7 @@ export function AprimoramentosSelector({
                 <button
                   type="button"
                   onClick={() => onRemoveMald(index)}
-                  title="Remover Maldicao"
+                  title="Remover Maldição"
                   className="text-zinc-600 hover:text-red-400 p-2 opacity-60 group-hover:opacity-100 hover:bg-red-950/30 rounded transition-all flex-shrink-0 relative z-10"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -191,7 +191,7 @@ export function AprimoramentosSelector({
             <div className="flex flex-shrink-0 items-center justify-between border-b border-white/5 bg-zinc-900/40 px-6 py-5">
               <div className="flex flex-col">
                 <span className="font-display text-lg uppercase tracking-wider text-zinc-100 drop-shadow-md">Adicionar Aprimoramento</span>
-                <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">Selecione modificaes e maldies para o item</span>
+                <span className="text-[10px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">Selecione modificações e maldições para o item</span>
               </div>
               <button 
                 type="button" 
@@ -211,14 +211,14 @@ export function AprimoramentosSelector({
                 onClick={() => setAbaModal('modificacoes')}
                 className={`px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors border-b-2 ${abaModal === 'modificacoes' ? 'text-green-400 border-green-500 bg-green-500/5' : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-800/30'}`}
               >
-                Modificaes
+                Modificações
               </button>
               <button
                 type="button"
                 onClick={() => setAbaModal('maldicoes')}
                 className={`px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors border-b-2 ${abaModal === 'maldicoes' ? 'text-green-400 border-green-500 bg-green-500/5' : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-800/30'}`}
               >
-                Maldies
+                Maldições
               </button>
             </div>
             
@@ -227,7 +227,7 @@ export function AprimoramentosSelector({
                 <div className="flex flex-wrap items-center gap-3 border-b border-white/5 bg-zinc-900/40 px-6 py-4 shadow-inner">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Filtrar por Elemento:</span>
                   <div className="flex flex-wrap gap-2">
-                    {['Todos', 'Sangue', 'Morte', 'Conhecimento', 'Energia', 'Medo', 'Varia'].map(elem => {
+                    {['Todos', 'Sangue', 'Morte', 'Conhecimento', 'Energia'].map(elem => {
                       const ativo = subAbaElemento === elem;
                       return (
                         <button
@@ -261,7 +261,7 @@ export function AprimoramentosSelector({
               {abaModal === 'modificacoes' && (
                 <>
                   {modsDisponiveis.length === 0 ? (
-                    <p className="text-xs text-zinc-500 font-semibold tracking-wide p-8 text-center uppercase">Nenhuma modificao disponvel.</p>
+                    <p className="text-xs text-zinc-500 font-semibold tracking-wide p-8 text-center uppercase">Nenhuma modificação disponível.</p>
                   ) : (
                     <div className="flex flex-col gap-4 w-full pb-4">
                         {modsDisponiveis.map(opcao => (
@@ -289,7 +289,7 @@ export function AprimoramentosSelector({
               {abaModal === 'maldicoes' && (
                 <>
                   {maldsDisponiveis.length === 0 ? (
-                    <p className="text-xs text-zinc-500 font-semibold tracking-wide p-8 text-center uppercase">Nenhuma maldicao disponvel para este filtro.</p>
+                    <p className="text-xs text-zinc-500 font-semibold tracking-wide p-8 text-center uppercase">Nenhuma maldição disponível para este filtro.</p>
                   ) : (
                     <div className="flex flex-col gap-4 w-full pb-4">
                         {maldsDisponiveis.map(opcao => {

@@ -42,12 +42,12 @@ export function ModalEditarArma({
   const [alcance, setAlcance] = useState(arma.Alcance_Item || '');
   const [danoSecundario, setDanoSecundario] = useState(arma.Dano_Secundario || '');
   const [categoria, setCategoria] = useState(arma.Categoria_Item || '');
-  const [espacos, setEspacos] = useState(arma['Espaos_Item']?.toString() || '');
+  const [espacos, setEspacos] = useState(arma['Espaços_Item']?.toString() || '');
   const [dt, setDt] = useState(arma.dt_item || '');
 
   const [proficiencia, setProficiencia] = useState(arma.Proficiencia || 'Armas Simples');
   const [tipoArma, setTipoArma] = useState(arma.Tipo_Arma || 'Corpo a Corpo');
-  const [empunhadura, setEmpunhadura] = useState(arma.Empunhadura_Arma || 'Uma Mǜo');
+  const [empunhadura, setEmpunhadura] = useState(arma.Empunhadura_Arma || 'Uma Mão');
   const [tipoDano, setTipoDano] = useState(arma.Tipo_Dano_Arma || 'Corte');
 
   const { modificacoesHook, maldicoesHook } = useRPG();
@@ -67,7 +67,7 @@ export function ModalEditarArma({
   const temCalibreGrosso = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'calibre grosso');
   const temApocaliptica = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'apocalptica' || modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'apocaliptica');
 
-  const ordAlcance = ['Curto', 'Mdio', 'Longo', 'Extremo', 'Ilimitado'];
+  const ordAlcance = ['Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
   let alcanceFinal = alcance;
   if (temMiraTelescopica && alcance) {
     const idx = ordAlcance.indexOf(alcance);
@@ -105,7 +105,7 @@ export function ModalEditarArma({
       Alcance_Item: alcance,
       Dano_Secundario: danoSecundario,
       Categoria_Item: categoria,
-      'Espaos_Item': getEspacoNumber(espacos),
+      'Espaços_Item': getEspacoNumber(espacos),
       dt_item: dt,
       Proficiencia: proficiencia,
       Tipo_Arma: tipoArma,
@@ -117,12 +117,23 @@ export function ModalEditarArma({
 
   const getOpcoesModificacoes = () => {
     return modificacoesHook.modificacoes.filter(m => {
-      const tipo = m.Tipos_Arma?.toLowerCase() || '';
-      if (tipo === 'qualquer') return true;
-      if (tipoArma.toLowerCase().includes('corpo a corpo') && tipo.includes('corpo a corpo')) return true;
-      if (tipoArma.toLowerCase().includes('fogo') && tipo.includes('fogo')) return true;
-      if (tipoArma.toLowerCase().includes('disparo') && tipo.includes('disparo')) return true;
-      if (tipoArma.toLowerCase().includes('arremesso') && tipo.includes('arremesso')) return true;
+      if (m.Nome_Modif === 'Ferrolho Automático' && arma['Automatica?']) return false;
+      
+      const cat = m.Categoria_Modif?.toLowerCase() || '';
+      const tipo = tipoArma.toLowerCase();
+
+      const isFogo = tipo.includes('fogo');
+      const isDisparo = tipo.includes('disparo');
+      const isCorpo = tipo.includes('corpo');
+      const isArremesso = tipo.includes('arremesso');
+      const isExplosivo = tipo.includes('explosivo');
+
+      if (cat.includes('armas de fogo / bestas e balestras') && (isFogo || isDisparo)) return true;
+      if (cat.includes('arma de fogo') && isFogo) return true;
+      if (cat.includes('corpo a corpo') && (isCorpo || isArremesso)) return true;
+      if (cat.includes('arremesso') && isArremesso) return true;
+      if ((cat.includes('explosivo') || cat.includes('granada')) && isExplosivo) return true;
+      if (cat === 'armas') return true;
       return false;
     });
   };
@@ -191,9 +202,7 @@ export function ModalEditarArma({
 
         <div className="flex flex-shrink-0 items-center justify-between border-b border-white/5 bg-zinc-900/40 px-6 py-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20 text-green-500 shadow-[0_0_15px_rgba(22,163,74,0.15)] text-xl">
-              🗡️
-            </div>
+            
             <div>
               <h2 className="font-display text-xl uppercase tracking-wider text-zinc-100 drop-shadow-md">
                 Editar Arma
