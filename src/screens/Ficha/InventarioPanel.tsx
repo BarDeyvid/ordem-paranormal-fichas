@@ -1646,11 +1646,26 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
   const { municao } = item;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, data: { type: 'municao' } });
 
-  const { modificacoesHook, maldicoesHook, regrasAutomaticasAtivas, regras } = useRPG();
+  const { modificacoesHook, maldicoesHook, armasHook, regrasAutomaticasAtivas, regras } = useRPG();
   const [expandirMods, setExpandirMods] = useState(false);
-    const [expandirMalds, setExpandirMalds] = useState(false);
+  const [expandirMalds, setExpandirMalds] = useState(false);
   const modsAtuais = (Array.isArray(item.modificacoes) ? item.modificacoes : []).map(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)).filter(Boolean) as any[];
-    const maldicoesAtuais = (Array.isArray(item.maldicoes) ? item.maldicoes : []).map(id => maldicoesHook?.maldicoes.find(m => m.Codigo_Mald === id)).filter(Boolean) as any[];
+  const maldicoesAtuais = (Array.isArray(item.maldicoes) ? item.maldicoes : []).map(id => maldicoesHook?.maldicoes.find(m => m.Codigo_Mald === id)).filter(Boolean) as any[];
+
+  let armaNome = '';
+  let armaPos = 0;
+  let armaTotal = 0;
+  armasHook?.armasInventario.forEach(a => {
+    if (a.municoesAcopladas && a.municoesAcopladas.includes(id)) {
+      armaNome = a.arma.Nome_Item;
+      armaTotal = a.municoesAcopladas.length;
+      armaPos = a.municoesAcopladas.indexOf(id) + 1;
+    }
+  });
+
+  const modsNames = [...modsAtuais.map(m => m.Nome_Modif), ...maldicoesAtuais.map(m => m.Nome_Mald)];
+  const modifiersText = modsNames.length > 0 ? ` (${modsNames.join(', ')})` : '';
+  const displayName = `${municao.Nome_Item}${modifiersText}`;
 
   const style = isOverlay ? {} : {
     transform: CSS.Translate.toString(transform),
@@ -1685,7 +1700,14 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
           onClick={() => toggleExpandir(id)}
         >
           <div className="flex flex-col gap-1 min-w-0 justify-center">
-            <span className="font-bold text-zinc-100 text-sm truncate leading-none mt-0.5">{municao.Nome_Item}</span>
+            <div className="flex flex-col gap-0.5">
+                <span className="font-bold text-zinc-100 text-sm truncate leading-none mt-0.5" title={displayName}>{displayName}</span>
+                {armaNome && (
+                  <span className="text-[10px] font-bold text-green-500/80 uppercase tracking-wider">
+                    Em: {armaNome} [{armaPos}/{armaTotal}]
+                  </span>
+                )}
+              </div>
             <div className="flex items-center gap-4 text-xs text-zinc-300 mt-0.5">
               <span><span className="font-bold text-zinc-400">Categoria:</span> {municao.Categoria_Item}</span>
               {regras?.['contagem_municao'] && municao.contagem_municao && (
