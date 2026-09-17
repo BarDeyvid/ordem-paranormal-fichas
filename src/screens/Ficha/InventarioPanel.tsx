@@ -1425,9 +1425,21 @@ function SortableArmaItem({
           <div className="flex items-center gap-3 flex-shrink-0">
             {regras?.['contagem_municao'] && arma.Capacidade_Municao != null && (
               <span className="relative group/mun cursor-help flex items-center">
-                <span className="text-[11px] font-bold text-zinc-300 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700 whitespace-nowrap shadow-sm">
-                  {arma.Capacidade_Municao}
-                </span>
+                <span className="flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500">
+                      <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                      <line x1="12" y1="18" x2="12" y2="18.01"></line>
+                      <line x1="8" y1="18" x2="8" y2="18.01"></line>
+                      <line x1="16" y1="18" x2="16" y2="18.01"></line>
+                      <line x1="8" y1="14" x2="8" y2="14.01"></line>
+                      <line x1="12" y1="14" x2="12" y2="14.01"></line>
+                      <line x1="16" y1="14" x2="16" y2="14.01"></line>
+                      <line x1="8" y1="10" x2="8" y2="10.01"></line>
+                      <line x1="12" y1="10" x2="12" y2="10.01"></line>
+                      <line x1="16" y1="10" x2="16" y2="10.01"></line>
+                    </svg>
+                    <span className="text-[11px] font-bold text-zinc-300">{arma.Capacidade_Municao}</span>
+                  </span>
                 <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 opacity-0 invisible group-hover/mun:opacity-100 group-hover/mun:visible transition-all duration-300 group-hover/mun:delay-500 delay-0 w-32 p-1.5 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
                   Capacidade de Munição
                 </span>
