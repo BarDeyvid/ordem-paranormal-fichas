@@ -123,8 +123,12 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     return null;
   }).filter(Boolean) as any[];
   
-  const modsSafe = Array.isArray(modificacoes) ? modificacoes : [];
-  const maldsSafe = Array.isArray(maldicoes) ? maldicoes : [];
+  const activeAmmo = municoesAcopladasList.length > 0 ? municoesAcopladasList[0] : null;
+    const ammoMods = activeAmmo && Array.isArray(activeAmmo.modificacoes) ? activeAmmo.modificacoes : [];
+    const ammoMalds = activeAmmo && Array.isArray(activeAmmo.maldicoes) ? activeAmmo.maldicoes : [];
+    
+    const modsSafe = [...(Array.isArray(modificacoes) ? modificacoes : []), ...ammoMods];
+    const maldsSafe = [...(Array.isArray(maldicoes) ? maldicoes : []), ...ammoMalds];
   
   const modsAtivas = modsSafe.map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id)).filter(Boolean);
   const maldicoesAtivas = maldsSafe.map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Mald === id)).filter(Boolean);

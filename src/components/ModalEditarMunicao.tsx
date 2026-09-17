@@ -1,29 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useRPG } from '../context/RPGContext';
-import { ToolbarFormato } from './ToolbarFormato';
-import { InputOtimizado } from './InputOtimizado';
-
-import { AprimoramentosSelector } from './AprimoramentosSelector';
 import type { MunicaoInventario, Municao } from '../types';
+import { InputOtimizado } from './InputOtimizado';
+import { ToolbarFormato } from './ToolbarFormato';
+import { AprimoramentosSelector } from './AprimoramentosSelector';
+import { useRPG } from '../context/RPGContext';
 import { categoriaRomanParaNum, categoriaNumParaRoman } from '../utils/rpgRules';
 
-interface ModalEditarMunicaoProps {
+export function ModalEditarMunicao({
+  itemInventario,
+  onSave,
+  onClose,
+}: {
   itemInventario: MunicaoInventario;
-  onSave: (municaoBase: Partial<Municao>, modificacoes: number[]) => void;
+  onSave: (novosDados: Partial<Municao>, modificacoes?: number[], maldicoes?: number[], maldicoesElementos?: Record<number, string>) => void;
   onClose: () => void;
-}
-
-export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEditarMunicaoProps) {
-  const { municao } = itemInventario;
-  const { modificacoesHook, maldicoesHook } = useRPG();
-  
-  const [nome, setNome] = useState(municao.Nome_Item || '');
-  const [descricao, setDescricao] = useState(municao.Descricao_Item || '');
-  const [categoria, setCategoria] = useState(municao.Categoria_Item || '0');
-  const [espacos, setEspacos] = useState(municao['Espaços_Item'] || 0);
-
-  const [modificacoes, setModificacoes] = useState<number[]>(itemInventario.modificacoes || []);
-
+}) {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -31,7 +22,30 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
     };
   }, []);
 
-  const temDiscreto = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'discreto');
+  if (!itemInventario || !itemInventario.municao) {
+    return null;
+  }
+
+  const { municao } = itemInventario;
+
+  const [nome, setNome] = useState(municao.Nome_Item || '');
+  const [descricao, setDescricao] = useState(municao.Descricao_Item || '');
+  const [categoria, setCategoria] = useState(municao.Categoria_Item || 'I');
+  const [espacos, setEspacos] = useState(municao['Espaços_Item']?.toString() || '1');
+
+  const { modificacoesHook, maldicoesHook } = useRPG();
+
+  const initialMods = Array.isArray(itemInventario.modificacoes) ? itemInventario.modificacoes : [];
+  const initialMalds = Array.isArray(itemInventario.maldicoes) ? itemInventario.maldicoes : [];
+  
+  const [modificacoes, setModificacoes] = useState<number[]>(initialMods);
+  const [maldicoes, setMaldicoes] = useState<number[]>(initialMalds);
+  const [maldicoesElementos, setMaldicoesElementos] = useState<Record<number, string>>({});
+
+  const temDiscreto = modificacoes.some(id => {
+    const nome = modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase();
+    return nome === 'discreto' || nome === 'discreta';
+  });
   
   const getEspacoNumber = (val: string | number) => {
     const num = Number(String(val).replace(',', '.').replace(/[^0-9.-]+/g, ''));
@@ -41,38 +55,45 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
   const espacosFinais = temDiscreto ? Math.max(0, baseEspacos - 1) : baseEspacos;
 
   const catNum = categoriaRomanParaNum(categoria);
-  const catFinal = catNum + modificacoes.length;
+  let modificador = modificacoes.length;
+  let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
+  
+  const catFinal = catNum + modificador + custoMaldicoes;
   const podeAdicionarMod = catFinal < 4;
+  const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
+  const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
 
-  
-    const handleAddMald = (id: number, elementoVaria?: string) => {
-      if (podeAdicionarMald) {
-        setMaldicoes(prev => [...prev, id]);
-        if (elementoVaria) {
-          setMaldicoesElementos(prev => ({ ...prev, [id]: elementoVaria }));
-        }
+  const handleAddMald = (id: number, elementoVaria?: string) => {
+    if (podeAdicionarMald) {
+      setMaldicoes(prev => [...prev, id]);
+      if (elementoVaria) {
+        setMaldicoesElementos(prev => ({ ...prev, [id]: elementoVaria }));
       }
-    };
-  
-    const handleRemoveMald = (index: number) => {
-      setMaldicoes(prev => {
-        const removedId = prev[index];
-        if (removedId !== undefined) {
-          setMaldicoesElementos(elemPrev => {
-            const copy = { ...elemPrev };
-            delete copy[removedId];
-            return copy;
-          });
-        }
-        return prev.filter((_, i) => i !== index);
-      });
-    };
+    }
+  };
 
-    const getOpcoesMaldicoes = () => {
-      return maldicoesHook.maldicoes.filter(m => ['munição'].includes(m.Categoria_Mald.trim().toLowerCase()));
-    };
+  const handleRemoveMald = (index: number) => {
+    setMaldicoes(prev => {
+      const removedId = prev[index];
+      if (removedId !== undefined) {
+        setMaldicoesElementos(elemPrev => {
+          const copy = { ...elemPrev };
+          delete copy[removedId];
+          return copy;
+        });
+      }
+      return prev.filter((_, i) => i !== index);
+    });
+  };
 
-    const handleAddMod = (id: number) => {
+  const getOpcoesMaldicoes = () => {
+    return maldicoesHook.maldicoes.filter(m => {
+      const cat = m.Categoria_Mald.trim().toLowerCase();
+      return cat.includes('armas') || cat.includes('munição') || cat.includes('municão');
+    });
+  };
+
+  const handleAddMod = (id: number) => {
     if (podeAdicionarMod) {
       setModificacoes(prev => [...prev, id]);
     }
@@ -86,8 +107,8 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
     return modificacoesHook.modificacoes.filter(m => {
       if (!m.Categoria_Modif) return false;
       const cat = m.Categoria_Modif.toLowerCase();
-      if (cat.includes('muniç') || cat.includes('munic')) return true;
-      return false;
+      // Permitimos modificações de armas de fogo porque as munições acopladas nelas transferem essas modificações para a arma
+      return cat.includes('munição') || cat.includes('municão') || cat.includes('arma') || cat.includes('fogo') || cat.includes('bestas');
     });
   };
 
@@ -109,13 +130,13 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-5" onClick={onClose}>
       <div 
         className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl shadow-black/50"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950 px-6 py-4">
-          <h2 className="text-xl font-bold tracking-wider text-zinc-100 uppercase">
+        <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-5 py-4">
+          <h2 className="font-display text-lg uppercase tracking-wide text-zinc-100">
             Editar Munição
           </h2>
           <button 
@@ -126,71 +147,75 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar flex flex-col gap-4">
-          
-          <div className="rounded border border-zinc-800 bg-zinc-950 p-4">
-              <h3 className="font-bold text-yellow-500 mb-2 border-b border-zinc-800 pb-2">Atributos Básicos</h3>
-              <div className="flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-5">
+              <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm">
+                <h3 className="font-bold text-yellow-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Informações Principais</h3>
                 
-                <div>
-                  <InputLabel label="Nome da Munição" />
-                  <InputOtimizado
-                    value={nome}
-                    onChange={setNome}
-                    className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                   <div>
-                    <InputLabel label="Categoria" />
+                    <InputLabel label="Nome da Munição" />
                     <InputOtimizado
-                      value={categoriaNumParaRoman(catFinal)}
-                      onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - modificacoes.length)))}
+                      value={nome}
+                      onChange={setNome}
                       className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
                     />
                   </div>
 
-                  <div>
-                    <InputLabel label="Espaços" />
-                    <InputOtimizado
-                      value={espacosFinais.toString()}
-                      onChange={val => {
-                        const num = getEspacoNumber(val);
-                        setEspacos(temDiscreto ? num + 1 : num);
-                      }}
-                      type="number"
-                      step="0.5"
-                      className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <InputLabel label="Categoria" />
+                      <InputOtimizado
+                        value={categoriaNumParaRoman(catFinal)}
+                        onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - (modificador + custoMaldicoes))))}
+                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
+                      />
+                    </div>
+
+                    <div>
+                      <InputLabel label="Espaços" />
+                      <InputOtimizado
+                        value={espacosFinais.toString()}
+                        onChange={val => {
+                          const num = getEspacoNumber(val);
+                          setEspacos(temDiscreto ? num + 1 : num);
+                        }}
+                        type="number"
+                        step="0.5"
+                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="mt-2 flex-1">
-                  <InputLabel label="Descrição" />
-                  <div className="rounded border border-zinc-800 bg-zinc-950 flex flex-col h-full">
-                    <ToolbarFormato editorRef={editorDesc as any} />
-                    <div
-                      ref={(el) => {
-                        editorDesc.current = el;
-                        if (el && !el.dataset.initialized) {
-                          el.innerHTML = descricao;
-                          el.dataset.initialized = 'true';
-                        }
-                      }}
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) => setDescricao(e.currentTarget.innerHTML)}
-                      className="w-full p-3 text-sm text-zinc-100 outline-none overflow-y-auto custom-scrollbar max-h-[250px]"
-                    />
-                  </div>
-                </div>
-
               </div>
             </div>
 
-          <div className="mt-6 border-t border-zinc-800 pt-4">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-2 block">Aprimoramentos</label>
+            <div className="flex flex-col gap-5">
+              <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm flex flex-col h-full">
+                <h3 className="font-bold text-yellow-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Descrição</h3>
+                <div className="flex-1 flex flex-col min-h-[150px]">
+                  <ToolbarFormato editorRef={editorDesc as any} />
+                  <div
+                    ref={(el) => {
+                      editorDesc.current = el;
+                      if (el && !el.dataset.initialized) {
+                        el.innerHTML = descricao;
+                        el.dataset.initialized = 'true';
+                      }
+                    }}
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => setDescricao(e.currentTarget.innerHTML)}
+                    className="w-full p-3 text-sm text-zinc-100 outline-none overflow-y-auto custom-scrollbar flex-1 border border-zinc-800 rounded-b focus:border-yellow-700 transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-2 border-t border-zinc-800 pt-6">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3 block">Aprimoramentos da Munição</label>
             <AprimoramentosSelector 
               modificacoesAplicadas={modificacoes}
               opcoesModificacoes={getOpcoesModificacoes()}
@@ -199,20 +224,19 @@ export function ModalEditarMunicao({ itemInventario, onSave, onClose }: ModalEdi
               onRemoveMod={handleRemoveMod}
               podeAdicionarMod={podeAdicionarMod}
               
-              maldicoesAplicadas={[]}
-              opcoesMaldicoes={[]}
-              todasMaldicoes={[]}
-              maldicoesElementos={{}}
-              onAddMald={() => {}}
-              onRemoveMald={() => {}}
-              podeAdicionarMald={false}
+              maldicoesAplicadas={maldicoes}
+              opcoesMaldicoes={getOpcoesMaldicoes()}
+              todasMaldicoes={maldicoesHook.maldicoes}
+              maldicoesElementos={maldicoesElementos}
+              onAddMald={handleAddMald}
+              onRemoveMald={handleRemoveMald}
+              podeAdicionarMald={podeAdicionarMald}
             />
-            
           </div>
 
         </div>
 
-        <div className="border-t border-zinc-800 bg-zinc-950 px-6 py-4 flex justify-end gap-3">
+        <div className="border-t border-zinc-800 bg-zinc-900/50 px-5 py-4 flex justify-end gap-3">
           <button
             onClick={onClose}
             className="rounded px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
