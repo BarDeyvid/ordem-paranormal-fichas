@@ -151,7 +151,7 @@ export function ModalEditarMunicao({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-5">
               <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm">
-                <h3 className="font-bold text-yellow-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Informações Principais</h3>
+                <h3 className="font-bold text-green-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Informações Principais</h3>
                 
                 <div className="flex flex-col gap-4">
                   <div>
@@ -159,7 +159,7 @@ export function ModalEditarMunicao({
                     <InputOtimizado
                       value={nome}
                       onChange={setNome}
-                      className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
+                      className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
                     />
                   </div>
 
@@ -169,7 +169,7 @@ export function ModalEditarMunicao({
                       <InputOtimizado
                         value={categoriaNumParaRoman(catFinal)}
                         onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - (modificador + custoMaldicoes))))}
-                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
+                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
                       />
                     </div>
 
@@ -183,7 +183,7 @@ export function ModalEditarMunicao({
                         }}
                         type="number"
                         step="0.5"
-                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-yellow-700 transition"
+                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
                       />
                     </div>
                   </div>
@@ -193,7 +193,7 @@ export function ModalEditarMunicao({
 
             <div className="flex flex-col gap-5">
               <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm flex flex-col h-full">
-                <h3 className="font-bold text-yellow-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Descrição</h3>
+                <h3 className="font-bold text-green-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Descrição</h3>
                 <div className="flex-1 flex flex-col min-h-[150px]">
                   <ToolbarFormato editorRef={editorDesc as any} />
                   <div
@@ -207,7 +207,7 @@ export function ModalEditarMunicao({
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) => setDescricao(e.currentTarget.innerHTML)}
-                    className="w-full p-3 text-sm text-zinc-100 outline-none overflow-y-auto custom-scrollbar flex-1 border border-zinc-800 rounded-b focus:border-yellow-700 transition-colors"
+                    className="w-full p-3 text-sm text-zinc-100 outline-none overflow-y-auto custom-scrollbar flex-1 border border-zinc-800 rounded-b focus:border-green-700 transition-colors"
                   />
                 </div>
               </div>
@@ -245,7 +245,7 @@ export function ModalEditarMunicao({
           </button>
           <button
             onClick={handleSalvar}
-            className="rounded bg-yellow-600 px-5 py-2 text-xs font-bold uppercase tracking-wider text-yellow-950 shadow-lg transition hover:bg-yellow-500"
+            className="rounded bg-green-700 px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 shadow-lg transition hover:bg-green-600"
           >
             Salvar Alterações
           </button>
