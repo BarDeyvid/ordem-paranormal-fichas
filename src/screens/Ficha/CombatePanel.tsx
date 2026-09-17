@@ -418,21 +418,23 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               <span className="text-zinc-300">
                 <span className="font-bold text-green-400">Munição:</span>{' '}
                 {municoesAcopladasList.length > 0 ? (
-                  municoesAcopladasList.map((minv, idx) => (
-                    <span key={minv.id} className="text-zinc-300 inline-flex items-center">
-                      {idx > 0 && <span className="mr-1">, </span>}
-                      {minv.municao.Nome_Item}
-                      <button 
-                        onClick={(e) => { 
-                          e.stopPropagation(); 
-                          armasHook?.desacoplarMunicao(armaInv.id, minv.id); 
-                          municoesHook?.removerMunicao(minv.id); 
-                        }} 
-                        className="text-red-500 hover:text-red-400 ml-1 px-1 rounded transition-colors" 
-                        title="Remover Munição"
-                      >×</button>
-                    </span>
-                  ))
+                  <span className="text-zinc-300 inline-flex items-center">
+                    {municoesAcopladasList[0].municao.Nome_Item}
+                    {municoesAcopladasList.length > 1 && (
+                      <span className="ml-1 text-zinc-400 font-bold bg-zinc-800/80 px-1 rounded-sm text-[9px]">
+                        +{municoesAcopladasList.length - 1}
+                      </span>
+                    )}
+                    <button 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        armasHook?.desacoplarMunicao(armaInv.id, municoesAcopladasList[0].id); 
+                        municoesHook?.removerMunicao(municoesAcopladasList[0].id); 
+                      }} 
+                      className="text-zinc-500 hover:text-zinc-300 ml-1.5 px-0.5 rounded transition-colors text-[10px]" 
+                      title="Remover Munição Atual"
+                    >✕</button>
+                  </span>
                 ) : (
                   <span className="text-zinc-500">-</span>
                 )}
