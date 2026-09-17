@@ -1709,7 +1709,7 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
                 )}
               </div>
             <div className="flex items-center gap-4 text-xs text-zinc-300 mt-0.5">
-              <span><span className="font-bold text-zinc-400">Categoria:</span> {municao.Categoria_Item}</span>
+              <span><span className="font-bold text-zinc-400">Categoria:</span> {calcularCategoriaFinal(municao.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, false, item.maldicoes, maldicoesHook?.maldicoes)}</span>
               {regras?.['contagem_municao'] && municao.contagem_municao && (
                 <span><span className="font-bold text-zinc-400">Quantidade:</span> {municao.contagem_municao}</span>
               )}
