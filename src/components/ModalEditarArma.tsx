@@ -471,7 +471,7 @@ export function ModalEditarArma({
           {/* SECTION: Aprimoramentos */}
           <section>
             <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Aprimoramentos Paranormais</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Aprimoramentos</h3>
               <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
             </div>
             
