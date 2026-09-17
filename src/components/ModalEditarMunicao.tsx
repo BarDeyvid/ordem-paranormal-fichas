@@ -108,7 +108,7 @@ export function ModalEditarMunicao({
       if (!m.Categoria_Modif) return false;
       const cat = m.Categoria_Modif.toLowerCase();
       // Permitimos modificações de armas de fogo porque as munições acopladas nelas transferem essas modificações para a arma
-      return cat.includes('munição') || cat.includes('municão') || cat.includes('arma') || cat.includes('fogo') || cat.includes('bestas');
+      return cat.includes('muni');
     });
   };
 
