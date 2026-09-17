@@ -169,7 +169,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || nome.includes('cruel')) {
        extrasStr += `+2`;
     }
-    const match = desc.match(/\+?\s*(\d+d\d+\*?)/i);
+    const match = (nome !== 'dum dum' && nome !== 'calibre grosso') ? desc.match(/\+\s*(\d+d\d+\*?)/i) : null;
     if (match) {
       extrasStr += `+${match[1]}`;
     }
@@ -194,7 +194,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         if (idx !== -1 && idx < ord.length - 1) alcance = ord[idx + 1];
       }
     }
-    const match = desc.match(/\+?\s*(\d+d\d+\*?)/i);
+    const match = desc.match(/\+\s*(\d+d\d+\*?)/i);
     if (match) {
       let elemento = m.Elemento_Mald || 'Paranormal';
       if (elemento.toLowerCase() === 'varia' || elemento.toLowerCase() === 'variável') {
