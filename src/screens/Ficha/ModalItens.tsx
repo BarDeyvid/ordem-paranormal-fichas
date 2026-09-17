@@ -39,6 +39,7 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
   
   const [mostrarFiltrosAvançados, setMostrarFiltrosAvançados] = useState(false);
   const [filtroCategoria, setFiltroCategoria] = useState<string>('Todas');
+  const [subFiltroGrupo, setSubFiltroGrupo] = useState<string>('Todos');
 
   const TODAS_PERICIAS = Object.keys(periciasHook?.pericias || {}).sort();
   const ELEMENTOS = ['Sangue', 'Conhecimento', 'Energia', 'Morte'];
@@ -79,8 +80,17 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
     setExpandidos(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
-  const itensFiltrados = itensHook.itens.filter((item: ItemGeral) => {
-    if (item.Grupo_Item.trim() !== grupoAba) return false;
+    const itensFiltrados = itensHook.itens.filter((item: ItemGeral) => {
+    let matchGrupo = item.Grupo_Item.trim() === grupoAba;
+    if (grupoAba === 'Itens Operacionais') {
+      matchGrupo = item.Grupo_Item.trim() === 'Itens Operacionais' || item.Grupo_Item.trim() === 'Recursos';
+    }
+    if (!matchGrupo) return false;
+
+    if (grupoAba === 'Itens Operacionais' && subFiltroGrupo !== 'Todos') {
+      if (item.Grupo_Item.trim() !== subFiltroGrupo) return false;
+    }
+
     if (busca && !item.Nome_Item.toLowerCase().includes(busca.toLowerCase())) return false;
     
     if (filtroCategoria !== 'Todas') {
@@ -92,7 +102,14 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
     return true;
   }).sort((a: ItemGeral, b: ItemGeral) => a.Nome_Item.localeCompare(b.Nome_Item));
   
-  const uniqueCategorias = Array.from(new Set(itensHook.itens.filter(i => i.Grupo_Item.trim() === grupoAba).map(i => {
+    const uniqueCategorias = Array.from(new Set(itensHook.itens.filter(i => {
+    let matchGrupo = i.Grupo_Item.trim() === grupoAba;
+    if (grupoAba === 'Itens Operacionais') {
+      matchGrupo = i.Grupo_Item.trim() === 'Itens Operacionais' || i.Grupo_Item.trim() === 'Recursos';
+      if (subFiltroGrupo !== 'Todos' && i.Grupo_Item.trim() !== subFiltroGrupo) return false;
+    }
+    return matchGrupo;
+  }).map(i => {
     const c = String(i.Categoria_Item).trim().toUpperCase();
     if (c === 'O') return '0';
     return c;
@@ -145,7 +162,7 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
         <Collapse isOpen={mostrarFiltrosAvançados} className="z-50">
 
           <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
-            <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                        <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Categoria</label>
               <CustomSelect 
                 value={filtroCategoria} 
@@ -158,6 +175,22 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
                 ]}
               />
             </div>
+            {grupoAba === 'Itens Operacionais' && (
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Tipo de Item</label>
+                <CustomSelect 
+                  value={subFiltroGrupo} 
+                  onChange={(val) => setSubFiltroGrupo(val)}
+                  wrapperClassName="w-full"
+                  className="w-full rounded border border-zinc-700 bg-zinc-950 px-2 py-1 text-xs text-zinc-300 outline-none"
+                  options={[
+                    { value: 'Todos', label: 'Todos' },
+                    { value: 'Itens Operacionais', label: 'Só Operacionais' },
+                    { value: 'Recursos', label: 'Só Recursos' }
+                  ]}
+                />
+              </div>
+            )}
           </div>
         
         </Collapse>
