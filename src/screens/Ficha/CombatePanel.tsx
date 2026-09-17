@@ -506,12 +506,12 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <Collapse isOpen={mostrarDanoMedio}>
             <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
               <span className="text-zinc-300"><span className="font-bold text-green-400">Normal (x1/x2/x3):</span> {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
-              <span className="text-zinc-300"><span className="font-bold text-green-400">Média Crítica:</span> <span className="font-bold">{danoMedioPrincipal.critico}</span></span>
+              {!isLancadorGranadas && (<span className="text-zinc-300"><span className="font-bold text-green-400">Média Crítica:</span> <span className="font-bold">{danoMedioPrincipal.critico}</span></span>)}
               
               {danoMedioSecundario && (
                 <>
                   <span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. (x1/x2/x3):</span> {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
-                  <span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. Crítica:</span> <span className="font-bold">{danoMedioSecundario.critico}</span></span>
+                  {!isLancadorGranadas && (<span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. Crítica:</span> <span className="font-bold">{danoMedioSecundario.critico}</span></span>)}
                 </>
               )}
             </div>
