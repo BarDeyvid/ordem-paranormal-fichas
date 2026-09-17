@@ -375,14 +375,49 @@ export function InventarioPanel() {
     return total;
   }, [armasHook?.armasInventario, municoesHook?.municoesInventario, protecoesHook?.protecoesInventario, itensHook?.itensInventario, modificacoesHook.modificacoes]);
   
-  const noInventario = [0, 0, 0, 0];
-  const countArmas = armasHook?.contagemPorCategoria || [0, 0, 0, 0];
-  const countMunicoes = municoesHook?.contagemPorCategoria || [0, 0, 0, 0];
-  const countProtecoes = protecoesHook?.contagemPorCategoria || [0, 0, 0, 0];
-  const countItens = itensHook?.contagemPorCategoria || [0, 0, 0, 0];
-  for (let i = 0; i < 4; i++) {
-    noInventario[i] = countArmas[i] + countMunicoes[i] + countProtecoes[i] + countItens[i];
-  }
+      const noInventario = [0, 0, 0, 0];
+    
+    const getCatIndex = (catStr: string) => {
+      const c = catStr.trim().toUpperCase();
+      if (c === 'I' || c === '1') return 0;
+      if (c === 'II' || c === '2') return 1;
+      if (c === 'III' || c === '3') return 2;
+      if (c === 'IV' || c === '4') return 3;
+      return -1;
+    };
+
+    const modsAll = modificacoesHook?.modificacoes || [];
+    const maldsAll = maldicoesHook?.maldicoes || [];
+
+    armasHook?.armasInventario?.forEach(a => {
+      const cat = calcularCategoriaFinal(a.arma.Categoria_Item, a.modificacoes, modsAll, a.arma.Codigo_Arma === 71, a.maldicoes, maldsAll);
+      const idx = getCatIndex(cat);
+      if (idx !== -1) noInventario[idx]++;
+    });
+
+    municoesHook?.municoesInventario?.forEach(m => {
+      const cat = calcularCategoriaFinal(m.municao.Categoria_Item, m.modificacoes, modsAll, false, m.maldicoes, maldsAll);
+      const idx = getCatIndex(cat);
+      if (idx !== -1) noInventario[idx]++;
+    });
+
+    protecoesHook?.protecoesInventario?.forEach(p => {
+      const cat = calcularCategoriaFinal(p.protecao.Categoria_Protecao, p.modificacoes, modsAll, false, p.maldicoes, maldsAll);
+      const idx = getCatIndex(cat);
+      if (idx !== -1) noInventario[idx]++;
+    });
+
+    itensHook?.itensInventario?.forEach(i => {
+      const cat = calcularCategoriaFinal(i.item.Categoria_Item, i.modificacoes, modsAll, false, i.maldicoes, maldsAll);
+      const idx = getCatIndex(cat);
+      if (idx !== -1) noInventario[idx]++;
+    });
+
+    itensAmaldicoadosHook?.itensAmaldicoadosInventario?.forEach(ia => {
+      const cat = calcularCategoriaFinal(ia.item.Categoria_Ama, undefined, [], false, undefined, []);
+      const idx = getCatIndex(cat);
+      if (idx !== -1) noInventario[idx]++;
+    });
 
   useEffect(() => {
     (window as any)._inventarioPanelSetters = {
