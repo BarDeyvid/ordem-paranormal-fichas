@@ -1248,9 +1248,9 @@ function SortableArmaItem({
       }
     let espacos = calcularEspacosFinais(arma['Espaços_Item'], item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43));
     let automatica = !!arma['Automatica?'];
-    let critico = arma.Critico_Arma || 20;
+    let critico = Number(arma.Critico_Arma || 20);
     let alcance = arma.Alcance_Item || '';
-    let multiplicador = arma.Multiplicador_Arma || 2;
+    let multiplicador = Number(arma.Multiplicador_Arma || 2);
     let danoSecundario = arma.Dano_Secundario || '';
     let dtGranada: string | null = null;
     
