@@ -337,7 +337,6 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <div className="flex items-center gap-1 min-w-0">
             <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
             
-            
             {arma['Agil?'] && (
               <span className="relative group/agil cursor-help">
                 <span className="text-sm text-yellow-400">⚡</span>
@@ -407,52 +406,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             </div>
           )}
         </div>
-        {(armaInv.municoesAcopladas && armaInv.municoesAcopladas.length > 0) && (
-              <div className="flex flex-wrap items-center gap-1.5 mt-1 relative z-20" onClick={e => e.stopPropagation()}>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Munições:</span>
-                {municoesAcopladasList.map(minv => (
-                  <div key={minv.id} className="flex items-center gap-1 bg-green-950/40 border border-green-900/50 rounded-full pl-2 pr-1 py-0.5 group">
-                    <span className="text-[11px] font-bold text-green-400 truncate max-w-[150px]">{minv.municao.Nome_Item}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        armasHook?.desacoplarMunicao(armaInv.id, minv.id);
-                        municoesHook?.removerMunicao(minv.id);
-                      }}
-                      title="Remover Munição"
-                      className="flex items-center justify-center w-4 h-4 rounded-full text-green-600 hover:text-red-400 hover:bg-green-900/50 transition-colors"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0 mt-1 mb-1">
-            {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
-                    onAddMunicao?.();
-                  } else {
-                    const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
-                    if (compativeis.length === 1) {
-                      const idM = municoesHook?.adicionarMunicao(compativeis[0]);
-                      if (idM) armasHook?.acoplarMunicao(armaInv.id, idM);
-                    } else if (onAddMunicao) {
-                      onAddMunicao();
-                    }
-                  }
-                }}
-                className="w-5 h-5 rounded flex items-center justify-center bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-green-400 hover:border-green-700 transition-colors z-20 relative"
-                title="Acoplar Munição/Granada"
-              >
-                +
-              </button>
-            )}
-          <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
+        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
       <Collapse isOpen={estaExpandida}>
