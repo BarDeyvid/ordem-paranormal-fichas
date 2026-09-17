@@ -176,7 +176,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
           <div className="flex flex-col gap-1 flex-1 min-w-0 justify-center">
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{item.item.Nome_Item}</span>
             {!(item.item.Grupo_Item?.toLowerCase().includes('explosivo') || stringDT) && (
-              <span className="text-xs text-zinc-400 font-medium truncate">Categoria {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, item.item.Codigo_Item === 71, item.maldicoes, maldicoesHook?.maldicoes)}</span>
+              <span className="text-xs text-zinc-400 font-medium truncate">Categoria {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, false, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             )}
             
 
