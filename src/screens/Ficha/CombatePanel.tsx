@@ -412,6 +412,55 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
       <Collapse isOpen={estaExpandida}>
         <div className="mt-3 pt-3 border-t border-zinc-800/50 flex flex-col gap-2 relative z-10 text-xs">
           
+          {/* MUNIÇÃO ACOPLADA */}
+          {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
+            <div className="flex items-center gap-x-2 gap-y-1 mb-1 flex-wrap">
+              <span className="text-zinc-300">
+                <span className="font-bold text-green-400">Munição:</span>{' '}
+                {municoesAcopladasList.length > 0 ? (
+                  municoesAcopladasList.map((minv, idx) => (
+                    <span key={minv.id} className="text-zinc-300 inline-flex items-center">
+                      {idx > 0 && <span className="mr-1">, </span>}
+                      {minv.municao.Nome_Item}
+                      <button 
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          armasHook?.desacoplarMunicao(armaInv.id, minv.id); 
+                          municoesHook?.removerMunicao(minv.id); 
+                        }} 
+                        className="text-red-500 hover:text-red-400 ml-1 px-1 rounded transition-colors" 
+                        title="Remover Munição"
+                      >×</button>
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-zinc-500">-</span>
+                )}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                    onAddMunicao?.();
+                  } else {
+                    const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
+                    if (compativeis.length === 1) {
+                      const idM = municoesHook?.adicionarMunicao(compativeis[0]);
+                      if (idM) armasHook?.acoplarMunicao(armaInv.id, idM);
+                    } else if (onAddMunicao) {
+                      onAddMunicao();
+                    }
+                  }
+                }}
+                className="ml-1 w-4 h-4 inline-flex items-center justify-center rounded bg-zinc-900 border border-zinc-700 text-zinc-400 hover:text-green-400 hover:border-green-700 transition-colors"
+                title="Acoplar Munição/Granada"
+              >
+                +
+              </button>
+            </div>
+          )}
+
+          
           {/* 1. DANO EXPLICADO NO TOPO */}
           {parsedDano.length > 0 && (
             <div className="flex flex-wrap gap-x-4 gap-y-1 mb-1">
