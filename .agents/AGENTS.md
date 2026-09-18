@@ -33,8 +33,14 @@
 
 - **Reset de Estado nos Modais**: TODO modal da aplicação DEVE resetar completamente seu estado interno (filtros aplicados, abas selecionadas, blocos/cards expandidos, etc) sempre que for fechado e aberto novamente. NUNCA preserve o estado de um modal após ele ser fechado, para garantir uma experiência consistente e limpa toda vez que o usuário abri-lo.
 
-- **Scrollbars sem Layout Shift**: TODOS os contedos rol�veis (ex: modais, dropdowns, listas) que usam `overflow-auto` ou `overflow-y-auto` DEVEM incluir a classe `custom-scrollbar`. Essa classe aplica `scrollbar-gutter: stable`, o que reserva espao para o scrollbar e impede que o aparecimento/desaparecimento dele empurre o contedo pro lado, quebrando o layout.
-\n- **Cores dos Elementos**: SEMPRE que for renderizar uma tag, badge ou texto indicando o elemento de algo (Morte, Sangue, Energia, Conhecimento, Medo), utilize EXATAMENTE as seguintes cores padronizadas: Morte (order-zinc-700 bg-black/50 text-white), Medo (order-zinc-500 bg-zinc-200/80 text-zinc-950), Sangue (order-red-900 bg-red-950/20 text-red-500), Energia (order-purple-900 bg-purple-950/20 text-purple-500), Conhecimento (order-yellow-900 bg-yellow-950/20 text-yellow-500). NUNCA invente cores novas (ex: zinc para morte, white para medo sem fundo, etc).\n
+- **Scrollbars sem Layout Shift**: TODOS os contedos rol�veis (ex: modais, dropdowns, listas) que usam `overflow-auto` ou `overflow-y-auto` DEVEM incluir a classe `custom-scrollbar`. Essa classe aplica `scrollbar-gutter: stable`, o que reserva espaço para o scrollbar e impede que o aparecimento/desaparecimento dele empurre o conteúdo pro lado, quebrando o layout.
+
+
+- **Cores dos Elementos**: Existem DOIS padrões para indicar os elementos (Morte, Sangue, Energia, Conhecimento, Medo) e você DEVE respeitar o contexto:
+  1. **Botões de Filtro / Badges Grandes**: Usam borda e fundo. Morte (`border-zinc-700 bg-black/60 text-white`), Medo (`border-zinc-500 bg-zinc-200/90 text-zinc-950`), Sangue (`border-red-900 bg-red-950/40 text-red-500`), Energia (`border-purple-900 bg-purple-950/40 text-purple-500`), Conhecimento (`border-yellow-900 bg-yellow-950/40 text-yellow-500`).
+  2. **Tags Pequenas (Inline, ao lado de nomes de itens/poderes)**: NUNCA USE BORDA! Sangue (`text-red-500`), Conhecimento (`text-yellow-500`), Energia (`text-purple-500`) recebem apenas a cor no texto, sem background. Morte (`bg-black/50 text-white px-1`) e Medo (`bg-zinc-200/80 text-zinc-950 px-1`) recebem apenas um background leve.
+  NUNCA INVENTE CORES NOVAS.
+
 - **Centralização de Regras Automáticas**: Todas as regras automáticas (da tabela Regras Poderes) programadas no código DEVEM estar separadas, agrupadas e comentadas de forma clara, identificando o número e a descrição da regra para facilitar a manutenção.
 
 - **Consistência Absoluta em Cópias/Clones**: Quando solicitado a criar um componente ou modal baseado em outro, ou a deixá-lo igual a outro, VOCÊ É ESTRITAMENTE PROIBIDO de inventar estilos, cores, emojis ou margens diferentes. Você deve usar EXATAMENTE a mesma paleta de cores (ex: não troque green por orange), os mesmos emojis (ex: não troque 📦 por 💣), e as mesmas classes de padding, margens e layouts. Seja um espelho absoluto do que já existe e não tome nenhuma liberdade criativa.
