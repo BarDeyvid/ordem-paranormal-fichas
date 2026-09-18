@@ -6,7 +6,7 @@ import { CustomSelect } from './CustomSelect';
 
 import { AprimoramentosSelector } from './AprimoramentosSelector';
 import { useRPG } from '../context/RPGContext';
-import { categoriaRomanParaNum, categoriaNumParaRoman } from '../utils/rpgRules';
+import { categoriaRomanParaNum, categoriaNumParaRoman, calcularAtributosArmaFinais } from '../utils/rpgRules';
 
 const InputLabel = ({ label }: { label: string }) => (
   <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
@@ -52,6 +52,40 @@ export function ModalEditarArma({
 
   const { modificacoesHook, maldicoesHook } = useRPG();
 
+  const modsAtivas = modificacoes
+    .map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id))
+    .filter(Boolean);
+  const maldsAtivas = maldicoes
+    .map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Mald === id))
+    .filter(Boolean);
+
+  const statsFinais = calcularAtributosArmaFinais(
+    dano,
+    Number(critico) || 20,
+    Number(multiplicador) || 2,
+    alcance,
+    modsAtivas,
+    maldsAtivas
+  );
+
+  const renderLabel = (baseLabel: string, baseValue: any, finalValue: any, isMultiplier = false) => {
+    const isModified = String(baseValue).toLowerCase() !== String(finalValue).toLowerCase();
+    const displayFinal = isMultiplier ? `x${finalValue}` : finalValue;
+    return (
+      <div className="flex justify-between items-center mb-1.5">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+          {baseLabel}
+        </label>
+        {isModified && (
+          <span className="text-[9px] font-bold uppercase tracking-widest text-green-400 bg-green-950/30 px-1.5 py-0.5 rounded border border-green-900/50">
+            Final: {displayFinal}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+
   const initialMods = Array.isArray(armaInventario.modificacoes) ? armaInventario.modificacoes : [];
   const initialMalds = Array.isArray(armaInventario.maldicoes) ? armaInventario.maldicoes : [];
   
@@ -61,35 +95,10 @@ export function ModalEditarArma({
   
   const editorDesc = useRef<HTMLDivElement | null>(null);
 
-  const temDiscreto = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'discreto' || modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'discreta');
-  const temMiraTelescopica = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'mira telescpica' || modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'mira telescopica');
-  const temMira = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase().startsWith('mira'));
-  const temCalibreGrosso = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'calibre grosso');
-  const temApocaliptica = modificacoes.some(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'apocalptica' || modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)?.Nome_Modif.trim().toLowerCase() === 'apocaliptica');
-
-  const ordAlcance = ['Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
-  let alcanceFinal = alcance;
-  if (temMiraTelescopica && alcance) {
-    const idx = ordAlcance.indexOf(alcance);
-    if (idx !== -1 && idx < ordAlcance.length - 1) alcanceFinal = ordAlcance[idx + 1];
-  }
-
   const getEspacoNumber = (str: string) => {
     let val = Number(String(str).replace(',', '.').replace(/[^0-9.-]+/g, ''));
     return isNaN(val) ? 0 : val;
   };
-
-  let espacosFinais = getEspacoNumber(espacos);
-  if (temDiscreto) espacosFinais -= 1;
-  if (espacosFinais < 0) espacosFinais = 0;
-
-  let danoFinal = dano;
-  if (temCalibreGrosso && dano) {
-    danoFinal = dano.replace(/(\d+)d(\d+)/i, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
-  }
-
-  let criticoFinal = Number(critico) || 20;
-  if (temMira) criticoFinal -= 2;
 
   const handleSalvar = () => {
     if (editorDesc.current) {
@@ -319,20 +328,13 @@ export function ModalEditarArma({
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               <div className="col-span-2 md:col-span-1">
-                <InputLabel label="Dano" />
+                {renderLabel('Dano', dano, statsFinais.danoFinal)}
                 <InputOtimizado
-                  value={danoFinal}
-                  onChange={val => {
-                    if (temCalibreGrosso) {
-                      const reversao = val.replace(/(\d+)d(\d+)/i, (match, p1, p2) => `${Math.max(1, Number(p1) - 1)}d${p2}`);
-                      setDano(reversao);
-                    } else {
-                      setDano(val);
-                    }
-                  }}
-                  placeholder="Ex: 1d8"
-                  className={inputClass}
-                />
+                    value={dano}
+                    onChange={setDano}
+                    placeholder="Ex: 1d8"
+                    className={inputClass}
+                  />
               </div>
 
               <div className="col-span-2 md:col-span-1">
@@ -363,7 +365,7 @@ export function ModalEditarArma({
               </div>
 
               <div>
-                <InputLabel label="Multiplicador" />
+                {renderLabel('Multiplicador', multiplicador, statsFinais.multCritFinal, true)}
                 <InputOtimizado
                   value={multiplicador}
                   onChange={setMultiplicador}
@@ -373,42 +375,22 @@ export function ModalEditarArma({
               </div>
 
               <div className="col-span-2">
-                <InputLabel label="Alcance" />
+                {renderLabel('Alcance', alcance, statsFinais.alcanceFinal)}
                 <CustomSelect
-                  value={alcanceFinal}
-                  onChange={(val) => {
-                    if (temMiraTelescopica) {
-                      const idx = ordAlcance.indexOf(val);
-                      if (idx > 0) {
-                        setAlcance(ordAlcance[idx - 1]);
-                      } else {
-                        setAlcance(val);
-                      }
-                    } else {
-                      setAlcance(val);
-                    }
-                  }}
-                  options={[
-                    { value: "", label: "Nenhum" },
-                    { value: "Curto", label: "Curto" },
-                    { value: "Médio", label: "Médio" },
-                    { value: "Longo", label: "Longo" },
-                    { value: "Extremo", label: "Extremo" },
-                    { value: "Ilimitado", label: "Ilimitado" }
-                  ]}
-                  wrapperClassName="w-full"
-                  className={selectClass}
-                />
-              </div>
-
-              <div className="col-span-2">
-                <InputLabel label="Teste DT" />
-                <InputOtimizado
-                  value={dt}
-                  onChange={setDt}
-                  placeholder="Ex: Fortitude, 20"
-                  className={inputClass}
-                />
+                    value={alcance}
+                    onChange={setAlcance}
+                    options={[
+                      'Curto',
+                      'Médio',
+                      'Longo',
+                      'Extremo',
+                      'Ilimitado',
+                      'Pessoal',
+                      'Toque',
+                      'Corpo a Corpo'
+                    ]}
+                    className={inputClass}
+                  />
               </div>
             </div>
           </section>

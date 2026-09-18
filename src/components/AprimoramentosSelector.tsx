@@ -83,13 +83,7 @@ export function AprimoramentosSelector({
     });
   }
 
-  React.useEffect(() => {
-    if (modalAberto) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  }, [modalAberto]);
+  
 
   return (
     <div className="flex flex-col gap-3">

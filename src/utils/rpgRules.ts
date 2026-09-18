@@ -407,3 +407,54 @@ export function calcularCategoriaFinal(categoriaBase: string | number | null | u
   const total = baseNum + modificador + custoMaldicoes;
   return categoriaNumParaRoman(Math.min(Math.max(0, total), 4));
 }
+export function calcularAtributosArmaFinais(
+  danoBase: string,
+  criticoBase: number,
+  multCritBase: number,
+  alcanceBase: string,
+  modsAtivas: any[],
+  maldicoesAtivas: any[]
+) {
+  let danoFinal = danoBase || '';
+  let criticoFinal = Number(criticoBase) || 20;
+  let multCritFinal = Number(multCritBase) || 2;
+  let alcanceFinal = alcanceBase || 'Corpo a Corpo';
+  let extrasDanoStr = '';
+
+  modsAtivas.forEach(m => {
+    if (!m) return;
+    const desc = m.Descricao_Modif || '';
+    const nome = m.Nome_Modif?.toLowerCase() || '';
+    
+    if (nome === 'mira laser' || nome === 'perigosa') criticoFinal -= 2;
+    if (nome === 'dum dum') multCritFinal += 1;
+    if (nome === 'mira telescópica' || nome === 'mira telescopica') {
+      const ord = ['Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
+      const normalize = (s: string) => s.replace(/[áàãâä]/gi, 'a').replace(/[éèêë]/gi, 'e').replace(/[íìîï]/gi, 'i').replace(/[óòõôö]/gi, 'o').replace(/[úùûü]/gi, 'u').toLowerCase();
+      
+      const ordNorm = ord.map(normalize);
+      const idx = ordNorm.indexOf(normalize(alcanceFinal));
+      if (idx !== -1 && idx < ord.length - 1) alcanceFinal = ord[idx + 1];
+    }
+    
+    if (desc.toLowerCase().includes('+2 em rolagens de dano') || desc.toLowerCase().includes('+2 rolagens de dano') || desc.toLowerCase().includes('+2 no dano') || nome.includes('cruel')) {
+       extrasDanoStr += '+2';
+    }
+    
+    const match = (nome !== 'dum dum' && nome !== 'calibre grosso') ? desc.match(/\+\s*(\d+d\d+\*?)/i) : null;
+    if (match) {
+      extrasDanoStr += '+' + match[1];
+    }
+    
+    if (nome === 'calibre grosso') {
+       danoFinal = danoFinal.replace(/(\d+)d(\d+)/gi, (m, p1, p2) => `${Number(p1) + 1}d${p2}`);
+    }
+  });
+
+  return {
+    danoFinal: (danoFinal + extrasDanoStr).trim(),
+    criticoFinal,
+    multCritFinal,
+    alcanceFinal
+  };
+}
