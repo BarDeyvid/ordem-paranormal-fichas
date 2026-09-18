@@ -22,15 +22,15 @@ interface AprimoramentosSelectorProps {
 }
 
 const getCorElemento = (elemento?: string) => {
-  if (!elemento) return 'bg-zinc-800/50 text-zinc-400 border border-zinc-700/50';
+  if (!elemento) return 'text-zinc-400';
   const elStr = elemento.toLowerCase();
-  if (elStr.includes('medo')) return 'border border-zinc-500 bg-zinc-200/80 text-zinc-950';
-  if (elStr.includes('sangue')) return 'border border-red-900 bg-red-950/20 text-red-500';
-  if (elStr.includes('morte')) return 'border border-zinc-700 bg-black/50 text-white';
-  if (elStr.includes('conhecimento')) return 'border border-yellow-900 bg-yellow-950/20 text-yellow-500';
-  if (elStr.includes('energia')) return 'border border-purple-900 bg-purple-950/20 text-purple-500';
-  if (elStr.includes('varia') || elStr.includes('lista')) return 'border border-blue-900 bg-blue-950/20 text-blue-400';
-  return 'border border-zinc-700 bg-zinc-800/50 text-zinc-400';
+  if (elStr.includes('medo')) return 'bg-zinc-200/80 text-zinc-950 px-1';
+  if (elStr.includes('sangue')) return 'text-red-500';
+  if (elStr.includes('morte')) return 'bg-black/50 text-white px-1';
+  if (elStr.includes('conhecimento')) return 'text-yellow-500';
+  if (elStr.includes('energia')) return 'text-purple-500';
+  if (elStr.includes('varia') || elStr.includes('lista')) return 'text-blue-500';
+  return 'text-zinc-400';
 };
 
 export function AprimoramentosSelector({
@@ -128,7 +128,7 @@ export function AprimoramentosSelector({
                 <div className="flex flex-col gap-1.5 pr-4 relative z-10">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-zinc-200 text-sm">{mod.Nome_Mald}</span>
-                    <span className={`inline-block rounded px-1.5 py-px text-[9px] font-bold uppercase tracking-wider leading-tight flex-shrink-0 mt-0.5 ${cores}`}>
+                    <span className={`text-[10px] font-bold rounded-sm truncate uppercase tracking-wider w-fit mt-0.5 ${cores}`}>
                       {elementoReal}
                     </span>
                   </div>
@@ -334,7 +334,7 @@ export function AprimoramentosSelector({
                                     />
                                   </div>
                                 ) : (
-                                  <span className={`inline-block rounded px-1.5 py-px text-[9px] font-bold uppercase tracking-wider leading-tight flex-shrink-0 mt-0.5 ${cores}`}>
+                                  <span className={`text-[10px] font-bold rounded-sm truncate uppercase tracking-wider w-fit mt-0.5 ${cores}`}>
                                     {opcao.Elemento_Mald}
                                   </span>
                                 )}
