@@ -57,6 +57,15 @@ const ProgressaoBlock = ({ item, nexPatamar }: { item: ProgressaoNexItem, nexPat
   const [editText, setEditText] = useState('');
   const editorRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+      if (isEditing) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+      return () => { document.body.style.overflow = 'unset'; };
+    }, [isEditing]);
+
   const elementoDaLinha = item.Elemento_Progrecao?.trim();
 
   // Ocultar se for progressão de elemento diferente do escolhido (60, 75, 90)
@@ -70,16 +79,6 @@ const ProgressaoBlock = ({ item, nexPatamar }: { item: ProgressaoNexItem, nexPat
   const podeTranscender = [25, 35, 50, 60, 75, 90].includes(nexPatamar);
   const temPoderEscolhido = !!poderesHook.poderesEscolhidos[chaveTranscender];
   const poder = poderesHook.poderesEscolhidos[chaveTranscender];
-
-  
-  useEffect(() => {
-    if (isEditing) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [isEditing]);
 
   const handleEditClick = () => {
     setEditText(progressaoNexEditados[item.Codigo_Progrecao] || item.Desc_Progrecao);

@@ -9,6 +9,7 @@ import { ModalPoderes } from '../../components/ModalPoderes';
 import { obterCorBadge } from '../../utils/rpgRules';
 import { CharacterHeader } from './CharacterHeader';
 import { BonusCondicionaisPanel } from './BonusCondicionaisPanel';
+import { MatrixBackground } from './MatrixBackground';
 
 export const FichaScreen: React.FC = () => {
   const {
@@ -20,6 +21,8 @@ export const FichaScreen: React.FC = () => {
     setSkillCombatente2,
     nexModalAberto,
     nexPoderEditando,
+    afinidadeAtiva,
+    afinidadeEscolhida
   } = useRPG();
 
   const handleRefazer = () => {
@@ -30,8 +33,12 @@ export const FichaScreen: React.FC = () => {
     setTelaAtual('atributos');
   };
 
+  const afinidade = afinidadeAtiva ? afinidadeEscolhida : null;
+
   return (
-    <div className="mx-auto flex w-full max-w-[1600px] flex-col">
+    <div className="relative w-full min-h-screen flex flex-col">
+      <MatrixBackground afinidade={afinidade} />
+      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col p-4 md:p-6">
       <div className="flex w-full justify-between gap-6 xl:gap-10">
         
         {/* BLOCO ESQUERDO: Header + (Atributos e Perícias) */}
@@ -70,6 +77,7 @@ export const FichaScreen: React.FC = () => {
       </button>
 
       {(nexModalAberto !== null || nexPoderEditando !== null) && <ModalPoderes />}
+      </div>
     </div>
   );
 };

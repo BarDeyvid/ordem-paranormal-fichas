@@ -34,7 +34,7 @@ function AppContent() {
   const isFicha = telaAtual === 'ficha';
 
   return (
-    <div className="min-h-screen w-full bg-zinc-950 p-4 md:p-6 overflow-x-hidden">
+    <div className={`min-h-screen w-full bg-zinc-950 overflow-x-hidden ${isFicha ? '' : 'p-4 md:p-6'}`}>
       <Rotas />
     </div>
   );
