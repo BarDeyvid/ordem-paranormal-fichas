@@ -52,6 +52,13 @@ export function ModalEditarArma({
 
   const { modificacoesHook, maldicoesHook } = useRPG();
 
+  const initialMods = Array.isArray(armaInventario.modificacoes) ? armaInventario.modificacoes : [];
+  const initialMalds = Array.isArray(armaInventario.maldicoes) ? armaInventario.maldicoes : [];
+  
+  const [modificacoes, setModificacoes] = useState<number[]>(initialMods);
+  const [maldicoes, setMaldicoes] = useState<number[]>(initialMalds);
+  const [maldicoesElementos, setMaldicoesElementos] = useState<Record<number, string>>(armaInventario.maldicoes_elementos || {});
+
   const modsAtivas = modificacoes
     .map(id => modificacoesHook.modificacoes.find((m: any) => m.Codigo_Modif === id))
     .filter(Boolean);
@@ -86,13 +93,6 @@ export function ModalEditarArma({
   };
 
 
-  const initialMods = Array.isArray(armaInventario.modificacoes) ? armaInventario.modificacoes : [];
-  const initialMalds = Array.isArray(armaInventario.maldicoes) ? armaInventario.maldicoes : [];
-  
-  const [modificacoes, setModificacoes] = useState<number[]>(initialMods);
-  const [maldicoes, setMaldicoes] = useState<number[]>(initialMalds);
-  const [maldicoesElementos, setMaldicoesElementos] = useState<Record<number, string>>(armaInventario.maldicoes_elementos || {});
-  
   const editorDesc = useRef<HTMLDivElement | null>(null);
 
   const getEspacoNumber = (str: string) => {
