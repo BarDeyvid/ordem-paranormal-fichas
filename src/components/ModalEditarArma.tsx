@@ -66,6 +66,8 @@ export function ModalEditarArma({
     .map(id => maldicoesHook.maldicoes.find((m: any) => m.Codigo_Mald === id))
     .filter(Boolean);
 
+  const temApocaliptica = modsAtivas.some((m: any) => m.Nome_Modif.trim().toLowerCase() === 'apocalíptica' || m.Nome_Modif.trim().toLowerCase() === 'apocaliptica');
+
   const statsFinais = calcularAtributosArmaFinais(
     dano,
     Number(critico) || 20,
