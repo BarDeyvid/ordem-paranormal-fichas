@@ -415,14 +415,14 @@ export function ModalEditarArma({
 
               <div>
                 <InputLabel label="Espaços" />
-                <InputOtimizado
-                  value={espacosFinais.toString()}
-                  onChange={val => {
-                    const num = getEspacoNumber(val);
-                    setEspacos(temDiscreto ? String(num + 1) : String(num));
-                  }}
-                  type="number"
-                  step="0.5"
+                  <InputOtimizado
+                    value={espacos}
+                    onChange={val => {
+                      const num = getEspacoNumber(val);
+                      setEspacos(String(num));
+                    }}
+                    type="number"
+                    step="0.5"
                   className={inputClass}
                 />
               </div>
