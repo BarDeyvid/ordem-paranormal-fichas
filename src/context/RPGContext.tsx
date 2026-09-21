@@ -415,12 +415,20 @@ const atributosFinais = useMemo(() => {
       return true;
     }
 
-    // Comportamento original
+    // Comportamento original corrigido: transcender antes de 50% não dá afinidade.
+    // Chaves de transcender são: nexPatamar + 1000 (ex: 1025, 1050).
     return Object.entries(poderesHook.poderesEscolhidos).some(([key, p]) => {
       if (p.categoria !== 'paranormais') return false;
-      const nexSlot = Number(key);
-      if (!isNaN(nexSlot) && nexSlot >= 50) return true;
-      return false;
+      
+      let nexSlot = Number(key);
+      if (isNaN(nexSlot)) return false;
+
+      // Normaliza as chaves do botão transcender (1025 -> 25, 1050 -> 50, etc)
+      if (nexSlot > 1000) {
+        nexSlot -= 1000;
+      }
+
+      return nexSlot >= 50;
     });
   }, [afinidadeEscolhida, poderesHook.poderesEscolhidos, regras, nex, nivel]);
 
