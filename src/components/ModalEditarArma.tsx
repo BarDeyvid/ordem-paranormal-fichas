@@ -396,7 +396,7 @@ export function ModalEditarArma({
 
             <div className="grid grid-cols-2 gap-5">
               <div>
-                <InputLabel label="Categoria" />
+                <InputLabel label="Categoria (Total Final)" />
                   <CustomSelect
                     value={categoriaNumParaRoman(catFinal)}
                     onChange={(val) => {

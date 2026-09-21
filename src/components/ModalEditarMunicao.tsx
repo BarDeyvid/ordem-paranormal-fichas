@@ -185,7 +185,7 @@ export function ModalEditarMunicao({
               </div>
 
               <div>
-                <InputLabel label="Categoria" />
+                <InputLabel label="Categoria (Total Final)" />
                   <CustomSelect
                     value={categoriaNumParaRoman(catFinal)}
                     onChange={(val) => {

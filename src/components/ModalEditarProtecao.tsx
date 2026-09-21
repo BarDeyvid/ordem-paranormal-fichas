@@ -195,7 +195,7 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
               </div>
 
               <div>
-                <InputLabel label="Categoria" />
+                <InputLabel label="Categoria (Total Final)" />
                   <CustomSelect
                     value={categoriaNumParaRoman(catFinal)}
                     onChange={(val) => {
@@ -213,7 +213,7 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
               </div>
 
               <div>
-                <InputLabel label="Defesa" />
+                <InputLabel label="Defesa (Base S/ Mods)" />
                 <InputOtimizado
                   value={defesa}
                   onChange={setDefesa}
