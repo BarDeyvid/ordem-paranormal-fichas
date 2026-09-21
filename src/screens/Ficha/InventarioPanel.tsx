@@ -343,6 +343,7 @@ export function InventarioPanel() {
   const [municaoFiltroCategoria, setMunicaoFiltroCategoria] = useState<string | undefined>(undefined);
   const [municaoTargetArmaId, setMunicaoTargetArmaId] = useState<string | undefined>(undefined);
   const [modalGranadasAberto, setModalGranadasAberto] = useState(false);
+  const [flechaExplosivaPendente, setFlechaExplosivaPendente] = useState<any>(null);
   const [granadaTargetArmaId, setGranadaTargetArmaId] = useState<string | undefined>(undefined);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
   
@@ -1131,6 +1132,12 @@ export function InventarioPanel() {
           armaFiltroNome={municaoFiltroNome}
           armaFiltroCategoria={municaoFiltroCategoria}
           onSelect={municao => {
+            if (municao.Codigo_Municao === 67) {
+              setFlechaExplosivaPendente(municao);
+              setModalGranadasAberto(true);
+              setModalMunicoesAberto(false);
+              return;
+            }
             const idGerado = municoesHook?.adicionarMunicao(municao);
             if (idGerado && municaoTargetArmaId) {
               armasHook?.acoplarMunicao(municaoTargetArmaId, idGerado);
@@ -1208,8 +1215,28 @@ export function InventarioPanel() {
       {/* Modal Granadas */}
       {modalGranadasAberto && (
         <ModalGranadas
-          onFechar={() => setModalGranadasAberto(false)}
+          onFechar={() => {
+            setModalGranadasAberto(false);
+            setFlechaExplosivaPendente(null);
+          }}
           onSelect={(granada) => {
+            if (flechaExplosivaPendente) {
+              const flechaComGranada = {
+                ...flechaExplosivaPendente,
+                Nome_Item: `${flechaExplosivaPendente.Nome_Item} (${granada.Nome_Item})`,
+                Categoria_Item: flechaExplosivaPendente.Categoria_Item + " + " + granada.Categoria_Item,
+                granada_dano: granada.Dano_Item,
+                granada_dt: granada.Dt_Item,
+              };
+              const newId = municoesHook?.adicionarMunicao(flechaComGranada);
+              if (municaoTargetArmaId && newId) {
+                armasHook?.acoplarMunicao(municaoTargetArmaId, newId);
+              }
+              setFlechaExplosivaPendente(null);
+              setModalGranadasAberto(false);
+              return;
+            }
+
             const newId = itensHook?.adicionarItem(granada);
             if (granadaTargetArmaId && newId) {
                armasHook?.acoplarMunicao(granadaTargetArmaId, newId);
@@ -1520,7 +1547,10 @@ function SortableArmaItem({
           <div className="flex flex-col gap-1 text-xs text-zinc-300">
             <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(arma.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, arma.Codigo_Arma === 71, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             {stats.alcance && <span><span className="text-green-400 font-bold">Alcance:</span> {stats.alcance}</span>}
-            <span><span className="text-green-400 font-bold">Tipo:</span> {arma.Tipo_Dano_Arma}</span>
+            <span><span className="text-green-400 font-bold">Tipo:</span> {municoesAcopladasList[0]?.municao?.Codigo_Municao === 63 ? 'Impacto' : arma.Tipo_Dano_Arma}</span>
+              {municoesAcopladasList[0]?.municao?.Codigo_Municao === 67 && municoesAcopladasList[0]?.municao?.granada_dano && (
+                <span><span className="text-green-400 font-bold">Explosivo:</span> {municoesAcopladasList[0].municao.granada_dano} (DT {municoesAcopladasList[0].municao.granada_dt || '-'})</span>
+              )}
               {isLancadorGranadas && granadaAcoplada && (
                 <span><span className="text-green-400 font-bold">Granada:</span> {granadaAcoplada.Nome_Item}</span>
               )}

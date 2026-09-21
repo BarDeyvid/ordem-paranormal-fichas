@@ -252,6 +252,8 @@ export interface Municao {
   Categoria_Item: string;
   'Espaços_Item': number;
   contagem_municao?: number | string | null;
+  granada_dano?: string;
+  granada_dt?: string;
 }
 
 export interface MunicaoInventario {

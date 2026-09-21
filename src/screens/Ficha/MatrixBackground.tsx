@@ -23,9 +23,29 @@ const PALAVRAS = [
 const PALAVRAS_SANGUE = [
   "Obsessão", "Fúria", "Paixão", "Rancor", "Euforia", "Impulso", "Desespero", "Fanatismo", 
   "Carne", "Pulsação", "Vísceras", "Artéria", "Hemoglobina", "Medula", "Fluido", "Coração", 
-  "Dilaceração", "Sacrifício", "Chacina", "Martírio", "Crueldade", "Flagelo", "Tormento", 
-  "Sede", "Massacre", "Rubro", "Escarlate", "Carmesim", "Fervura", "Simbiose", "Linhagem", 
-  "Laço", "Sanguinolento"
+  "Dilaceração", "Sacrifício", "Chacina", "Martírio", "Crueldade", "Flagelo", "Tormento", "Sede", 
+  "Massacre", "Rubro", "Escarlate", "Carmesim", "Fervura", "Simbiose", "Linhagem", "Laço", "Sanguinolento"
+];
+
+const PALAVRAS_ENERGIA = [
+  "Instabilidade", "Voltagem", "Centelha", "Faísca", "Fulgor", "Clarão", "Relâmpago", 
+  "Distorção", "Frenesi", "Vertigem", "Pulsação", "Cintilação", "Flutuação", "Magnetismo", 
+  "Ruído", "Estridência", "Chiado", "Interferência", "Mutagênico", "Irradiação", "Brilho", 
+  "Fluorescência", "Neon", "Luminescência", "Alucinação", "Paranoia", "Obsessão", "Impulso", 
+  "Aceleração", "Volátil", "Espasmo", "Convulsão", "Choque", "Sobretensão", "Fusível", 
+  "Disrupção", "Anormalidade", "Aberração", "Metamorfose", "Efêmero", "Fragmentação", 
+  "Oscilação", "Ressonância", "Combustão", "Ignição", "Detonação", "Explosão", "Cataclismo", 
+  "Ruína", "Decomposição"
+];
+
+const PALAVRAS_MORTE = [
+  "Tempo", "Lodo", "Cinzas", "Espirais", "Envelhecimento", "Poeira", "Ampulheta", "Fim", 
+  "Ciclo", "Decomposição", "Eternidade", "Relógio", "Obsolescência", "Caruncho", "Mofo", 
+  "Esquecimento", "Entropia", "Ruína", "Letargia", "Lentidão", "Passado", "Apodrecimento", 
+  "Rastro", "Cinzento", "Ossos", "Luto", "Memórias", "Estagnação", "Tédio", "Desgaste", 
+  "Perecível", "Destino", "Terminal", "Murchar", "Carcaça", "Fóssil", "Antiguidade", 
+  "Ferrugem", "Tumba", "Sepultura", "Breu", "Eco", "Silêncio", "Agonia", "Vazio", 
+  "Decrepitude", "Vestígio", "Poço", "Fumaça", "Paralisação"
 ];
 
 function textoParaBinario(texto: string) {
@@ -61,6 +81,7 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
   const isConhecimento = afinidade === 'Conhecimento';
   const isSangue = afinidade === 'Sangue';
   const isMorte = afinidade === 'Morte';
+  const isEnergia = afinidade === 'Energia';
   const charBase = isConhecimento ? 'O' : '0'; 
 
   // Guardamos o texto final como uma string. Se for morte, guardamos o HTML inteiro.
@@ -103,7 +124,10 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
     let timeoutVisivel: NodeJS.Timeout;
     
     const iniciarCiclo = () => {
-      const listaMestre = isSangue ? PALAVRAS_SANGUE : PALAVRAS;
+      let listaMestre = PALAVRAS;
+      if (isSangue) listaMestre = PALAVRAS_SANGUE;
+      else if (isEnergia) listaMestre = PALAVRAS_ENERGIA;
+      else if (isMorte) listaMestre = PALAVRAS_MORTE;
       
       let conteudo = '';
       if (isConhecimento) {
@@ -129,6 +153,19 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
           if (rand < 0.22) return 'v';
           if (rand < 0.32) return '.';
           if (c === '0' && rand < 0.5) return '1'; 
+          return c;
+        });
+        setTexto(gerarTexto(charsSujos.join('')));
+      } else if (isEnergia) {
+        // Modo Energia: insere glitches (símbolos e números errados) no meio do binário
+        let charsSujos = stringFinal.split('').map(c => {
+          const rand = Math.random();
+          if (rand < 0.02) return '#';
+          if (rand < 0.04) return 'X';
+          if (rand < 0.06) return '&';
+          if (rand < 0.08) return '%';
+          if (rand < 0.10) return '?';
+          if (c === '0' && rand < 0.4) return '1'; 
           return c;
         });
         setTexto(gerarTexto(charsSujos.join('')));
@@ -186,11 +223,13 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
 export const MatrixBackground = React.memo(({ afinidade }: { afinidade?: string | null }) => {
   const isMorte = afinidade === 'Morte';
   const isSangue = afinidade === 'Sangue';
+  const isEnergia = afinidade === 'Energia';
 
   // Define qual classe de tema aplicar
   let temaClasse = '';
   if (isMorte) temaClasse = 'tema-morte';
   else if (isSangue) temaClasse = 'tema-sangue';
+  else if (isEnergia) temaClasse = 'tema-energia';
 
   return (
     <>
@@ -214,6 +253,7 @@ export const MatrixBackground = React.memo(({ afinidade }: { afinidade?: string 
           overflow: hidden;
         }
 
+        /* TEMA: MORTE */
         #fundo-cascata.tema-morte {
           transform: translateX(-50%) rotate(180deg);
         }
@@ -222,14 +262,12 @@ export const MatrixBackground = React.memo(({ afinidade }: { afinidade?: string 
           background-image: linear-gradient(to bottom, #111111 0%, #333333 60%, #666666 85%, #999999 97%, #111111 100%);
         }
 
-        /* Garante que o span ocupe a linha exata */
         #fundo-cascata.tema-morte .coluna span {
           display: block;
           height: 16px;
           text-align: center;
         }
 
-        /* Aplica o flip 3D apenas nos spans sorteados para poupar a GPU */
         #fundo-cascata.tema-morte .coluna .flip-1 { animation: glitchFlip 3.2s infinite; }
         #fundo-cascata.tema-morte .coluna .flip-2 { animation: glitchFlip 4.5s infinite; animation-delay: -1.1s; }
         #fundo-cascata.tema-morte .coluna .flip-3 { animation: glitchFlip 2.8s infinite; animation-delay: -0.7s; }
@@ -238,6 +276,33 @@ export const MatrixBackground = React.memo(({ afinidade }: { afinidade?: string 
           0%, 45% { transform: rotateX(0deg); }
           50%, 95% { transform: rotateX(180deg); }
           100% { transform: rotateX(360deg); }
+        }
+
+        /* TEMA: ENERGIA */
+        #fundo-cascata.tema-energia .coluna {
+          background-image: linear-gradient(to bottom, 
+            #111111 0%, 
+            #111111 60%, 
+            #00fff2 70%, 
+            #c800ff 78%, 
+            #ff00c8 86%, 
+            #00ff40 94%, 
+            #0037ff 99%, 
+            #111111 100%
+          );
+          animation: luzCaindo var(--duracao) linear infinite, energiaFlicker 3s infinite;
+        }
+
+        #fundo-cascata.tema-energia .bolinho:nth-child(2n) .coluna { animation: luzCaindo var(--duracao) linear infinite, energiaFlicker 4s infinite; }
+        #fundo-cascata.tema-energia .bolinho:nth-child(3n) .coluna { animation: luzCaindo var(--duracao) linear infinite, energiaFlicker 2.5s infinite; }
+        #fundo-cascata.tema-energia .bolinho:nth-child(5n) .coluna { animation: luzCaindo var(--duracao) linear infinite, energiaFlicker 5s infinite; }
+
+        @keyframes energiaFlicker {
+          0%, 94% { opacity: 1; transform: translateX(0); }
+          95% { opacity: 0.6; transform: translateX(-2px); }
+          97% { opacity: 0.9; transform: translateX(2px); }
+          99% { opacity: 0.5; transform: translateX(-1px); }
+          100% { opacity: 1; transform: translateX(0); }
         }
 
         /* --- ESTILOS DA CHUVA (NORMAL, CONHECIMENTO E SANGUE) --- */

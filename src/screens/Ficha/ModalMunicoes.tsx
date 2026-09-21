@@ -39,7 +39,10 @@ export function ModalMunicoes({ onFechar, armaFiltroNome, armaFiltroCategoria, o
     ? municoesHook.getMunicoesCompativeis(armaFiltroNome, armaFiltroCategoria)
     : (municoesHook.municoes || []);
 
+  const temFlechaExplosiva = municoesHook.municoesInventario.some(inv => inv.municao.Codigo_Municao === 67);
+  
   const municoesFiltradas = municoesDisponiveis.filter(m => {
+    if (m.Codigo_Municao === 67 && temFlechaExplosiva) return false;
     if (busca && !m.Nome_Item.toLowerCase().includes(busca.toLowerCase())) return false;
     
     if (filtroCategoria !== 'Todas') {

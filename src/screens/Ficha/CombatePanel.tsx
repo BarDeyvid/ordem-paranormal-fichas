@@ -231,6 +231,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   }
 
   let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
+    if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
+      tipoBase = 'Impacto';
+    }
   let rawDano = arma.Dano_Arma || '';
   if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
     rawDano = '-';
@@ -386,8 +389,15 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               <><span className="font-bold text-green-400">DT:</span> {dtGranada}</>
             ) : (
               <><span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}</>
-            )}
-          </span>
+              )}
+              {activeAmmo?.municao?.Codigo_Municao === 67 && activeAmmo.municao.granada_dano && (
+                <>
+                  <span className="mx-2 text-zinc-700">|</span>
+                  <span className="font-bold text-green-400">Explosivo:</span> {activeAmmo.municao.granada_dano} 
+                  <span className="font-bold text-green-400 ml-1">DT:</span> {activeAmmo.municao.granada_dt || '-'}
+                </>
+              )}
+            </span>
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">
               <span className="text-[11px] text-zinc-400 truncate italic">

@@ -364,7 +364,13 @@ export function verificarAcessoCirculo(circuloExigido: number, nivel: number, cl
 export function categoriaRomanParaNum(categoria?: string | number | null): number {
   if (categoria === undefined || categoria === null) return 0;
   if (typeof categoria === 'number') return categoria;
-  const c = categoria.trim().toUpperCase();
+  
+  if (categoria.includes('+')) {
+    const parts = categoria.split('+');
+    return parts.reduce((sum, p) => sum + categoriaRomanParaNum(p.trim()), 0);
+  }
+
+  const c = String(categoria).trim().toUpperCase();
   if (c === 'O' || c === '0' || c === '') return 0;
   if (c === 'I' || c === '1') return 1;
   if (c === 'II' || c === '2') return 2;
