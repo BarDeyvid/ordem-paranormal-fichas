@@ -137,7 +137,7 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
     });
   };
 
-  const getEspacoNumber = (val) => {
+  function getEspacoNumber(val: string | number) {
     if (typeof val === 'number') return val;
     const num = parseInt(val, 10);
     return isNaN(num) ? 0 : num;

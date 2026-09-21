@@ -54,7 +54,7 @@ export function ModalEditarMunicao({
     return nome === 'discreto' || nome === 'discreta';
   });
   
-  const getEspacoNumber = (val: string | number) => {
+  function getEspacoNumber(val: string | number) {
     const num = Number(String(val).replace(',', '.').replace(/[^0-9.-]+/g, ''));
     return isNaN(num) ? 0 : num;
   };
