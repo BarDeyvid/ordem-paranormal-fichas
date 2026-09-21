@@ -586,21 +586,23 @@ export const ModalPoderes: React.FC = () => {
           />
         </div>
 
-        <div className="flex border-b border-zinc-800 bg-zinc-950">
-          {abasDisponiveis.map(([aba, rotulo]) => (
-            <button
-              key={aba}
-              onClick={() => handleTabChange(aba)}
-              className={`min-w-[70px] flex-1 rounded-t px-1 py-2.5 text-xs font-bold uppercase tracking-wider transition ${
-                abaModalPoderes === aba
-                  ? 'border border-b-0 border-green-900 bg-zinc-900 text-zinc-100'
-                  : 'border border-transparent text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
-              }`}
-            >
-              {rotulo}
-            </button>
-          ))}
-        </div>
+        {abasDisponiveis.length > 1 && (
+          <div className="flex border-b border-zinc-800 bg-zinc-950">
+            {abasDisponiveis.map(([aba, rotulo]) => (
+              <button
+                key={aba}
+                onClick={() => handleTabChange(aba)}
+                className={`min-w-[70px] flex-1 rounded-t px-1 py-2.5 text-xs font-bold uppercase tracking-wider transition ${
+                  abaModalPoderes === aba
+                    ? 'border border-b-0 border-green-900 bg-zinc-900 text-zinc-100'
+                    : 'border border-transparent text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
+                }`}
+              >
+                {rotulo}
+              </button>
+            ))}
+          </div>
+        )}
 
         {abaModalPoderes === 'paranormais' && (
           <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">

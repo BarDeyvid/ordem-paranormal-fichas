@@ -30,7 +30,9 @@ const PALAVRAS_SANGUE = [
 
 function textoParaBinario(texto: string) {
   return texto.split('').map(char => {
-    return char.charCodeAt(0).toString(2).padStart(8, '0');
+    let bin = char.charCodeAt(0).toString(2).padStart(8, '0');
+    // Injeta '1's artificiais nos zeros (25% de chance) pra equilibrar o visual da Matrix
+    return bin.split('').map(b => (b === '0' && Math.random() < 0.25) ? '1' : b).join('');
   }).join('');
 }
 
@@ -72,11 +74,21 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
   useEffect(() => {
     const gerarTexto = (conteudoStr: string) => {
       if (isMorte) {
-        // Pro tema de morte, geramos spans brutos na string pra injetar direto no HTML
-        // Isso burla o React Virtual DOM e acaba com o lag de criar milhares de nós
         let html = '';
         for (let i = 0; i < altura; i++) {
-          html += `<span>${conteudoStr[i] || charBase}</span>\n`;
+          const char = conteudoStr[i] || charBase;
+          const rand = Math.random();
+          // Aplica a animação pesada de rotação 3D em apenas ~15% dos caracteres
+          // Isso destrói o lag da placa de vídeo sem perder o aspecto caótico!
+          if (rand < 0.05) {
+            html += `<span class="flip-1">${char}</span>`;
+          } else if (rand < 0.10) {
+            html += `<span class="flip-2">${char}</span>`;
+          } else if (rand < 0.15) {
+            html += `<span class="flip-3">${char}</span>`;
+          } else {
+            html += `<span>${char}</span>`;
+          }
         }
         return html;
       }
@@ -87,15 +99,21 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
 
     const tempoDeEspera = Math.random() * 2000;
     
+    let intervalo: NodeJS.Timeout;
+    let timeoutVisivel: NodeJS.Timeout;
+    
     const iniciarCiclo = () => {
       const listaMestre = isSangue ? PALAVRAS_SANGUE : PALAVRAS;
-      const palavra = listaMestre[Math.floor(Math.random() * listaMestre.length)];
       
       let conteudo = '';
       if (isConhecimento) {
+        const palavra = listaMestre[Math.floor(Math.random() * listaMestre.length)];
         conteudo = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
       } else {
-        conteudo = textoParaBinario(palavra);
+        const p1 = listaMestre[Math.floor(Math.random() * listaMestre.length)];
+        const p2 = listaMestre[Math.floor(Math.random() * listaMestre.length)];
+        const p3 = listaMestre[Math.floor(Math.random() * listaMestre.length)];
+        conteudo = textoParaBinario(p1 + p2 + p3);
       }
       
       let stringFinal = conteudo;
@@ -106,9 +124,11 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
 
       if (isSangue) {
         let charsSujos = stringFinal.split('').map(c => {
-          if (Math.random() < 0.1) return '|';
-          if (Math.random() < 0.1) return 'v';
-          if (Math.random() < 0.1) return '.';
+          const rand = Math.random();
+          if (rand < 0.12) return '|';
+          if (rand < 0.22) return 'v';
+          if (rand < 0.32) return '.';
+          if (c === '0' && rand < 0.5) return '1'; 
           return c;
         });
         setTexto(gerarTexto(charsSujos.join('')));
@@ -120,13 +140,12 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
         ? Math.random() * 10000 + 15000  
         : Math.random() * 3000 + 2000;
 
-      setTimeout(() => {
+      clearTimeout(timeoutVisivel);
+      timeoutVisivel = setTimeout(() => {
         setTexto(gerarTexto(charBase.repeat(altura)));
       }, tempoVisivel);
     };
 
-    let intervalo: NodeJS.Timeout;
-    
     const timerInicial = setTimeout(() => {
       iniciarCiclo();
       
@@ -139,6 +158,7 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
 
     return () => {
       clearTimeout(timerInicial);
+      clearTimeout(timeoutVisivel);
       if (intervalo) clearInterval(intervalo);
     };
   }, [altura, isConhecimento, isSangue, isMorte, charBase]);
@@ -194,29 +214,25 @@ export const MatrixBackground = React.memo(({ afinidade }: { afinidade?: string 
           overflow: hidden;
         }
 
-        /* TEMA: MORTE (TEMPO INVERTIDO)
-           Gira a matrix inteira de cabeça pra baixo. 
-           Isso faz a chuva subir, as gotas irem do chão pro teto, e os caracteres ficarem invertidos! */
         #fundo-cascata.tema-morte {
           transform: translateX(-50%) rotate(180deg);
         }
 
-        /* Deixamos as cores de Morte com um tom mais cinza-cinza-escuro em vez de puro branco/preto */
         #fundo-cascata.tema-morte .coluna {
           background-image: linear-gradient(to bottom, #111111 0%, #333333 60%, #666666 85%, #999999 97%, #111111 100%);
         }
 
-        /* Faz os caracteres da morte alternarem entre invertidos e retos aleatoriamente */
+        /* Garante que o span ocupe a linha exata */
         #fundo-cascata.tema-morte .coluna span {
           display: block;
           height: 16px;
           text-align: center;
-          animation: glitchFlip 4s infinite;
         }
-        #fundo-cascata.tema-morte .coluna span:nth-of-type(2n) { animation-duration: 3.2s; animation-delay: -0.2s; }
-        #fundo-cascata.tema-morte .coluna span:nth-of-type(3n) { animation-duration: 4.5s; animation-delay: -1.1s; }
-        #fundo-cascata.tema-morte .coluna span:nth-of-type(5n) { animation-duration: 2.8s; animation-delay: -0.7s; }
-        #fundo-cascata.tema-morte .coluna span:nth-of-type(7n) { animation-duration: 5.1s; animation-delay: -2.3s; }
+
+        /* Aplica o flip 3D apenas nos spans sorteados para poupar a GPU */
+        #fundo-cascata.tema-morte .coluna .flip-1 { animation: glitchFlip 3.2s infinite; }
+        #fundo-cascata.tema-morte .coluna .flip-2 { animation: glitchFlip 4.5s infinite; animation-delay: -1.1s; }
+        #fundo-cascata.tema-morte .coluna .flip-3 { animation: glitchFlip 2.8s infinite; animation-delay: -0.7s; }
 
         @keyframes glitchFlip {
           0%, 45% { transform: rotateX(0deg); }
