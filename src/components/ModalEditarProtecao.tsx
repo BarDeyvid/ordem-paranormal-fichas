@@ -110,6 +110,12 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
     });
   };
 
+  const getEspacoNumber = (val) => {
+    if (typeof val === 'number') return val;
+    const num = parseInt(val, 10);
+    return isNaN(num) ? 0 : num;
+  };
+
   const handleSalvar = () => {
     if (editorDesc.current) {
       setDescricao(editorDesc.current.innerHTML);
