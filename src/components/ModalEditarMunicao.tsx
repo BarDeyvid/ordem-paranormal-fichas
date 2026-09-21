@@ -95,7 +95,7 @@ export function ModalEditarMunicao({
   const getOpcoesMaldicoes = () => {
     return maldicoesHook.maldicoes.filter(m => {
       const cat = m.Categoria_Mald.trim().toLowerCase();
-      return cat.includes('armas') || cat.includes('munição') || cat.includes('municão');
+      return cat.includes('munição') || cat.includes('municão');
     });
   };
 
@@ -113,7 +113,6 @@ export function ModalEditarMunicao({
     return modificacoesHook.modificacoes.filter(m => {
       if (!m.Categoria_Modif) return false;
       const cat = m.Categoria_Modif.toLowerCase();
-      // Permitimos modificações de armas de fogo porque as munições acopladas nelas transferem essas modificações para a arma
       return cat.includes('muni');
     });
   };
@@ -237,7 +236,7 @@ export function ModalEditarMunicao({
           {/* SECTION: Aprimoramentos */}
           <section>
             <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Poderes e Aprimoramentos</h3>
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Aprimoramentos da Munição</h3>
               <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
             </div>
             
@@ -257,6 +256,7 @@ export function ModalEditarMunicao({
                 onAddMald={handleAddMald}
                 onRemoveMald={handleRemoveMald}
                 podeAdicionarMald={podeAdicionarMald}
+                esconderMaldicoes={true}
               />
             </div>
           </section>

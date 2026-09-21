@@ -19,6 +19,7 @@ interface AprimoramentosSelectorProps {
   onAddMald: (id: number, elemento?: string) => void;
   onRemoveMald: (index: number) => void;
   podeAdicionarMald: boolean;
+  esconderMaldicoes?: boolean;
 }
 
 const getCorElemento = (elemento?: string) => {
@@ -47,8 +48,9 @@ export function AprimoramentosSelector({
   maldicoesElementos = {},
   onAddMald,
   onRemoveMald,
-  podeAdicionarMald
-}: AprimoramentosSelectorProps) {
+  podeAdicionarMald,
+    esconderMaldicoes = false
+  }: AprimoramentosSelectorProps) {
   const [modalAberto, setModalAberto] = useState(false);
   const [abaModal, setAbaModal] = useState<'modificacoes' | 'maldicoes'>('modificacoes');
   
@@ -207,13 +209,13 @@ export function AprimoramentosSelector({
               >
                 Modificações
               </button>
-              <button
+              {!esconderMaldicoes && <button
                 type="button"
                 onClick={() => setAbaModal('maldicoes')}
                 className={`px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors border-b-2 ${abaModal === 'maldicoes' ? 'text-green-400 border-green-500 bg-green-500/5' : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-zinc-800/30'}`}
               >
                 Maldições
-              </button>
+              </button>}
             </div>
             
             {/* Filtros Extras para Maldicoes */}
