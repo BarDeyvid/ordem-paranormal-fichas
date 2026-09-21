@@ -133,8 +133,7 @@ const ProgressaoBlock = ({ item, nexPatamar }: { item: ProgressaoNexItem, nexPat
       
       <Collapse isOpen={expandido}>
         <div className="p-4 text-sm text-zinc-400">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Descrição</span>
+          <div className="flex justify-end items-center mb-3">
             {!isEditing && (
               <button 
                 onClick={(e) => { e.stopPropagation(); handleEditClick(); }}
@@ -221,7 +220,7 @@ const ProgressaoBlock = ({ item, nexPatamar }: { item: ProgressaoNexItem, nexPat
                 <>
                   <button 
                     onClick={() => setNexModalAberto(chaveTranscender)}
-                    className="bg-purple-900 hover:bg-purple-800 text-purple-100 text-xs font-bold uppercase px-4 py-2 rounded transition"
+                    className="bg-green-700 hover:bg-green-600 text-white text-xs font-bold uppercase px-4 py-2 rounded transition"
                   >
                     Transcender
                   </button>
