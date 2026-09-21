@@ -92,7 +92,7 @@ const Coluna = React.memo(({ altura, afinidade }: { altura: number, afinidade?: 
       const palavra = listaMestre[Math.floor(Math.random() * listaMestre.length)];
       
       let conteudo = '';
-      if (isConhecimento || isSangue) {
+      if (isConhecimento) {
         conteudo = palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
       } else {
         conteudo = textoParaBinario(palavra);
