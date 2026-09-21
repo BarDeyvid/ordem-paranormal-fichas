@@ -102,7 +102,21 @@ export function ModalEditarItem({
     const podeAdicionarMod = catFinal < 4;
     const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
     const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
-  const handleAddMald = (id: number, elementoVaria?: string) => {
+  
+    const modsFull = modificacoes.map(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)).filter(Boolean);
+  
+    let extraEspacos = 0;
+    modsFull.forEach(m => {
+      const nome = m?.Nome_Modif.trim().toLowerCase() || '';
+      if (nome === 'discreto' || nome === 'discreta') extraEspacos -= 1;
+      else if (nome === 'blindada' || nome === 'reforçada') extraEspacos += 1;
+    });
+  
+    const baseEspacosNum = getEspacoNumber(espacos);
+    const espacosFinal = Math.max(0, baseEspacosNum + extraEspacos);
+
+
+    const handleAddMald = (id: number, elementoVaria?: string) => {
     if (podeAdicionarMald) {
       setMaldicoes(prev => [...(prev || []), id]);
       if (elementoVaria) {
@@ -304,7 +318,7 @@ export function ModalEditarItem({
               </div>
 
               <div>
-                <InputLabel label="Categoria (Total Final)" />
+                <InputLabel label="Categoria" />
                   <CustomSelect
                     value={categoriaNumParaRoman(catFinal)}
                     onChange={(val) => {
@@ -323,12 +337,12 @@ export function ModalEditarItem({
 
               <div>
                 <InputLabel label="Espaços" />
-                <InputOtimizado
-                  value={espacos}
-                  onChange={val => {
-                    const num = getEspacoNumber(val);
-                    setEspacos(String(num));
-                  }}
+                  <InputOtimizado
+                    value={String(espacosFinal)}
+                    onChange={val => {
+                      const num = getEspacoNumber(val);
+                      setEspacos(String(num - extraEspacos));
+                    }}
                   type="number"
                   step="0.5"
                   className={inputClass}

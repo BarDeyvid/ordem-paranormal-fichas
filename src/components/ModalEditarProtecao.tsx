@@ -50,7 +50,34 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
     const podeAdicionarMod = catFinal < 4;
     const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
     const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
-  const handleAddMald = (id: number, elementoVaria?: string) => {
+  
+    const modsFull = modificacoes.map(id => modificacoesHook.modificacoes.find(m => m.Codigo_Modif === id)).filter(Boolean);
+    const maldsFull = maldicoes.map(id => maldicoesHook.maldicoes.find(m => m.Codigo_Mald === id)).filter(Boolean);
+  
+    const extraDefMod = modsFull.some(m => m?.Nome_Modif?.trim().toLowerCase() === 'reforçada') ? 2 : 0;
+    const extraDefMald = maldsFull.reduce((acc, m) => {
+      const nome = m?.Nome_Mald?.trim().toLowerCase();
+      if (nome === 'cinética' || nome === 'letárgica') return acc + 2;
+      if (nome === 'defesa') return acc + 5;
+      return acc;
+    }, 0);
+    const extraDef = extraDefMod + extraDefMald;
+  
+    let extraEspacos = 0;
+    modsFull.forEach(m => {
+      const nome = m?.Nome_Modif.trim().toLowerCase() || '';
+      if (nome === 'discreto' || nome === 'discreta') extraEspacos -= 1;
+      else if (nome === 'blindada' || nome === 'reforçada') extraEspacos += 1;
+    });
+  
+    const baseDef = Number(String(defesa).replace(/[^0-9.-]+/g, '')) || 0;
+    const defFinal = baseDef + extraDef;
+  
+    const baseEspacosNum = getEspacoNumber(espacos);
+    const espacosFinal = Math.max(0, baseEspacosNum + extraEspacos);
+
+
+    const handleAddMald = (id: number, elementoVaria?: string) => {
     if (podeAdicionarMald) {
       setMaldicoes(prev => [...prev, id]);
       if (elementoVaria) {
@@ -195,7 +222,7 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
               </div>
 
               <div>
-                <InputLabel label="Categoria (Total Final)" />
+                <InputLabel label="Categoria" />
                   <CustomSelect
                     value={categoriaNumParaRoman(catFinal)}
                     onChange={(val) => {
@@ -213,10 +240,13 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
               </div>
 
               <div>
-                <InputLabel label="Defesa (Base S/ Mods)" />
-                <InputOtimizado
-                  value={defesa}
-                  onChange={setDefesa}
+                <InputLabel label="Defesa" />
+                  <InputOtimizado
+                    value={String(defFinal)}
+                    onChange={val => {
+                      const num = Number(String(val).replace(/[^0-9.-]+/g, '')) || 0;
+                      setDefesa(String(num - extraDef));
+                    }}
                   placeholder="Ex: +5"
                   className={inputClass}
                 />
@@ -224,12 +254,12 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
 
               <div>
                 <InputLabel label="Espaços" />
-                <InputOtimizado
-                  value={espacos}
-                  onChange={val => {
-                    const num = getEspacoNumber(val);
-                    setEspacos(String(num));
-                  }}
+                  <InputOtimizado
+                    value={String(espacosFinal)}
+                    onChange={val => {
+                      const num = getEspacoNumber(val);
+                      setEspacos(String(num - extraEspacos));
+                    }}
                   type="number"
                   step="0.5"
                   className={inputClass}
