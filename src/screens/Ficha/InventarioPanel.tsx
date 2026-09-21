@@ -745,7 +745,11 @@ export function InventarioPanel() {
                 : 'text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900/50 border-b-transparent'
             }`}
           >
-            ⚔️
+            <img 
+              src="/gun-icon.png" 
+              alt="Armas" 
+              className="w-8 h-8 object-contain mix-blend-screen"
+            />
           </button>
           <button
             onClick={() => setCategoriaFiltro('Munições')}

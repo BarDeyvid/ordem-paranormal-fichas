@@ -390,13 +390,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
             ) : (
               <><span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}</>
               )}
-              {activeAmmo?.municao?.Codigo_Municao === 67 && activeAmmo.municao.granada_dano && (
-                <>
-                  <span className="mx-2 text-zinc-700">|</span>
-                  <span className="font-bold text-green-400">Explosivo:</span> {activeAmmo.municao.granada_dano} 
-                  <span className="font-bold text-green-400 ml-1">DT:</span> {activeAmmo.municao.granada_dt || '-'}
-                </>
-              )}
+              
             </span>
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">
@@ -473,7 +467,13 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               >
                 +
               </button>
-            </div>
+            
+                {activeAmmo?.municao?.Codigo_Municao === 67 && activeAmmo.municao.granada_dano && (
+                  <span className="text-zinc-300 w-full">
+                    <span className="font-bold text-green-400">Explosivo:</span> {activeAmmo.municao.granada_dano} (DT {activeAmmo.municao.granada_dt || '-'})
+                  </span>
+                )}
+              </div>
           )}
 
           
