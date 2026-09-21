@@ -59,7 +59,8 @@ export function calcularBonusMaldicoes(
     if (Array.isArray(m.maldicoes)) m.maldicoes.forEach(m => allMaldicoes.push({ id: m, elem: m.maldicoes_elementos?.[m] }));
   });
 
-  for (const { id, elem } of allMaldicoes) {
+  for (let { id, elem } of allMaldicoes) {
+    id = Number(id);
     const mald = todasMaldicoes.find(m => m.Codigo_Mald === id);
     if (!mald) continue;
 
