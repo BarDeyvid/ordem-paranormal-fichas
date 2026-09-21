@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { MunicaoInventario, Municao } from '../types';
 import { InputOtimizado } from './InputOtimizado';
+import { CustomSelect } from './CustomSelect';
 import { ToolbarFormato } from './ToolbarFormato';
 import { AprimoramentosSelector } from './AprimoramentosSelector';
 import { useRPG } from '../context/RPGContext';
@@ -60,15 +61,15 @@ export function ModalEditarMunicao({
   const baseEspacos = getEspacoNumber(espacos);
   const espacosFinais = temDiscreto ? Math.max(0, baseEspacos - 1) : baseEspacos;
 
-  const catNum = categoriaRomanParaNum(categoria);
-  let modificador = modificacoes.length;
-  let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
   
-  const catFinal = catNum + modificador + custoMaldicoes;
-  const podeAdicionarMod = catFinal < 4;
-  const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
-  const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
-
+    const catNum = categoriaRomanParaNum(categoria);
+    let modificador = modificacoes.length;
+    let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
+    const catFinal = catNum + modificador + custoMaldicoes;
+    const custoAtual = modificador + custoMaldicoes;
+    const podeAdicionarMod = catFinal < 4;
+    const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
+    const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
   const handleAddMald = (id: number, elementoVaria?: string) => {
     if (podeAdicionarMald) {
       setMaldicoes(prev => [...prev, id]);
@@ -185,11 +186,20 @@ export function ModalEditarMunicao({
 
               <div>
                 <InputLabel label="Categoria" />
-                <InputOtimizado
-                  value={categoriaNumParaRoman(catFinal)}
-                  onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - (modificador + custoMaldicoes))))}
-                  className={inputClass}
-                />
+                  <CustomSelect
+                    value={categoriaNumParaRoman(catFinal)}
+                    onChange={(val) => {
+                      const finalDesejado = categoriaRomanParaNum(val);
+                      setCategoria(categoriaNumParaRoman(Math.max(0, finalDesejado - custoAtual)));
+                    }}
+                    options={[
+                      { value: categoriaNumParaRoman(Math.min(4, 0 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 0 + custoAtual)) },
+                      { value: categoriaNumParaRoman(Math.min(4, 1 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 1 + custoAtual)) },
+                      { value: categoriaNumParaRoman(Math.min(4, 2 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 2 + custoAtual)) },
+                      { value: categoriaNumParaRoman(Math.min(4, 3 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 3 + custoAtual)) },
+                      { value: categoriaNumParaRoman(Math.min(4, 4 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 4 + custoAtual)) }
+                    ].filter((opt, index, self) => index === self.findIndex((t) => t.value === opt.value))}
+                  />
               </div>
 
               <div>
