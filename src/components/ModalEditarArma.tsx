@@ -350,18 +350,11 @@ export function ModalEditarArma({
               </div>
 
               <div>
-                <InputLabel label="Crítico (Margem)" />
-                <InputOtimizado
-                  value={criticoFinal.toString()}
-                  onChange={val => {
-                    const num = Number(val);
-                    if (!isNaN(num)) {
-                      setCritico(temMira ? (num + 2).toString() : val);
-                    } else {
-                      setCritico(val);
-                    }
-                  }}
-                  placeholder="Ex: 19"
+                {renderLabel('Crítico (Margem)', critico, statsFinais.criticoFinal)}
+                  <InputOtimizado
+                    value={critico}
+                    onChange={setCritico}
+                    placeholder="Ex: 19"
                   className={inputClass}
                 />
               </div>

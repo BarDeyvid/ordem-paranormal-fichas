@@ -62,14 +62,11 @@ export const PericiasTable: React.FC = () => {
           className={`rounded transition text-lg ${mostrarBonus ? 'bg-green-900/50 text-green-400 border-green-800/50 shadow-[0_0_10px_rgba(34,197,94,0.2)]' : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50'} border border-zinc-700/50 flex items-center justify-center w-9 h-9 overflow-hidden`}
           title="Modificadores de Dados"
         >
-          <div className="w-full h-full relative mix-blend-screen scale-[1.15]">
-            <div className={`absolute inset-0 transition-colors duration-200 ${mostrarBonus ? 'bg-green-400' : 'bg-white opacity-50'}`}></div>
-            <img 
-              src="/dice-icon.png" 
-              alt="Modificadores" 
-              className="absolute inset-0 w-full h-full object-contain mix-blend-multiply"
-            />
-          </div>
+          <img 
+            src="/dice-icon.png" 
+            alt="Modificadores" 
+            className={`w-full h-full object-contain scale-[1.15] mix-blend-screen transition-opacity duration-200 ${mostrarBonus ? 'opacity-100' : 'opacity-50 hover:opacity-80'}`}
+          />
         </button>
       </div>
       
