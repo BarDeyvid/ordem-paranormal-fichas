@@ -6,6 +6,12 @@ import { AprimoramentosSelector } from './AprimoramentosSelector';
 import { useRPG } from '../context/RPGContext';
 import { categoriaRomanParaNum, categoriaNumParaRoman } from '../utils/rpgRules';
 
+const InputLabel = ({ label }: { label: string }) => (
+  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
+    {label}
+  </label>
+);
+
 export function ModalEditarMunicao({
   itemInventario,
   onSave,
@@ -115,137 +121,158 @@ export function ModalEditarMunicao({
   const editorDesc = useRef<HTMLDivElement | null>(null);
 
   const handleSalvar = () => {
+    if (editorDesc.current) {
+      setDescricao(editorDesc.current.innerHTML);
+    }
+    
     onSave({
       Nome_Item: nome,
       Descricao_Item: editorDesc.current?.innerHTML || descricao,
       Categoria_Item: categoria,
       'Espaços_Item': getEspacoNumber(espacos),
     }, modificacoes, maldicoes, maldicoesElementos);
+    onClose();
   };
 
-  const InputLabel = ({ label }: { label: string }) => (
-    <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1 block">
-      {label}
-    </label>
-  );
-
+  const inputClass = "w-full rounded bg-zinc-900/50 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-green-500 focus:bg-zinc-900 focus:ring-1 focus:ring-green-500/50 hover:border-zinc-700";
+  const selectClass = "w-full rounded border border-zinc-800 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-300 outline-none transition-all hover:border-zinc-700 focus:border-green-500 focus:bg-zinc-900";
+  
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-5" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6" onClick={onClose}>
       <div 
-        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl shadow-black/50"
+        className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-zinc-800/80 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5" 
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-5 py-4">
-          <h2 className="font-display text-lg uppercase tracking-wide text-zinc-100">
-            Editar Munição
-          </h2>
-          <button 
+        {/* Glow de borda no topo do Modal */}
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-white/5 bg-zinc-900/40 px-6 py-5">
+          <div className="flex items-center gap-4">
+            <div>
+              <h2 className="font-display text-xl uppercase tracking-wider text-zinc-100 drop-shadow-md">
+                Editar Munição
+              </h2>
+              <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">
+                Configure os atributos e poderes
+              </p>
+            </div>
+          </div>
+          <button
             onClick={onClose}
-            className="text-zinc-500 transition hover:text-zinc-100 p-2 text-2xl border-none bg-transparent"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-zinc-100 transition-colors"
           >
-            &times;
+            ✕
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-5">
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm">
-                <h3 className="font-bold text-green-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Informações Principais</h3>
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar flex flex-col gap-8">
+          
+          {/* SECTION: Informações Principais */}
+          <section>
+            <div className="flex items-center gap-3 mb-5">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Informações Principais</h3>
+              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="col-span-1 md:col-span-2">
+                <InputLabel label="Nome da Munição" />
+                <InputOtimizado
+                  value={nome}
+                  onChange={setNome}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <InputLabel label="Categoria" />
+                <InputOtimizado
+                  value={categoriaNumParaRoman(catFinal)}
+                  onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - (modificador + custoMaldicoes))))}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <InputLabel label="Espaços" />
+                <InputOtimizado
+                  value={espacos}
+                  onChange={val => {
+                    const num = getEspacoNumber(val);
+                    setEspacos(String(num));
+                  }}
+                  type="number"
+                  step="0.5"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION: Descrição */}
+          <section>
+            <div className="flex items-center gap-3 mb-5">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Descrição</h3>
+              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
+            </div>
+            
+            <div className="rounded border border-zinc-800/80 bg-zinc-900/30 overflow-hidden focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
+              <ToolbarFormato editorRef={editorDesc as any} />
+              <div
+                ref={(el) => {
+                  editorDesc.current = el;
+                  if (el && !el.dataset.initialized) {
+                    el.innerHTML = descricao;
+                    el.dataset.initialized = 'true';
+                  }
+                }}
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setDescricao(e.currentTarget.innerHTML)}
+                className="w-full p-4 text-sm text-zinc-300 outline-none overflow-y-auto custom-scrollbar max-h-[250px] leading-relaxed"
+              />
+            </div>
+          </section>
+
+          {/* SECTION: Aprimoramentos */}
+          <section>
+            <div className="flex items-center gap-3 mb-5">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Poderes e Aprimoramentos</h3>
+              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
+            </div>
+            
+            <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/20 p-5">
+              <AprimoramentosSelector 
+                modificacoesAplicadas={modificacoes}
+                opcoesModificacoes={getOpcoesModificacoes()}
+                todasModificacoes={modificacoesHook.modificacoes}
+                onAddMod={handleAddMod}
+                onRemoveMod={handleRemoveMod}
+                podeAdicionarMod={podeAdicionarMod}
                 
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <InputLabel label="Nome da Munição" />
-                    <InputOtimizado
-                      value={nome}
-                      onChange={setNome}
-                      className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <InputLabel label="Categoria" />
-                      <InputOtimizado
-                        value={categoriaNumParaRoman(catFinal)}
-                        onChange={val => setCategoria(categoriaNumParaRoman(Math.max(0, categoriaRomanParaNum(val) - (modificador + custoMaldicoes))))}
-                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
-                      />
-                    </div>
-
-                    <div>
-                      <InputLabel label="Espaços" />
-                      <InputOtimizado
-                        value={espacosFinais.toString()}
-                        onChange={val => {
-                          const num = getEspacoNumber(val);
-                          setEspacos(temDiscreto ? num + 1 : num);
-                        }}
-                        type="number"
-                        step="0.5"
-                        className="w-full rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700 transition"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                maldicoesAplicadas={maldicoes}
+                opcoesMaldicoes={getOpcoesMaldicoes()}
+                todasMaldicoes={maldicoesHook.maldicoes}
+                maldicoesElementos={maldicoesElementos}
+                onAddMald={handleAddMald}
+                onRemoveMald={handleRemoveMald}
+                podeAdicionarMald={podeAdicionarMald}
+              />
             </div>
-
-            <div className="flex flex-col gap-5">
-              <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 shadow-sm flex flex-col h-full">
-                <h3 className="font-bold text-green-500 mb-3 border-b border-zinc-800 pb-2 text-xs uppercase tracking-widest">Descrição</h3>
-                <div className="flex-1 flex flex-col min-h-[150px]">
-                  <ToolbarFormato editorRef={editorDesc as any} />
-                  <div
-                    ref={(el) => {
-                      editorDesc.current = el;
-                      if (el && !el.dataset.initialized) {
-                        el.innerHTML = descricao;
-                        el.dataset.initialized = 'true';
-                      }
-                    }}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => setDescricao(e.currentTarget.innerHTML)}
-                    className="w-full p-3 text-sm text-zinc-100 outline-none overflow-y-auto custom-scrollbar flex-1 border border-zinc-800 rounded-b focus:border-green-700 transition-colors"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-2 border-t border-zinc-800 pt-6">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-3 block">Aprimoramentos da Munição</label>
-            <AprimoramentosSelector 
-              modificacoesAplicadas={modificacoes}
-              opcoesModificacoes={getOpcoesModificacoes()}
-              todasModificacoes={modificacoesHook.modificacoes}
-              onAddMod={handleAddMod}
-              onRemoveMod={handleRemoveMod}
-              podeAdicionarMod={podeAdicionarMod}
-              
-              maldicoesAplicadas={maldicoes}
-              opcoesMaldicoes={getOpcoesMaldicoes()}
-              todasMaldicoes={maldicoesHook.maldicoes}
-              maldicoesElementos={maldicoesElementos}
-              onAddMald={handleAddMald}
-              onRemoveMald={handleRemoveMald}
-              podeAdicionarMald={podeAdicionarMald}
-            />
-          </div>
+          </section>
 
         </div>
 
-        <div className="border-t border-zinc-800 bg-zinc-900/50 px-5 py-4 flex justify-end gap-3">
+        <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-zinc-900/40 px-6 py-5">
           <button
             onClick={onClose}
-            className="rounded px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-400 transition hover:bg-zinc-800 hover:text-zinc-100"
+            className="rounded border border-zinc-700 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={handleSalvar}
-            className="rounded bg-green-700 px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 shadow-lg transition hover:bg-green-600"
+            className="rounded bg-green-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-[0_0_15px_rgba(22,163,74,0.4)] hover:bg-green-500 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(22,163,74,0.6)] transition-all"
           >
             Salvar Alterações
           </button>
