@@ -1972,7 +1972,15 @@ function SortableProtecaoItem({
             <div className="flex items-center gap-4 text-xs text-zinc-300 mt-0.5">
               <span><span className="font-bold text-blue-400">Defesa</span> {
                 (() => {
-                  const extraDef = modsAtuais.some(m => m?.Nome_Modif?.trim().toLowerCase() === 'reforçada') ? 2 : 0;
+                  const extraDefMod = modsAtuais.some(m => m?.Nome_Modif?.trim().toLowerCase() === 'reforçada') ? 2 : 0;
+                  const extraDefMald = maldicoesAtuais.reduce((acc, m) => {
+                    const nome = m?.Nome_Mald?.trim().toLowerCase();
+                    if (nome === 'cinética') return acc + 2;
+                    if (nome === 'letárgica') return acc + 2;
+                    if (nome === 'defesa') return acc + 5;
+                    return acc;
+                  }, 0);
+                  const extraDef = extraDefMod + extraDefMald;
                   const defVal = Number(String(protecao.Defesa_Protecao || '0').replace(/[^0-9.-]+/g, ''));
                   const total = (isNaN(defVal) ? 0 : defVal) + extraDef;
                   return total >= 0 ? `+${total}` : `${total}`;
