@@ -333,7 +333,7 @@ export function InventarioPanel() {
 
   const [modalArmasAberto, setModalArmasAberto] = useState(false);
   const [modalMunicoesAberto, setModalMunicoesAberto] = useState(false);
-  const [modalProtecoesAberto, setModalProtecoesAberto] = useState(false);
+  const [modalProteçõesAberto, setModalProtecoesAberto] = useState(false);
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>('Armas');
   const [modalItensAberto, setModalItensAberto] = useState(false);
   const [modalItensAmaldicoadosAberto, setModalItensAmaldicoadosAberto] = useState(false);
@@ -566,8 +566,8 @@ export function InventarioPanel() {
         if (isProtecaoOver) {
           const oldIndex = (protecoesHook?.protecoesInventario || []).findIndex(x => x.id === active.id);
           const newIndex = (protecoesHook?.protecoesInventario || []).findIndex(x => x.id === over.id);
-          if (oldIndex !== -1 && newIndex !== -1 && protecoesHook?.reordenarProtecoes) {
-            protecoesHook.reordenarProtecoes(oldIndex, newIndex);
+          if (oldIndex !== -1 && newIndex !== -1 && protecoesHook?.reordenarProteções) {
+            protecoesHook.reordenarProteções(oldIndex, newIndex);
           }
         }
       } else if (armaActive) {
@@ -1170,7 +1170,7 @@ export function InventarioPanel() {
       )}
 
       <ModalProtecoes
-        aberto={modalProtecoesAberto}
+        aberto={modalProteçõesAberto}
         onFechar={() => setModalProtecoesAberto(false)}
       />
       
