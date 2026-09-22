@@ -15,10 +15,12 @@ interface ModalEditarProtecaoProps {
 }
 
 const InputLabel = ({ label }: { label: string }) => (
-  <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1.5 block">
-    {label}
-  </label>
-);
+    <div className="flex items-center mb-1.5 min-h-[22px]">
+      <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+        {label}
+      </label>
+    </div>
+  );
 
 export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarProtecaoProps) {
   React.useEffect(() => {
