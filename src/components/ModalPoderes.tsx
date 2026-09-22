@@ -490,7 +490,7 @@ export const ModalPoderes: React.FC = () => {
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={() => setNexPoderEditando(null)} />
         <div 
-          className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]" 
+          className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]" 
           onClick={e => e.stopPropagation()}
         >
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />

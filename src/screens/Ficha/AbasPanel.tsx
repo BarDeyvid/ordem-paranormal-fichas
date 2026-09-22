@@ -1996,7 +1996,7 @@ export const AbasPanel: React.FC = () => {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={() => setRitualEditandoOrigem(null)} />
             
-            <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]">
+            <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
               
               <div className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/50 p-4">
@@ -2055,15 +2055,38 @@ export const AbasPanel: React.FC = () => {
                   ].map(prop => {
                     const valorBase = (ritualBase as any)[prop.key];
                     const valorCalculado = obterValorVersao(valorBase, ritualVersaoEditando, ritualBase.Tem_Discente, ritualBase.Tem_Verdadeiro);
+                    const currentValue = (ritualPropsEditando?.[ritualVersaoEditando] as any)?.[prop.key] || '';
+                    
+                    let opts = null;
+                    if (prop.key === 'Execucao_Ritual') opts = ['Padrão', 'Movimento', 'Livre', 'Reação', 'Completa'];
+                    if (prop.key === 'Alcance_Ritual') opts = ['Pessoal', 'Toque', 'Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
+                    if (prop.key === 'Resistencia_Ritual') opts = ['Nenhuma', 'Fortitude', 'Reflexos', 'Vontade', 'Fortitude reduz à metade', 'Reflexos reduz à metade', 'Vontade reduz à metade', 'Fortitude anula', 'Reflexos anula', 'Vontade anula'];
+                    if (prop.key === 'Duracao_Ritual') opts = ['Instantânea', '1 rodada', 'Cena', 'Sustentada', 'Sustentada (1 rodada)', '1 dia'];
+                    if (prop.key === 'Alvo_Ritual') opts = ['1 ser', '1 objeto', 'Você', 'Área', 'Especial'];
+                    
+                    if (opts && currentValue && !opts.includes(currentValue)) {
+                      opts = [currentValue, ...opts];
+                    }
+
                     return (
                       <div key={prop.key} className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{prop.label}</label>
-                        <InputOtimizado
-                          value={(ritualPropsEditando?.[ritualVersaoEditando] as any)?.[prop.key] || ''}
-                          onChange={(val) => setRitualPropsEditando(prev => ({ ...prev, [ritualVersaoEditando]: { ...(prev?.[ritualVersaoEditando] || {}), [prop.key]: val } }))}
-                          placeholder={valorCalculado ? String(valorCalculado) : 'Padrão'}
-                          className="w-full rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-200 focus:border-green-700/50 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-green-700/50"
-                        />
+                        {opts ? (
+                          <CustomSelect
+                            value={currentValue}
+                            onChange={(val) => setRitualPropsEditando(prev => ({ ...prev, [ritualVersaoEditando]: { ...(prev?.[ritualVersaoEditando] || {}), [prop.key]: val } }))}
+                            options={opts}
+                            placeholder={valorCalculado ? String(valorCalculado) : 'Padrão'}
+                            className="w-full rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-200 focus:border-green-700/50 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-green-700/50"
+                          />
+                        ) : (
+                          <InputOtimizado
+                            value={currentValue}
+                            onChange={(val) => setRitualPropsEditando(prev => ({ ...prev, [ritualVersaoEditando]: { ...(prev?.[ritualVersaoEditando] || {}), [prop.key]: val } }))}
+                            placeholder={valorCalculado ? String(valorCalculado) : 'Padrão'}
+                            className="w-full rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-200 focus:border-green-700/50 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-green-700/50"
+                          />
+                        )}
                       </div>
                     );
                   })}
