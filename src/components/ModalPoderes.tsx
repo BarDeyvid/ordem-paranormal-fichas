@@ -487,61 +487,86 @@ export const ModalPoderes: React.FC = () => {
 
   if (nexPoderEditando !== null) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 font-sans" onClick={() => setNexPoderEditando(null)}>
-        <div className="flex w-full max-w-4xl flex-col gap-4 rounded-lg border border-zinc-800 bg-zinc-950 p-6 shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
-          <h3 className="font-display border-b border-zinc-800 pb-2.5 text-left text-lg uppercase tracking-wide text-zinc-100">
-            EDITAR PODER <span className="text-green-500">({typeof nexPoderEditando === 'number' ? `NEX ${nexPoderEditando}%` : 'PODER EXTRA'})</span>
-          </h3>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={() => setNexPoderEditando(null)} />
+        <div 
+          className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]" 
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
 
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Nome do Poder</label>
-            <InputOtimizado
-              value={nomeEditando}
-              onChange={setNomeEditando}
-              className="rounded border border-zinc-700 bg-zinc-950 p-2.5 text-sm text-zinc-100 outline-none focus:border-green-700"
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Descrição</label>
-            <div>
-              <ToolbarFormato editorRef={editorRef as any} />
-              <div
-                ref={(el) => {
-                  editorRef.current = el;
-                  if (el && !el.dataset.initialized) {
-                    el.innerHTML = descricaoEditando;
-                    el.dataset.initialized = 'true';
-                  }
-                }}
-                contentEditable
-                className="min-h-36 overflow-y-auto custom-scrollbar rounded-b border border-zinc-700 bg-zinc-950 p-3 text-left text-sm leading-relaxed text-zinc-100 outline-none focus:border-green-700"
-              />
+          <div className="flex flex-shrink-0 items-center justify-between border-b border-white/5 bg-zinc-900/40 px-6 py-5">
+            <div className="flex items-center gap-4">
+              <div>
+                <h2 className="font-display text-xl uppercase tracking-wider text-zinc-100 drop-shadow-md">
+                  EDITAR PODER
+                </h2>
+                <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">
+                  {typeof nexPoderEditando === 'number' ? `NEX ${nexPoderEditando}%` : 'PODER EXTRA'}
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Afinidade</label>
-            <div>
-              <ToolbarFormato editorRef={afinidadeRef as any} />
-              <div
-                ref={(el) => {
-                  afinidadeRef.current = el;
-                  if (el && !el.dataset.initialized) {
-                    el.innerHTML = afinidadeEditando;
-                    el.dataset.initialized = 'true';
-                  }
-                }}
-                contentEditable
-                className="min-h-24 overflow-y-auto custom-scrollbar rounded-b border border-zinc-700 bg-zinc-950 p-3 text-left text-sm leading-relaxed text-zinc-100 outline-none focus:border-green-700"
-              />
-            </div>
-          </div>
-
-          <div className="mt-2 flex justify-end gap-2.5">
             <button
               onClick={() => setNexPoderEditando(null)}
-              className="rounded border border-zinc-700 bg-zinc-800 px-4 py-2 text-sm font-bold text-zinc-300 transition hover:bg-zinc-700"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-zinc-100 transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-5">
+            
+            <section className="flex flex-col gap-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome do Poder</h4>
+              <InputOtimizado
+                value={nomeEditando}
+                onChange={setNomeEditando}
+                className="w-full rounded bg-zinc-900/50 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-green-500 focus:bg-zinc-900 focus:ring-1 focus:ring-green-500/50 hover:border-zinc-700"
+              />
+            </section>
+
+            <section className="flex flex-col gap-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Descrição</h4>
+              <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
+                <ToolbarFormato editorRef={editorRef as any} />
+                <div
+                  ref={(el) => {
+                    editorRef.current = el;
+                    if (el && !el.dataset.initialized) {
+                      el.innerHTML = descricaoEditando;
+                      el.dataset.initialized = 'true';
+                    }
+                  }}
+                  contentEditable
+                  className="w-full p-4 text-sm text-zinc-300 outline-none overflow-y-auto custom-scrollbar min-h-[120px] max-h-[250px] leading-relaxed"
+                />
+              </div>
+            </section>
+
+            <section className="flex flex-col gap-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Afinidade</h4>
+              <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
+                <ToolbarFormato editorRef={afinidadeRef as any} />
+                <div
+                  ref={(el) => {
+                    afinidadeRef.current = el;
+                    if (el && !el.dataset.initialized) {
+                      el.innerHTML = afinidadeEditando;
+                      el.dataset.initialized = 'true';
+                    }
+                  }}
+                  contentEditable
+                  className="w-full p-4 text-sm text-zinc-300 outline-none overflow-y-auto custom-scrollbar min-h-[80px] max-h-[250px] leading-relaxed"
+                />
+              </div>
+            </section>
+
+          </div>
+
+          <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-zinc-900/40 px-6 py-5">
+            <button
+              onClick={() => setNexPoderEditando(null)}
+              className="rounded border border-zinc-700 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
             >
               Cancelar
             </button>
@@ -552,7 +577,7 @@ export const ModalPoderes: React.FC = () => {
                 editarPoder(nexPoderEditando, nomeEditando, texto, textoAfinidade);
                 setNexPoderEditando(null);
               }}
-              className="rounded bg-green-700 px-4 py-2 text-sm font-bold text-white transition hover:bg-green-600 active:scale-95 uppercase tracking-wider"
+              className="rounded bg-green-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-[0_0_15px_rgba(22,163,74,0.4)] hover:bg-green-500 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(22,163,74,0.6)] transition-all"
             >
               Aplicar
             </button>
