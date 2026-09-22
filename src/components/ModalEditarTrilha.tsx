@@ -73,52 +73,61 @@ export function ModalEditarTrilha({
     onClose();
   };
 
-  const InputLabel = ({ label }: { label: string }) => (
-    <label className="text-xs font-bold uppercase tracking-wider text-zinc-500 mt-3 mb-1 block">
-      {label}
-    </label>
-  );
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-5">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={onClose} />
       <div
         ref={ref}
-        className="flex h-full max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 shadow-2xl shadow-black/50"
+        className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]"
       >
-        <div className="flex items-center justify-between border-b border-zinc-800 bg-zinc-900/50 px-5 py-4">
-          <h2 className="font-display text-lg uppercase tracking-wide text-zinc-100">
-            Personalizar Trilha
-          </h2>
+        {/* Glow */}
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-white/5 bg-zinc-900/40 px-6 py-5 relative z-10">
+          <div className="flex items-center gap-4">
+            <div>
+              <h2 className="font-display text-xl uppercase tracking-wider text-zinc-100 drop-shadow-md">
+                {isVersatilidade ? 'EDITAR VERSATILIDADE' : 'EDITAR TRILHA'}
+              </h2>
+              <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">
+                PERSONALIZAR HABILIDADES
+              </p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="text-zinc-500 hover:text-green-500 transition"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-zinc-100 transition-colors"
           >
             ✕
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-scroll p-5 custom-scrollbar flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-5 relative z-10">
           
-          <div className="rounded border border-zinc-800 bg-zinc-950 p-4">
-            <h3 className="font-bold text-green-500 mb-2 border-b border-zinc-800 pb-2">Geral</h3>
+          <section className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Geral</h3>
+              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
+            </div>
             <div className="flex flex-col gap-1.5 text-left">
-              <InputLabel label="Nome da Trilha" />
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome da Trilha</h4>
               <InputOtimizado
                 value={nomeTrilha}
                 onChange={setNomeTrilha}
-                className="rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700"
+                className="w-full rounded bg-zinc-900/50 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-green-500 focus:bg-zinc-900 focus:ring-1 focus:ring-green-500/50 hover:border-zinc-700"
               />
               
-              <InputLabel label="Fonte" />
+              <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mt-2">Fonte</h4>
               <InputOtimizado
                 value={fonte}
                 onChange={setFonte}
-                className="rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700"
+                className="w-full rounded bg-zinc-900/50 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-green-500 focus:bg-zinc-900 focus:ring-1 focus:ring-green-500/50 hover:border-zinc-700"
               />
 
               {!isVersatilidade && (
                 <>
-                  <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mt-2">Descrição</h4>
+                  <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
                     <ToolbarFormato editorRef={editorDescTrilha as any} />
                     <div
                       ref={(el) => {
@@ -129,14 +138,15 @@ export function ModalEditarTrilha({
                         }
                       }}
                       contentEditable
+                      suppressContentEditableWarning
                       onBlur={(e) => setDescTrilha(e.currentTarget.innerHTML)}
-                      className="min-h-[60px] rounded-b border border-zinc-700 bg-zinc-950 p-2.5 text-sm text-zinc-300 outline-none focus:border-green-700"
+                      className="w-full p-4 text-sm text-zinc-300 outline-none overflow-y-auto custom-scrollbar max-h-[250px] leading-relaxed"
                     />
                   </div>
                 </>
               )}
             </div>
-          </div>
+          </section>
 
           {[
             { nex: 10, nome: nome10, setNome: setNome10, desc: desc10, setDesc: setDesc10, refEdit: editorDesc10 },
@@ -144,17 +154,23 @@ export function ModalEditarTrilha({
             { nex: 65, nome: nome65, setNome: setNome65, desc: desc65, setDesc: setDesc65, refEdit: editorDesc65 },
             { nex: 99, nome: nome99, setNome: setNome99, desc: desc99, setDesc: setDesc99, refEdit: editorDesc99 },
           ].filter(hab => nex >= hab.nex && (!isVersatilidade || hab.nex === 10)).map((hab) => (
-            <div key={hab.nex} className="rounded border border-zinc-800 bg-zinc-950 p-4">
-              <h3 className="font-bold text-green-500 mb-2 border-b border-zinc-800 pb-2">Habilidade {regras['nex_experiencia'] ? `Nível ${calcularNivel(hab.nex)}` : `NEX ${hab.nex}%`}</h3>
+            <section key={hab.nex} className="flex flex-col gap-3">
+              <div className="flex items-center gap-3 mb-2 mt-2">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">
+                  Habilidade {regras['nex_experiencia'] ? `Nível ${calcularNivel(hab.nex)}` : `NEX ${hab.nex}%`}
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
+              </div>
               <div className="flex flex-col gap-1.5 text-left">
-                <InputLabel label="Nome da Habilidade" />
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome da Habilidade</h4>
                 <InputOtimizado
                   value={hab.nome}
                   onChange={hab.setNome}
-                  className="rounded border border-zinc-700 bg-zinc-950 p-2 text-sm text-zinc-100 outline-none focus:border-green-700"
+                  className="w-full rounded bg-zinc-900/50 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-all focus:border-green-500 focus:bg-zinc-900 focus:ring-1 focus:ring-green-500/50 hover:border-zinc-700"
                 />
 
-                <div>
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mt-2">Descrição</h4>
+                <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
                   <ToolbarFormato editorRef={hab.refEdit as any} />
                   <div
                     ref={(el) => {
@@ -165,26 +181,27 @@ export function ModalEditarTrilha({
                       }
                     }}
                     contentEditable
+                    suppressContentEditableWarning
                     onBlur={(e) => hab.setDesc(e.currentTarget.innerHTML)}
-                    className="min-h-[60px] rounded-b border border-zinc-700 bg-zinc-950 p-2.5 text-sm text-zinc-300 outline-none focus:border-green-700"
+                    className="w-full p-4 text-sm text-zinc-300 outline-none overflow-y-auto custom-scrollbar max-h-[250px] leading-relaxed"
                   />
                 </div>
               </div>
-            </div>
+            </section>
           ))}
 
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-zinc-800 bg-zinc-900/50 p-4">
+        <div className="flex flex-shrink-0 items-center justify-end gap-3 border-t border-white/5 bg-zinc-900/40 px-6 py-5 relative z-10">
           <button
             onClick={onClose}
-            className="rounded border border-zinc-700 px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-400 hover:bg-zinc-800"
+            className="rounded border border-zinc-700 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
           >
             Cancelar
           </button>
           <button
             onClick={handleSalvar}
-            className="rounded bg-green-700 px-5 py-2 text-xs font-bold uppercase tracking-wider text-zinc-100 shadow hover:bg-green-600"
+            className="rounded bg-green-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-[0_0_15px_rgba(22,163,74,0.4)] hover:bg-green-500 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(22,163,74,0.6)] transition-all"
           >
             Salvar Alterações
           </button>
