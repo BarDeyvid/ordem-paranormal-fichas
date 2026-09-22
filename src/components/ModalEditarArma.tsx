@@ -99,7 +99,7 @@ export function ModalEditarArma({
 
   const editorDesc = useRef<HTMLDivElement | null>(null);
 
-  function getEspacoNumber(str: string | number) { val = Number(String(str).replace(',', '.').replace(/[^0-9.-]+/g, ''));
+  function getEspacoNumber(str: string | number) { const val = Number(String(str).replace(',', '.').replace(/[^0-9.-]+/g, ''));
     return isNaN(val) ? 0 : val;
   };
 
