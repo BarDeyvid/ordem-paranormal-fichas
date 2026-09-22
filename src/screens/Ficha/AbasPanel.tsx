@@ -779,11 +779,11 @@ export const AbasPanel: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0 rounded-lg border border-zinc-800 bg-zinc-900/60 p-4 md:p-5">
-      <div className="mb-5 flex flex-nowrap overflow-x-auto gap-x-1 border-b border-zinc-800 custom-scrollbar pb-1">
+    <div className="flex flex-col h-full min-h-0 rounded-lg border border-zinc-800 bg-zinc-900/60 p-3 md:p-4">
+      <div className="mb-5 flex flex-nowrap overflow-x-auto gap-x-0.5 md:gap-x-1 border-b border-zinc-800 custom-scrollbar pb-1">
         {(['combate','habilidades','rituais','inventario','descricao','regras'] as const).map(aba => (
           <button key={aba} onClick={() => setAbaDireita(aba)}
-            className={`shrink-0 px-1 lg:px-1.5 py-2 text-[10px] md:text-[11px] xl:text-xs font-bold uppercase tracking-wide xl:tracking-wider transition whitespace-nowrap ${
+            className={`shrink-0 px-0.5 md:px-1 2xl:px-1.5 py-2 text-[9px] xl:text-[10px] 2xl:text-[11px] font-bold uppercase tracking-wide transition whitespace-nowrap ${
               abaDireita === aba ? 'border-b-2 border-green-800 text-zinc-100' : 'border-b-2 border-transparent text-zinc-500 hover:text-zinc-300'
             }`}
           >{aba === 'inventario' ? 'Inventário' : aba === 'descricao' ? 'Descrição' : aba === 'regras' ? 'Regras' : aba}</button>
