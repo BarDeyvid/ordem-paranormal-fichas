@@ -33,6 +33,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
     setFiltroTipo('Todos');
     setFiltroEmpunhadura('Todas');
     setFiltroAlcance('Todos');
+      setMostrarSemProficiencia(false);
     setMostrarFiltrosAvançados(false);
     return () => { document.body.style.overflow = 'unset'; };
   }, [aberto]);
@@ -44,6 +45,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
   const [filtroTipo, setFiltroTipo] = useState<string>('Todos');
   const [filtroEmpunhadura, setFiltroEmpunhadura] = useState<string>('Todas');
   const [filtroAlcance, setFiltroAlcance] = useState<string>('Todos');
+    const [mostrarSemProficiencia, setMostrarSemProficiencia] = useState(false);
   
   const [expandidos, setExpandidos] = useState<number[]>([]);
 
@@ -95,6 +97,8 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
   ];
 
   const armasFiltradas = armasHook.armas.filter((arma: Arma) => {
+      const hasProficiencia = proficienciasTotais.includes(arma.Proficiencia);
+      if (!mostrarSemProficiencia && !hasProficiencia) return false;
     // 1. Filtro Proficiência (Simples, Táticas, Pesadas)
     if (filtro !== 'Todas' && arma.Proficiencia !== filtro) return false;
     
@@ -164,6 +168,18 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
         <Collapse isOpen={mostrarFiltrosAvançados} className="z-50">
 
           <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px] ">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Uso</label>
+                <CustomSelect
+                  value={mostrarSemProficiencia ? 'todas' : 'proficientes'}
+                  onChange={(val) => setMostrarSemProficiencia(val === 'todas')}
+                  options={[
+                    { value: 'proficientes', label: 'Só Proficientes' },
+                    { value: 'todas', label: 'Todas as Armas' }
+                  ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
             <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px] ">
               <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Proficiência</label>
               <CustomSelect
