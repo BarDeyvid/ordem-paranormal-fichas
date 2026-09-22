@@ -174,7 +174,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                   value={mostrarSemProficiencia ? 'todas' : 'proficientes'}
                   onChange={(val) => setMostrarSemProficiencia(val === 'todas')}
                   options={[
-                    { value: 'proficientes', label: 'Só Proficientes' },
+                    { value: 'proficientes', label: 'Proficiente' },
                     { value: 'todas', label: 'Todas as Armas' }
                   ]}
                   wrapperClassName="w-full"
