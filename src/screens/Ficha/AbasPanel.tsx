@@ -1993,104 +1993,123 @@ export const AbasPanel: React.FC = () => {
         if (!ritualBase) return null;
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-lg rounded-md border border-zinc-700 bg-zinc-900 shadow-xl overflow-hidden flex flex-col max-h-full">
-              <div className="bg-zinc-800 p-3 border-b border-zinc-700 font-bold text-zinc-200 flex justify-between items-center">
-                <span>Personalizar Ritual</span>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={() => setRitualEditandoOrigem(null)} />
+            
+            <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[90vh]">
+              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
+              
+              <div className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/50 p-4">
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-100">PERSONALIZAR RITUAL</h3>
+                  <p className="text-xs text-zinc-400">Edite os detalhes visuais</p>
+                </div>
+                <button
+                  onClick={() => setRitualEditandoOrigem(null)}
+                  className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+                >
+                  ✕
+                </button>
               </div>
-              <div className="p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Nome Personalizado</label>
+
+              <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-5">
+                <section className="flex flex-col gap-3">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Nome Personalizado</h4>
                   <InputOtimizado
                     value={ritualNomeEditando}
                     onChange={setRitualNomeEditando}
                     placeholder="Ex: Definhar, mas roxo..."
-                    className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 focus:border-green-700 focus:outline-none"
+                    className="w-full rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-200 focus:border-green-700/50 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-green-700/50"
                   />
-                </div>
+                </section>
 
                 {(ritualBase.Tem_Discente || ritualBase.Tem_Verdadeiro) && (
-                  <div className="flex flex-col gap-1.5 border-t border-zinc-800 pt-3">
-                    <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">Propriedades Específicas por Versão</label>
+                  <section className="flex flex-col gap-3 border-t border-zinc-800/50 pt-5">
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Propriedades Específicas por Versão</h4>
                     <CustomSelect
                       value={ritualVersaoEditando}
                       onChange={(val) => setRitualVersaoEditando(val as any)}
                       wrapperClassName="w-fit"
-                      className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700 focus:outline-none w-fit"
+                      className="rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700/50 focus:outline-none w-fit"
                       options={[
                         { value: 'normal', label: 'Normal' },
                         ...(ritualBase.Tem_Discente ? [{ value: 'discente', label: 'Discente' }] : []),
                         ...(ritualBase.Tem_Verdadeiro ? [{ value: 'verdadeiro', label: 'Verdadeiro' }] : [])
                       ]}
                     />
-                  </div>
+                  </section>
                 )}
 
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                {[
-                  { key: 'Execucao_Ritual', label: 'Execução' },
-                  { key: 'PE_Ritual', label: 'Custo' },
-                  { key: 'Alcance_Ritual', label: 'Alcance' },
-                  { key: 'Area_Ritual', label: 'Área' },
-                  { key: 'Alvo_Ritual', label: 'Alvo' },
-                  { key: 'Duracao_Ritual', label: 'Duração' },
-                  { key: 'Resistencia_Ritual', label: 'Resistência' },
-                  { key: 'Dados_Ritual', label: 'Dados' },
-                ].map(prop => {
-                  const valorBase = (ritualBase as any)[prop.key];
-                  const valorCalculado = obterValorVersao(valorBase, ritualVersaoEditando, ritualBase.Tem_Discente, ritualBase.Tem_Verdadeiro);
-                  return (
-                    <div key={prop.key} className="flex flex-col gap-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-zinc-400">{prop.label}</label>
-                      <InputOtimizado
-                        value={(ritualPropsEditando?.[ritualVersaoEditando] as any)?.[prop.key] || ''}
-                        onChange={(val) => setRitualPropsEditando(prev => ({ ...prev, [ritualVersaoEditando]: { ...(prev?.[ritualVersaoEditando] || {}), [prop.key]: val } }))}
-                        placeholder={valorCalculado ? String(valorCalculado) : 'Padrão'}
-                        className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-200 focus:border-green-700 focus:outline-none"
-                      />
-                    </div>
-                  );
-                })}
+                <section className="flex flex-col gap-3 border-t border-zinc-800/50 pt-5">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Sobrescrever Propriedades</h4>
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  {[
+                    { key: 'Execucao_Ritual', label: 'Execução' },
+                    { key: 'PE_Ritual', label: 'Custo' },
+                    { key: 'Alcance_Ritual', label: 'Alcance' },
+                    { key: 'Area_Ritual', label: 'Área' },
+                    { key: 'Alvo_Ritual', label: 'Alvo' },
+                    { key: 'Duracao_Ritual', label: 'Duração' },
+                    { key: 'Resistencia_Ritual', label: 'Resistência' },
+                    { key: 'Dados_Ritual', label: 'Dados' },
+                  ].map(prop => {
+                    const valorBase = (ritualBase as any)[prop.key];
+                    const valorCalculado = obterValorVersao(valorBase, ritualVersaoEditando, ritualBase.Tem_Discente, ritualBase.Tem_Verdadeiro);
+                    return (
+                      <div key={prop.key} className="flex flex-col gap-1.5">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{prop.label}</label>
+                        <InputOtimizado
+                          value={(ritualPropsEditando?.[ritualVersaoEditando] as any)?.[prop.key] || ''}
+                          onChange={(val) => setRitualPropsEditando(prev => ({ ...prev, [ritualVersaoEditando]: { ...(prev?.[ritualVersaoEditando] || {}), [prop.key]: val } }))}
+                          placeholder={valorCalculado ? String(valorCalculado) : 'Padrão'}
+                          className="w-full rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm text-zinc-200 focus:border-green-700/50 focus:bg-zinc-900 focus:outline-none focus:ring-1 focus:ring-green-700/50"
+                        />
+                      </div>
+                    );
+                  })}
+                  </div>
+                </section>
+
+                <section className="flex flex-col gap-3 flex-1 min-h-[150px] border-t border-zinc-800/50 pt-5">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Descrição Personalizada</h4>
+                  <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 flex flex-col flex-1">
+                    <ToolbarFormato editorRef={ritualEditorRef as any} />
+                    <div
+                      ref={(el) => {
+                        ritualEditorRef.current = el;
+                        if (el && !el.dataset.initialized) {
+                          el.innerHTML = ritualDescricaoEditando;
+                          el.dataset.initialized = 'true';
+                        }
+                      }}
+                      contentEditable
+                      onBlur={(e) => setRitualDescricaoEditando(e.currentTarget.innerHTML)}
+                      className="min-h-[200px] w-full p-3 text-sm leading-relaxed text-zinc-300 focus:outline-none flex-1 overflow-y-auto custom-scrollbar"
+                    />
+                  </div>
+                </section>
               </div>
 
-              <div className="flex flex-col gap-1.5 flex-1 min-h-[150px]">
-                <div className="flex flex-col flex-1">
-                  <ToolbarFormato editorRef={ritualEditorRef as any} />
-                  <div
-                    ref={(el) => {
-                      ritualEditorRef.current = el;
-                      if (el && !el.dataset.initialized) {
-                        el.innerHTML = ritualDescricaoEditando;
-                        el.dataset.initialized = 'true';
-                      }
-                    }}
-                    contentEditable
-                    onBlur={(e) => setRitualDescricaoEditando(e.currentTarget.innerHTML)}
-                    className="min-h-[200px] w-full rounded-b border border-zinc-700 bg-zinc-950 p-3 text-sm leading-relaxed text-zinc-300 focus:border-green-700 focus:outline-none flex-1 overflow-y-auto custom-scrollbar"
-                  />
-                </div>
+              <div className="border-t border-zinc-800/80 bg-zinc-900/30 p-4 flex justify-end gap-3 shrink-0">
+                <button
+                  onClick={() => setRitualEditandoOrigem(null)}
+                  className="rounded-lg border border-zinc-800/80 bg-zinc-900 px-4 py-2 text-sm font-bold text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={() => {
+                    const finalDesc = ritualEditorRef.current?.innerHTML || ritualDescricaoEditando;
+                    rituaisHook.editarRitual(ritualEditandoOrigem, ritualNomeEditando, finalDesc, ritualPropsEditando);
+                    setRitualEditandoOrigem(null);
+                  }}
+                  className="rounded-lg bg-green-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-green-500"
+                >
+                  Salvar Alterações
+                </button>
               </div>
             </div>
-            <div className="bg-zinc-950/50 p-4 border-t border-zinc-800 flex justify-end gap-3 mt-auto">
-              <button
-                onClick={() => setRitualEditandoOrigem(null)}
-                className="rounded border border-zinc-700 px-4 py-2 text-sm font-bold text-zinc-300 transition hover:bg-zinc-800"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => {
-                  const finalDesc = ritualEditorRef.current?.innerHTML || ritualDescricaoEditando;
-                  rituaisHook.editarRitual(ritualEditandoOrigem, ritualNomeEditando, finalDesc, ritualPropsEditando);
-                  setRitualEditandoOrigem(null);
-                }}
-                className="rounded bg-green-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-green-800"
-              >
-                Salvar Alterações
-              </button>
-            </div>
           </div>
-        </div>
         );
       })()}
       {modalTrilhasAberto && (
