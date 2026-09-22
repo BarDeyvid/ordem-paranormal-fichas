@@ -164,7 +164,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                   >
                     {/* Bloco fechado */}
                     <div
-                      className="flex items-start justify-between gap-2 mb-2  "
+                      className="flex items-center justify-between gap-2 mb-2  "
                       
                     >
                       <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
@@ -232,7 +232,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
                   >
                     {/* Bloco fechado */}
                     <div
-                      className="flex items-start justify-between gap-2 mb-2  "
+                      className="flex items-center justify-between gap-2 mb-2  "
                       
                     >
                       <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
