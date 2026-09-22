@@ -156,12 +156,12 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
         isDragging ? 'border-zinc-800 bg-zinc-950/60 opacity-40' : 'border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60'
       }`}
     >
-      <div className="flex items-center gap-1 p-3">
+      <div className="flex items-start gap-1 p-3">
         {/* Drag handle */}
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 p-2 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
+          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 px-2 py-1.5 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
           title="Arrastar para reordenar"
         >
           <svg width="14" height="20" viewBox="0 0 14 20" fill="currentColor">
@@ -205,7 +205,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
           </div>
         </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-start gap-3 flex-shrink-0 pt-0.5">
           {(item.item.Nome_Item.toLowerCase().includes('vestimenta') || item.item.Nome_Item.toLowerCase().includes('amuleto sagrado')) && (
             <input
               type="checkbox"
@@ -1442,11 +1442,11 @@ function SortableArmaItem({
         isDragging ? 'border-zinc-800 bg-zinc-950/60 opacity-40' : 'border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60'
       }`}
     >
-      <div className="flex items-center gap-1 p-3">
+      <div className="flex items-start gap-1 p-3">
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 p-2 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
+          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 px-2 py-1.5 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
           title="Arrastar para reordenar"
         >
           <svg width="14" height="20" viewBox="0 0 14 20" fill="currentColor">
@@ -1488,7 +1488,7 @@ function SortableArmaItem({
               )}
           </div>
           
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-start gap-3 flex-shrink-0 pt-0.5">
             {regras?.['contagem_municao'] && arma.Capacidade_Municao != null && (
               <span className="relative group/mun cursor-help flex items-center">
                 <span className="flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
@@ -1752,11 +1752,11 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
         isDragging ? 'border-zinc-800 bg-zinc-950/60 opacity-40' : 'border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60'
       }`}
     >
-      <div className="flex items-center gap-1 p-3">
+      <div className="flex items-start gap-1 p-3">
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 p-2 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
+          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 px-2 py-1.5 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
           title="Arrastar para reordenar"
         >
           <svg width="14" height="20" viewBox="0 0 14 20" fill="currentColor">
@@ -1835,7 +1835,7 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
             )}
           </div>
           
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-start gap-3 flex-shrink-0 pt-0.5">
             <div onClick={() => toggleExpandir(id)} className="w-5 text-center text-zinc-500 text-xs flex-shrink-0 cursor-pointer">{isExpanded ? '▲' : '▼'}</div>
           </div>
         </div>
@@ -1951,11 +1951,11 @@ function SortableProtecaoItem({
         isDragging ? 'border-zinc-800 bg-zinc-950/60 opacity-40' : 'border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60'
       }`}
     >
-      <div className="flex items-center gap-1 p-3">
+      <div className="flex items-start gap-1 p-3">
         <div
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 p-2 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
+          className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-300 px-2 py-1.5 flex-shrink-0 flex items-center justify-center rounded hover:bg-zinc-800"
           title="Arrastar para reordenar"
         >
           <svg width="14" height="20" viewBox="0 0 14 20" fill="currentColor">
@@ -2040,7 +2040,7 @@ function SortableProtecaoItem({
           </div>
         </div>
         
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-start gap-3 flex-shrink-0 pt-0.5">
           <button
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {

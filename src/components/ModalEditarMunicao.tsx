@@ -67,7 +67,7 @@ export function ModalEditarMunicao({
     let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
     const catFinal = catNum + modificador + custoMaldicoes;
     const custoAtual = modificador + custoMaldicoes;
-    const podeAdicionarMod = catFinal < 4;
+    const podeAdicionarMod = catFinal + 1 <= 4;
     const custoProximaMaldicao = maldicoes.length === 0 ? 2 : 1;
     const podeAdicionarMald = (catFinal + custoProximaMaldicao) <= 4;
   
@@ -207,12 +207,12 @@ export function ModalEditarMunicao({
                       setCategoria(categoriaNumParaRoman(Math.max(0, finalDesejado - custoAtual)));
                     }}
                     options={[
-                      { value: categoriaNumParaRoman(Math.min(4, 0 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 0 + custoAtual)) },
-                      { value: categoriaNumParaRoman(Math.min(4, 1 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 1 + custoAtual)) },
-                      { value: categoriaNumParaRoman(Math.min(4, 2 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 2 + custoAtual)) },
-                      { value: categoriaNumParaRoman(Math.min(4, 3 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 3 + custoAtual)) },
-                      { value: categoriaNumParaRoman(Math.min(4, 4 + custoAtual)), label: categoriaNumParaRoman(Math.min(4, 4 + custoAtual)) }
-                    ].filter((opt, index, self) => index === self.findIndex((t) => t.value === opt.value))}
+                      { value: '0', label: '0' },
+                      { value: 'I', label: 'I' },
+                      { value: 'II', label: 'II' },
+                      { value: 'III', label: 'III' },
+                      { value: 'IV', label: 'IV' }
+                    ]}
                   />
               </div>
 
