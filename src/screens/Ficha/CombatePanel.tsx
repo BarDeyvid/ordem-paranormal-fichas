@@ -217,7 +217,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   let bonusDanoAtributo = 0;
   const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
   const isArcoComposto = arma.Nome_Item?.trim().toLowerCase() === 'arco composto';
-  if (!isFogoDisparo || isArcoComposto) {
+  if (isArcoComposto) {
+    bonusDanoAtributo = (atributosFinais.FOR || 0);
+  } else if (!isFogoDisparo) {
     if (atributoDano === 'FOR') {
       bonusDanoAtributo = (atributosFinais.FOR || 0);
     } else if (atributoDano === 'AGI' && isAgil) {
