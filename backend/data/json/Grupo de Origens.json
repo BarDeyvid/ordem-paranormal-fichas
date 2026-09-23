@@ -1,0 +1,37 @@
+[
+  {
+    "Codigo_Grupo": 1,
+    "Nome_Grupo": "Carreira",
+    "Descricao_Grupo": "Seu personagem era um trabalhador, tinha um emprego ou, pelo menos, realizava uma atividade que o gerava uma renda regularmente. Este grupo foca em origens mundanas e que fornecem poderes de utilidade geral, sem foco em um aspecto como investigações ou combate."
+  },
+  {
+    "Codigo_Grupo": 2,
+    "Nome_Grupo": "Intelectuais",
+    "Descricao_Grupo": "Seu personagem é esperto ou engenhoso. Certas origens deste grupo podem conceitualmente encaixar em outros grupos, como o de Carreira, porém, ela foca em agrupar origens que te forneçam uma base para personagens que utilizam a mente como sua principal ferramenta durante as missões."
+  },
+  {
+    "Codigo_Grupo": 3,
+    "Nome_Grupo": "Ativas",
+    "Descricao_Grupo": "Seu personagem é forte ou ágil. Certas origens deste grupo podem conceitualmente encaixar em outros grupos, como o de Carreira, porém, ela foca em agrupar origens que te forneçam uma base para personagens físicamente ativos e, provavelmente, focados em combate."
+  },
+  {
+    "Codigo_Grupo": 4,
+    "Nome_Grupo": "Comportamentais",
+    "Descricao_Grupo": "Mais do que sua função na sociedade, o que mais caracteriza seu personagem é seu comportamento ou iteresses. Este grupo foca em origens que representam suas características comportamentais e hobbies, normalmente usadas para personagens expressivos e de personalidade autêntica."
+  },
+  {
+    "Codigo_Grupo": 5,
+    "Nome_Grupo": "Artísticas",
+    "Descricao_Grupo": "Seja por trabalho ou hobbie, as maiores proficiências de seu personagem caem no mundo artístico. Anteriormente compactadas na singular origem \"Artista\", este grupo compila todas as origens com um fundo dramático, musical ou performativo num geral."
+  },
+  {
+    "Codigo_Grupo": 6,
+    "Nome_Grupo": "Militares",
+    "Descricao_Grupo": "Seu personagem fazia parte de um sistema militarizado, sendo um corpo governamental ou uma milícia independente. Anteriormente compactadas na singular origem \"Militar\", estre grupo busca expandir este conceito, separando ela em diversas patentes e funções."
+  },
+  {
+    "Codigo_Grupo": 7,
+    "Nome_Grupo": "Paranormais",
+    "Descricao_Grupo": "Um evento paranormal define a existência de seu personagem. Este grupo contém todas as origens que tem um fundo baseado no outro lado."
+  }
+]

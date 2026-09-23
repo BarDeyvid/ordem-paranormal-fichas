@@ -1,0 +1,986 @@
+[
+  {
+    "Codigo_Ritual": 1,
+    "Nome_Ritual": "Alterar Destino",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 2,
+    "Nome_Ritual": "Alterar Memória",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/mfphweq6q13fxmrrhz47w/Alterar-Mem-ria.png?rlkey=5gy5ylzrjiozf1ik2psal4us5&st=eh9z2udt&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 3,
+    "Nome_Ritual": "Amaldiçoar Arma",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/swv2sdgbxvoljo5nst9u4/Amaldi-oar-Arma-com-Sangue.png?rlkey=5p6azdaybi30pnlv6swqutnx5&st=39k5x5gq&dl=0",
+    "Link_Imagem2": "https://www.dropbox.com/scl/fi/kuc6xa4t4ozuguo2ck241/Amaldi-oar-Arma-com-Morte.png?rlkey=65fjkfqzfxfzmrkl9bkb4y2kj&st=8mz3a2ez&dl=0",
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 4,
+    "Nome_Ritual": "Amaldiçoar Tecnologia",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/6aylwyyhshrkisz2kvozz/Amaldi-oar-Tecnologia.png?rlkey=mqcuzzk4r2zzpgccy1mn31y9i&st=ml77d322&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 5,
+    "Nome_Ritual": "Âncora Temporal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/6yj2hvm4hck3p68aknpub/ncora-Temporal.png?rlkey=qwbbemw6vkequm3gw2n8d2ois&st=hbunkkz8&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 6,
+    "Nome_Ritual": "Aprimorar Físico",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/5dhae8qatorxen4vv4fdq/F-sico-Aprimorado.png?rlkey=m18024b3eeuodumaffo66kj7m&st=ewr4614q&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 7,
+    "Nome_Ritual": "Aprimorar Mente",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/rzw2v107po022289ucyps/Aprimoramento-Mental.png?rlkey=tfomiqw6zk4g1dsqdr6esmeo1&st=h7jkbc34&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 8,
+    "Nome_Ritual": "Arma Atroz",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 9,
+    "Nome_Ritual": "Armadura de Sangue",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/m7ec9rz5dtgnjafbs1deo/Armadura-de-Sangue.png?rlkey=8nh2bs9gqdsnfcyn9ihid6l44&st=g1fu0ipz&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 10,
+    "Nome_Ritual": "Canalizar o Medo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 11,
+    "Nome_Ritual": "Capturar o Coração",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 12,
+    "Nome_Ritual": "Chamas do Caos",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/pyvpq3owgb6awac0h05tl/Chamas-do-Caos.png?rlkey=sh57h85998ol9azjriid2xdty&st=yc5y6hnw&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 13,
+    "Nome_Ritual": "Cicatrização",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/mnhtgr4108nu4h8qxgb6z/Cicatriza-o.png?rlkey=p0dwcc21sjgfdjkifbvp2wpgr&st=yhazqogp&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 14,
+    "Nome_Ritual": "Cinerária",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/873bdzu2blz517gabuevx/Ciner-ria.png?rlkey=d9md94dnxtw98sxitt2x79ieb&st=c5pd0jj3&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 15,
+    "Nome_Ritual": "Coincidência Forçada",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/2edoe11175vz5i3ly804v/Coincid-ncia-For-ada.png?rlkey=q07kvk3e85aqbx26mm1fcjobx&st=tc0seumg&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 16,
+    "Nome_Ritual": "Compreensão Paranormal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/wjb16vn433d6vvjxvg9cw/Compreens-o-Paranormal.png?rlkey=iy0jfgd3qpftvolubu0pt7hwm&st=kxwe4rqp&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 17,
+    "Nome_Ritual": "Conhecendo o Medo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 18,
+    "Nome_Ritual": "Consumir Manancial",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/1x8z2ud6h848qqm1yzvdb/Consumir-Manacial.png?rlkey=ukapl1wz629urz6rwsqx3w2f5&st=vun7iimn&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 19,
+    "Nome_Ritual": "Contato Paranormal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/09es8n5g757qun4k7vhu6/Contato-Paranormal.png?rlkey=a6eghncwwum0zyckadzuybj3s&st=g6m7jgs3&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 20,
+    "Nome_Ritual": "Contenção Fantasmagórica",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 21,
+    "Nome_Ritual": "Controle Mental",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/7hidwpz4t1uoynhafls3k/Controle-mental-absor-o.png?rlkey=k3jfa4jhwvsmges56wc0wmje7&st=y0ux4l5c&dl=0",
+    "Link_Imagem2": "https://www.dropbox.com/scl/fi/jx7k05ykj1sw69govzixy/Controle-Mental-emiss-o.png?rlkey=8apr308bck94obb8qdvkxbe8a&st=mi3fkmrs&dl=0",
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 22,
+    "Nome_Ritual": "Convocação Instantânea",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/egrp7hpgu7yq0ee61pt1y/Convoca-o-Instant-nea.png?rlkey=w5u2mtu8qm3jutrngksdowzyf&st=p4irgae9&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 23,
+    "Nome_Ritual": "Convocar o Algoz",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 24,
+    "Nome_Ritual": "Corpo Adaptado",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/ypvykmhax3uhhwjzkfq3g/Corpo-Adaptado.png?rlkey=s5bcwqxd4jd200yrvfusewm0w&st=o7w1xkpj&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 25,
+    "Nome_Ritual": "Decadência",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/vc3r2ntofi4tu12zqkfxn/Decad-ncia.png?rlkey=balka0jgg29878ocjihk9g2zt&st=eimwulzs&dl=00",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 26,
+    "Nome_Ritual": "Definhar",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/7o01tk59jhxo7ot0dvwzu/Definhar.png?rlkey=jxiofnscnaj45liilo3emo4uo&st=rmoyhcr7&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 27,
+    "Nome_Ritual": "Deflagração de Energia",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 28,
+    "Nome_Ritual": "Desacelerar Impacto",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/cahbv0pfdmbh3337lw37i/Desacelerar-Impacto.png?rlkey=70gtdsaznvpg2pvwyiusiw582&st=ubg0sxf0&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 29,
+    "Nome_Ritual": "Descarnar",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/9to9xbil7qeegzyea1elf/Descarnar.png?rlkey=wflhn0j6qhu703gfqghjac41n&st=dhw3rz4a&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 30,
+    "Nome_Ritual": "Detecção de Ameaças",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 31,
+    "Nome_Ritual": "Dissipar Ritual",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 32,
+    "Nome_Ritual": "Dissonância Acústica",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 33,
+    "Nome_Ritual": "Distorção Temporal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/lj2xtbghz68swz9e2msfe/Distor-o-Temporal.png?rlkey=i48o6wu7vmp9bozhtr644qg80&st=lyn7c3iu&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 34,
+    "Nome_Ritual": "Distorcer Aparência",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/dv4dpstoi22x9qar7mvcu/Distorcer-Apar-ncia.png?rlkey=747iwh8ook2tsj0ygzjwo9qiy&st=ehvc905p&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 35,
+    "Nome_Ritual": "Eco Espiral",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/6lucrx8pwgquw4zfqlja2/Eco-Espiral.png?rlkey=879fprxaqchx28q7iflfr6xe8&st=9lixcuw6&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 36,
+    "Nome_Ritual": "Eletrocussão",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/21rerhnlut82j48l8h496/Eletrocuss-o.png?rlkey=3b3t3pyz198phcah9szl8qiz8&st=2mbv7rqy&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 37,
+    "Nome_Ritual": "Embaralhar",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 38,
+    "Nome_Ritual": "Enfeitiçar",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/gr3eaqm2jl1w6w4fobqi1/Enfeiti-ar.png?rlkey=akivoz8z859wnzumtlcck0vbt&st=ukvuqp60&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 39,
+    "Nome_Ritual": "Esconder dos Olhos",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/izh8kw9uxqztpxq7a8zzb/Esconder-dos-Olhos.png?rlkey=ab7myeni807493lwyus9s8k2n&st=dgtejy9c&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 40,
+    "Nome_Ritual": "Espirais da Perdição",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/wjl02p72svlchgw0wiy0z/Espirais-da-Perdi-o.png?rlkey=lsqxcot1597bd8xukt22r0oo6&st=hdt87i9v&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 41,
+    "Nome_Ritual": "Ferver Sangue",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 42,
+    "Nome_Ritual": "Fim Inevitável",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 43,
+    "Nome_Ritual": "Flagelo de Sangue",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 44,
+    "Nome_Ritual": "Forma Monstruosa",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/2c9qkyv5fc8vkawvr5ov9/Forma-Monstruosa.png?rlkey=h1pyjvgt16dnyz2oc9q29db4g&st=z2gh486e&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 45,
+    "Nome_Ritual": "Fortalecimento Sensorial",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/7t43ty9h8dsfmcawv5szm/Fortalecimento-Sensorial.png?rlkey=terpoc1gwo1o3s19rikef9hnt&st=1ixrnahi&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 46,
+    "Nome_Ritual": "Hemofagia",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/qexyk7sj0b0qy2xevlhgv/Hemofagia.png?rlkey=be7lj86dapmqc1djotb6kuox8&st=o5h8xdyl&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 47,
+    "Nome_Ritual": "Inexistir",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/pkvo07br0j0jidvuq1ayo/Inexistir.png?rlkey=9m7wggrkzxihzaxlx36qvysnu&st=390d1o3n&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 48,
+    "Nome_Ritual": "Invólucro de Carne",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/t59exjqqc3yhha2802nbs/Inv-lucro-de-Carne.png?rlkey=zn60ltxz953da02zqptog9tuv&st=qn53q4o2&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 49,
+    "Nome_Ritual": "Lâmina do Medo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 50,
+    "Nome_Ritual": "Localização",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/xs10xtasr3cs3krnjo5bw/Localiza-o.png?rlkey=m2jgt3v97dn6uf3tqlzxufcgb&st=n2lmsprd&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 51,
+    "Nome_Ritual": "Invadir Mente",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 52,
+    "Nome_Ritual": "Luz",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/7gcn1hu2w2rlyqrjh0hob/Luz.png?rlkey=z6evup2gua357la9ljd0fm716&st=svg3xyxc&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 53,
+    "Nome_Ritual": "Medo Tangível",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 54,
+    "Nome_Ritual": "Mergulho Mental",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/vrndspqz58vn42pwf3kzm/Mergulho-Mental.png?rlkey=abjaqo873jmyqcx334anrr7c0&st=2jy87kgl&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 55,
+    "Nome_Ritual": "Miasma Entrópico",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/ja1z7ysuowi829bxt6cwt/Miasma-Entr-pico.png?rlkey=4vojahiyewen94iyre9uzk4sh&st=gpgzvogz&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 56,
+    "Nome_Ritual": "Nuvem de Cinzas",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/uyjueok07s3u3vxgtjsul/Nuvem-de-Cinzas.png?rlkey=vfv85ko2pyrmmmh9pi3szu1p0&st=v4upm0ye&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 57,
+    "Nome_Ritual": "Ódio Incontrolável",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/vhdqgyybk7z8mlvt99d61/dio-Incontrol-vel.png?rlkey=tuvcq4opjxt39bi4vzsdkg2b0&st=hx79vh3q&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 58,
+    "Nome_Ritual": "Ouvir os Sussurros",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/vw5b1ejnhwf3aubl1grnq/Ouvir-os-Surrurros.png?rlkey=1bnxu0pj1ft68ciduky6krqp4&st=1tmq995t&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 59,
+    "Nome_Ritual": "Paradoxo",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/t3so7krycjkbw5bb58511/Paradoxo.png?rlkey=itvkn6lve2a5cm2jy4exz6ei5&st=7t2izvrf&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 60,
+    "Nome_Ritual": "Perturbação",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 61,
+    "Nome_Ritual": "Poeira da Podridão",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 62,
+    "Nome_Ritual": "Polarização Caótica",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/s5yhxc55d1x52o1ixxtt5/Polariza-o-Ca-tica.png?rlkey=v1tqaseaxle7s4qm88979mvn0&st=ntdx8es4&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 63,
+    "Nome_Ritual": "Possessão",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/c33k3r72isabuypbv8y0k/Possess-o.png?rlkey=r0ig5o0gdyp6dgygrvcg0vc9h&st=52ffjepd&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 64,
+    "Nome_Ritual": "Presença do Medo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 65,
+    "Nome_Ritual": "Proteção contra Rituais",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 66,
+    "Nome_Ritual": "Purgatório",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 67,
+    "Nome_Ritual": "Rejeitar Névoa",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/r7l190avcsazu6mnoid2j/Rejeitar-N-voa.png?rlkey=n59r9oran17h8xta6hqmos6bq&st=4snd3bv8&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 68,
+    "Nome_Ritual": "Salto Fantasma",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/2ctrbjayj5nf7k6ff3175/Salto-Fantasma.png?rlkey=4x6mmtzvx1ddo799e7max11uq&st=phytrufk&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 69,
+    "Nome_Ritual": "Sopro do Caos",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/8juyscleb995jjafgthgf/Sopro-do-Caos.png?rlkey=uoanfktbekyv0do5lrztvx1lv&st=xzs1j61c&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 70,
+    "Nome_Ritual": "Tecer Ilusão",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 71,
+    "Nome_Ritual": "Tela de Ruído",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/62nqm3pbl5qukvn9y2ljz/Tela-de-Ru-do.png?rlkey=tax4psjv5u3oibpmtgjrfdai7&st=rwwswqif&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 72,
+    "Nome_Ritual": "Teletransporte",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/lpx7hh9x7sj730e1iegwx/Teletransporte.png?rlkey=zriny8jx2lmuquczlwtpw1nts&st=5gpw4ot2&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 73,
+    "Nome_Ritual": "Tentáculos de Lodo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 74,
+    "Nome_Ritual": "Terceiro Olho",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/aha2q6yhppgyv07h9f707/Terceiro-Olho.png?rlkey=59jo9zse3698ptmnucx6it2z4&st=4nmatznr&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 75,
+    "Nome_Ritual": "Transfigurar Água",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/0htawhryqzn6412mkisrr/Transfigurar-gua.png?rlkey=zlttrdq3f90zl70uu0y772myp&st=3vzhluhi&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 76,
+    "Nome_Ritual": "Transfigurar Terra",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 77,
+    "Nome_Ritual": "Transfusão Vital",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/uuh680ubqqwlt1fq8qkfc/Transfus-o-Vital.png?rlkey=om3r8llhiqd2z5ryk4y8gf8o7&st=2by8s3k2&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 78,
+    "Nome_Ritual": "Velocidade Mortal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/unc8kmir4zgfqjq94rk0u/Velocidade-Mortal.png?rlkey=qdw792o7hqdevm5wm65b1lgc0&st=3jtxk175&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 79,
+    "Nome_Ritual": "Vidência",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 80,
+    "Nome_Ritual": "Vínculo de Sangue",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/y74g1eeqaqorvmcxvt6cl/V-nculo-de-Sangue-1.png?rlkey=7l515m95mutm8lxb9osqr8v55&st=q1hvzh96&dl=0",
+    "Link_Imagem2": "https://www.dropbox.com/scl/fi/kmnk286x846dgniakr2o7/V-nculo-de-Sangue-2.png?rlkey=mfc718w3w7uvujmgz7394an9h&st=aw2qbdoa&dl=0",
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 81,
+    "Nome_Ritual": "Vomitar Pestes",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/e3p6bxr2mnn4r94nmsk13/Vomitar-Pestes.png?rlkey=lkfssnqh2cc5upisk60l775h1&st=p2t87qkd&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 82,
+    "Nome_Ritual": "Zerar Entropia",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/yd8wk904dunh7g4i8r85q/Zerar-Entropia.png?rlkey=6ek8i284857xwsd4lx0vcdyiz&st=1scte235&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 83,
+    "Nome_Ritual": "Esfolar",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/895kd0z66b4vn5qccu8mp/Esfolar.png?rlkey=ekds29pc9qta4h0hu9m85v7as&st=ns2l8o84&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 84,
+    "Nome_Ritual": "Sede de Adrenalina",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/80dl8uasisubc3f1wzfa4/Sede-de-Adrenalina.png?rlkey=weitzwuoewo43rbr0l1rwqple&st=3i7t0akd&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 85,
+    "Nome_Ritual": "Odor da Caçada",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/rw9225unjnslf7yyiyxf3/Odor-da-Ca-ada.png?rlkey=21guizwevcilnpq00zx5q796n&st=a4vwpego&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 86,
+    "Nome_Ritual": "Martírio de Sangue",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/r4mr52mw13ifpuljup6bb/Mart-rio-de-Sangue.png?rlkey=bg9dcynkk3o1r09ozbqx58m3h&st=lbxh4tb3&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 87,
+    "Nome_Ritual": "Apagar as Luzes",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/lxj89rlq8gay8bd6bqzuq/Apagar-as-Luzes.png?rlkey=frsc1v7nh5tej9vimtmdk7bow&st=eqp75qdn&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 88,
+    "Nome_Ritual": "Língua Morta",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/s6twck9bund9zcqqqslqf/L-ngua-Morta.png?rlkey=ucuz420ffcc9vihue36ofz0mj&st=07h2iqyz&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 89,
+    "Nome_Ritual": "Fedor Pútrido",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/zn0tow6pxi8d1c94hexr3/Fedor-P-trido.png?rlkey=n17x2xd7796fsqck0k93ftgbo&st=xqrbohyc&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 90,
+    "Nome_Ritual": "Singularidade Temporal",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/aserwzut84tfxdfgpm8bn/Singularidade-Temporal.png?rlkey=s451oy700cfqtfe9209jolojz&st=br05kkd1&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 91,
+    "Nome_Ritual": "Desfazer Sinapses",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/dd2qdcq3waiti1subtqw8/Desfazer-Sinapses.png?rlkey=0ra0pi0n0a7slnc7uttvfxy2a&st=xky2dxj0&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 92,
+    "Nome_Ritual": "Aurora da Verdade",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/9c2mbaj6ecvym069yw74w/Aurora-da-Verdade.png?rlkey=t88bkyg2cxzongo13tnryw6ah&st=4oqhtyra&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 93,
+    "Nome_Ritual": "Relembrar Fragmento",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/p9ys2sc7czkfvpf3aiknp/Relembrar-Fragmento.png?rlkey=4t7t9y5eu4pgldw3x6fx2wr2f&st=bvsq9nn5&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 94,
+    "Nome_Ritual": "Pronunciar Sigilo",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/omcyimqxhpjx26et6q9lm/Pronunciar-Sigilo.png?rlkey=k4k3xzyg54hnresegud72wcce&st=uwpasvol&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 95,
+    "Nome_Ritual": "Overclock",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/0sfzskro08z0gl29wwp9c/Overclock.png?rlkey=oe8bmzrb0yvt1cr09hxgr8fif&st=p7bd42wc&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 96,
+    "Nome_Ritual": "Tremeluzir",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/k1wyf39np3qk442po8io7/Tremeluzir.png?rlkey=wwpxbzh6u7hgfl3on4an3ber4&st=71h0oxzr&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 97,
+    "Nome_Ritual": "Mutar",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/zxy985yoj5lr2amnu6m95/Mutar.png?rlkey=m40inxsq5c984u3w4kqxk2szj&st=o86ma1t0&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 98,
+    "Nome_Ritual": "Milagre Ionizante",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/l2811xvow1ublknwfp3ay/Milagre-Ionizante.png?rlkey=ong419gqkng9p32ty7xlk69b1&st=nynyi9pj&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 99,
+    "Nome_Ritual": "Passagem de Conhecimento",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/lmbsje0g2zgwiri45fumn/Passagem-de-Conhecimento.png?rlkey=lza1uqz482b3313jvap00hrrc&st=6j6lpvm3&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 100,
+    "Nome_Ritual": "Passagem de Conhecimento Expandida",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/49y75utw6ak27jhjo5wwy/Passagem-de-Conhecimento-Expandido.png?rlkey=wbr8fmmuibhi9obupga4jagux&st=2pi7sii9&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 101,
+    "Nome_Ritual": "Mapa Sanguíneo",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 102,
+    "Nome_Ritual": "Capturar Momento",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 103,
+    "Nome_Ritual": "Hesitação Forçada",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/ydo3ijvcl3ptypfyh4km4/Hesita-o-For-ada.png?rlkey=kkp4w3xl09srl780u6jsee4j1&st=40tx7a4q&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 104,
+    "Nome_Ritual": "Labirinto Mental",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 105,
+    "Nome_Ritual": "Backup",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/cbm2a48sgp9ixqwxd5j20/Backup.png?rlkey=jm64tzu9ilfscf740qziok00g&st=y5r02bf9&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 106,
+    "Nome_Ritual": "Rajada Caótica",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 108,
+    "Nome_Ritual": "Jack of All Trades",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 111,
+    "Nome_Ritual": "Constringir Musculatura",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 112,
+    "Nome_Ritual": "Explodir Sangue",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 114,
+    "Nome_Ritual": "Criar Ferrugem",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 115,
+    "Nome_Ritual": "Roubar Potencial",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 116,
+    "Nome_Ritual": "Controlar as Sombras",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 117,
+    "Nome_Ritual": "Replicar Gesticulação Proibida",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 109,
+    "Nome_Ritual": "Clone de Sangue",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/837nezsjc690wb9cez54h/Clone-de-Sangue.png?rlkey=o82eu134c59yaed121ced2cuo&st=pfuokvdn&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 120,
+    "Nome_Ritual": "Guerreiros Fantasma",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 121,
+    "Nome_Ritual": "Apostar Saúde",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 122,
+    "Nome_Ritual": "Ampliação Sonora",
+    "Link_Imagem": null,
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 123,
+    "Nome_Ritual": "Vampirismo",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/7p7jc23cahczgi6zr0dzl/Vampirismo.png?rlkey=a2xd8gtqpmvkq2t48z4oskgte&st=hun1j3sq&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 107,
+    "Nome_Ritual": "Invocar Arma",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/6pds0ahkaw3n0xxff7uyk/Invocar-Arma-de-Sangue.png?rlkey=7qgyccyjky09ip03gq2o34sgw&st=o1pmedm2&dl=0",
+    "Link_Imagem2": "https://www.dropbox.com/scl/fi/x055vr5oi91ztcvrmg1kk/Invocar-Arma-de-Morte.png?rlkey=lu99jn4s8xfm8typq34ry0py2&st=mxiyaxw3&dl=0",
+    "Link_Imagem3": "https://www.dropbox.com/scl/fi/r70me865yrntzhrcvozfv/Invocar-Arma-de-Energia.png?rlkey=3klvimp0knf97bcq4pg896kge&st=oyw2y4ur&dl=0",
+    "Link_Imagem4": "https://www.dropbox.com/scl/fi/kbvsxyvvc752q80vhefxo/Invocar-Arma-de-Conhecimento.png?rlkey=vl82yl4al08oqg86yyybj9iru&st=od4q7b9k&dl=0"
+  },
+  {
+    "Codigo_Ritual": 113,
+    "Nome_Ritual": "Ódio em Massa",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/djurzzeoic65k619vuw7b/dio-em-Massa.png?rlkey=7lbj0c9cf9dp9xw0r396w6jq8&st=8n9bsfxf&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 110,
+    "Nome_Ritual": "Cicatrização Desenfreada",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/jjayf3r56j47cgjvrehug/Cicatriza-o-Desenfreada.png?rlkey=31eqer6rd0ayqmb22fealy1gv&st=bnwr3fmn&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 118,
+    "Nome_Ritual": "Sussurros Ensurdecedores",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/lxkff828k0vbjdlmurmkz/Sussurros-Ensurdecedores.png?rlkey=q645djycw38bfx3l7ixdwgbmi&st=91zhh9gj&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  },
+  {
+    "Codigo_Ritual": 119,
+    "Nome_Ritual": "Chuva Ácida",
+    "Link_Imagem": "https://www.dropbox.com/scl/fi/kvobkc5p37xot0a97m870/Chuva-cida.png?rlkey=yijvp13odtx82qadorkxzetpb&st=vxjwqnxe&dl=0",
+    "Link_Imagem2": null,
+    "Link_Imagem3": null,
+    "Link_Imagem4": null
+  }
+]

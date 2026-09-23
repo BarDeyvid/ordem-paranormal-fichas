@@ -1,0 +1,34 @@
+[
+  {
+    "Codigo_Per_Regra": 0,
+    "Descricao_Regra": "Nenhuma Perícia adicionada."
+  },
+  {
+    "Codigo_Per_Regra": 1,
+    "Descricao_Regra": "Treina apenas a perícia da coluna \"Pericia_Treinada_1\" . Aumenta em +1 o limite de perícias treináveis"
+  },
+  {
+    "Codigo_Per_Regra": 2,
+    "Descricao_Regra": "Aumenta em +2 o limite de perícias treináveis"
+  },
+  {
+    "Codigo_Per_Regra": 3,
+    "Descricao_Regra": "Aumenta em +1 o limite de perícias treináveis"
+  },
+  {
+    "Codigo_Per_Regra": 4,
+    "Descricao_Regra": "Aumenta em +5 o limite de perícias treináveis"
+  },
+  {
+    "Codigo_Per_Regra": 5,
+    "Descricao_Regra": "Aumenta em +3 o limite de perícias treináveis"
+  },
+  {
+    "Codigo_Per_Regra": 6,
+    "Descricao_Regra": "Check para escolher entre \"Pericia_Treinada_2\" e \"Pericia_Treinada_Especial\""
+  },
+  {
+    "Codigo_Per_Regra": 7,
+    "Descricao_Regra": "Deixar Pilotagem em +10 (Veterano)"
+  }
+]

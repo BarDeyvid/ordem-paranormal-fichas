@@ -1,0 +1,101 @@
+[
+  {
+    "Codigo_Municao": 67,
+    "Nome_Item": "Flecha Explosiva",
+    "Descricao_Item": "A ponta desta flecha é grossa e arredondada, criada para explodir em impacto. Escolha um explosivo arremessável. Ao fazer um ataque com esta flecha, o explosivo será ativado quando a flecha fizer um impacto, além de causar o dano normal em qualquer ser, destruindo-a. A categoria deste item é 1+ a categoria do explosivo escolhido e é um item único.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 1
+  },
+  {
+    "Codigo_Municao": 10,
+    "Nome_Item": "Flechas",
+    "Descricao_Item": "Usadas em arcos e bestas, flechas podem ser reaproveitadas após cada combate. Por isso, um pacote de flechas dura uma missão inteira.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "0",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 13,
+    "Nome_Item": "Balas curtas",
+    "Descricao_Item": "Munição básica, usada em pistolas, revólveres e submetralhadoras. Um pacote de balas curtas dura duas cenas.",
+    "Tipo_Arma": "Pistóla / Revólver / Submetralhadora",
+    "Categoria_Item": "0",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 16,
+    "Nome_Item": "Balas longas",
+    "Descricao_Item": "Maior e mais potente, esta munição é usada em fuzis e metralhadoras. Um pacote de balas longas dura uma cena.",
+    "Tipo_Arma": "Fuzil / Metralhadora",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 34,
+    "Nome_Item": "Cartuchos",
+    "Descricao_Item": "Usados em espingardas, esses cartuchos são carregados com esferas de chumbo. Um pacote de cartuchos dura uma cena.",
+    "Tipo_Arma": "Espingarda",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 40,
+    "Nome_Item": "Combustível",
+    "Descricao_Item": "Um tanque de combustível para lança-chamas. Dura uma cena.",
+    "Tipo_Arma": "Lança-Chamas / Lança-Nitrogênio",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 38,
+    "Nome_Item": "Foguete",
+    "Descricao_Item": "Disparado por bazucas. Ao contrário de outras munições, cada foguete dura um único disparo, não uma cena. Para fazer vários ataques, você precisará carregar vários foguetes.",
+    "Tipo_Arma": "Bazuca",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 1
+  },
+  {
+    "Codigo_Municao": 65,
+    "Nome_Item": "Flechas Ponta Broadhead",
+    "Descricao_Item": "Pontas pesadas e contendo duas ou quatro lâminas laterais removíveis que causam sangramento interno no alvo. Ao acertar um ataque com esta flecha, o alvo fica Sangrando pelo resto da cena. Este é um item categoria 1 que inclui 3 flechas, cada uma com peso 0.5. Após disparar uma delas e acertar o ataque, as lâminas são perdidas e ela se torna uma flecha comum.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "I",
+    "Espaços_Item": 0.5,
+    "contagem_municao": 3
+  },
+  {
+    "Codigo_Municao": 66,
+    "Nome_Item": "Flechas Ponta Bodkin",
+    "Descricao_Item": "Pontas finas e afiadas, criadas para penetrar armadura. Estas flechas ignoram 5 pontos de resistência a dano ao acertar um ataque. Além disso, acertar 3 flechas desse tipo no mesmo inimigo reduz sua defesa em 2. Este é um item categoria 1 que contém 3 flechas que podem ser recuperadas ao fim de um combate.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "I",
+    "Espaços_Item": 1,
+    "contagem_municao": 3
+  },
+  {
+    "Codigo_Municao": 63,
+    "Nome_Item": "Flechas Ponta Cega",
+    "Descricao_Item": "Um tipo de ponta de flecha chata e pesada. Estas flechas mudam o tipo de dano da arma para Impacto e podem ser disparadas de forma a causar dano não-letal. Este é um item categoria 0 que dura duas cenas.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "0",
+    "Espaços_Item": 1,
+    "contagem_municao": 20
+  },
+  {
+    "Codigo_Municao": 64,
+    "Nome_Item": "Flecha Ponta de Pesca",
+    "Descricao_Item": "A ponta destas flechas possui duas hastes que servem para as prender no alvo, normalmente um peixe, e puxá-lo com uma corda. Antes de usar esta flecha, você precisa usar uma ação padrão para amarrá-la com uma corda. Se acertar um ataque com esta flecha, ela se prende ao alvo. Você pode puxar seres pela corda fazendo uma ação de manobra, se falhar, a flecha se quebra. Este é um item categoria 1, peso 0.5 e único.",
+    "Tipo_Arma": "Arco / Besta",
+    "Categoria_Item": "I",
+    "Espaços_Item": 0.5,
+    "contagem_municao": 1
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "Codigo_Protecao": 1,
+    "Proficiencia": "Proteções Leves",
+    "Nome_Protecao": "Proteção Leve",
+    "Descricao_Protecao": "Jaqueta de couro pesada ou um colete de kevlar. Essa proteção é tipicamente usada por seguranças e policiais.",
+    "Defesa_Protecao": 5,
+    "Espacos_Protecao": 2,
+    "Categoria_Protecao": "I"
+  },
+  {
+    "Codigo_Protecao": 2,
+    "Proficiencia": "Proteções Pesadas",
+    "Nome_Protecao": "Proteção Pesada",
+    "Descricao_Protecao": "Equipamento usado por forças especiais da polícia e pelo exército. Consiste de capacete, ombreiras, joelheiras e caneleiras, além de um colete com várias camadas de kevlar. Fornece resistência a balístico, corte, impacto e perfuração 2. No entanto, por ser desconfortável e volumosa, impõe -5 em testes de perícias que sofrem penalidade de carga.",
+    "Defesa_Protecao": 10,
+    "Espacos_Protecao": 5,
+    "Categoria_Protecao": "II"
+  },
+  {
+    "Codigo_Protecao": 3,
+    "Proficiencia": "Proteções Pesadas",
+    "Nome_Protecao": "Escudo",
+    "Descricao_Protecao": "Um escudo medieval ou moderno, como aqueles usados por tropas de choque. Precisa ser empunhado em uma mão e fornece Defesa +2. Bônus na Defesa fornecido por um escudo acumula com o de uma proteção. Para efeitos de proficiência e penalidade por não proficiência, escudos contam como proteção pesada.",
+    "Defesa_Protecao": 2,
+    "Espacos_Protecao": 2,
+    "Categoria_Protecao": "I"
+  }
+]
