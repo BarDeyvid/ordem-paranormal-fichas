@@ -14,12 +14,18 @@ export function useItensAmaldicoados() {
     let cancelled = false;
     async function carregar() {
       setError(null);
-      const { data, error } = await supabase.from('Itens Amaldiçoados').select('*');
+      const [resItens, resArmas] = await Promise.all([
+        supabase.from('Itens Amaldiçoados').select('*'),
+        supabase.from('Armas Amaldiçoadas').select('*')
+      ]);
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
-      } else if (data) {
-        setItens(data as ItemAmaldicoado[]);
+      if (resItens.error) {
+        setError(resItens.error.message);
+      } else if (resItens.data) {
+        setItens(resItens.data as ItemAmaldicoado[]);
+      }
+      if (resArmas.data) {
+        setArmasAmaldicoadas(resArmas.data);
       }
       setLoading(false);
     }
