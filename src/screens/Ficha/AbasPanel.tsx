@@ -1885,6 +1885,11 @@ export const AbasPanel: React.FC = () => {
               titulo="NEX & Experiência"
               descricao="O nível de experiência substitui o NEX em Benefícios por NEX, como pré-requisitos de habilidades de classe (exceto poderes paranormais) e em efeitos de origens e habilidades baseados em NEX. 1 nível equivale a 5% de NEX."
             />
+              <RegraCheckbox
+                nome="media_dano"
+                titulo="Cálculo de Média de Dano"
+                descricao="Exibe uma seção retrátil nos blocos de ataque com a média matemática do dano causado pelas armas no combate."
+              />
             <RegraCheckbox
               nome="sem_sanidade"
               titulo="Jogando sem Sanidade"

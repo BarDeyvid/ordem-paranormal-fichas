@@ -112,7 +112,7 @@ interface ArmaCombateCardProps {
 }
 
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook, onAddMunicao, municoesHook, itensHook, armasHook }) => {
-  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, status } = useRPG();
+  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, status, regras } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const [mostrarStatsGrupo, setMostrarStatsGrupo] = React.useState(false);
   
@@ -525,27 +525,31 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
 
           {/* 4. MÉDIA DE DANO ESCONDIDA */}
-          <button
-            onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
-            className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
-          >
-            <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>▼</span>
-            Média de Dano
-          </button>
-          
-          <Collapse isOpen={mostrarDanoMedio}>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
-              <span className="text-zinc-300"><span className="font-bold text-green-400">Normal (x1/x2/x3):</span> {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
-              {!isLancadorGranadas && (<span className="text-zinc-300"><span className="font-bold text-green-400">Média Crítica:</span> <span className="font-bold">{danoMedioPrincipal.critico}</span></span>)}
-              
-              {danoMedioSecundario && (
-                <>
-                  <span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. (x1/x2/x3):</span> {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
-                  {!isLancadorGranadas && (<span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. Crítica:</span> <span className="font-bold">{danoMedioSecundario.critico}</span></span>)}
-                </>
-              )}
-            </div>
-                      </Collapse>
+          {regras['media_dano'] && (
+            <>
+            <button
+              onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
+              className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>▼</span>
+              Média de Dano
+            </button>
+            
+            <Collapse isOpen={mostrarDanoMedio}>
+              <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
+                <span className="text-zinc-300"><span className="font-bold text-green-400">Normal (x1/x2/x3):</span> {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} / {danoMedioPrincipal.normal * 3}</span>
+                {!isLancadorGranadas && (<span className="text-zinc-300"><span className="font-bold text-green-400">Média Crítica:</span> <span className="font-bold">{danoMedioPrincipal.critico}</span></span>)}
+                
+                {danoMedioSecundario && (
+                  <>
+                    <span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. (x1/x2/x3):</span> {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} / {danoMedioSecundario.normal * 3}</span>
+                    {!isLancadorGranadas && (<span className="text-zinc-300 mt-1"><span className="font-bold text-green-400">Sec. Crítica:</span> <span className="font-bold">{danoMedioSecundario.critico}</span></span>)}
+                  </>
+                )}
+              </div>
+            </Collapse>
+            </>
+          )}
 
             {temGrupoStats && (
               <>
