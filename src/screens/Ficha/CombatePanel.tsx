@@ -216,7 +216,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   // Calcula bônus de atributo para o DANO
   let bonusDanoAtributo = 0;
   const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
-  if (!isFogoDisparo) {
+  const isArcoComposto = arma.Nome_Item?.trim().toLowerCase() === 'arco composto';
+  if (!isFogoDisparo || isArcoComposto) {
     if (atributoDano === 'FOR') {
       bonusDanoAtributo = (atributosFinais.FOR || 0);
     } else if (atributoDano === 'AGI' && isAgil) {
