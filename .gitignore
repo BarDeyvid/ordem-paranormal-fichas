@@ -4,6 +4,8 @@ frontend/node_modules/
 dist/
 frontend/dist/
 dist-ssr/
+storybook-static/
+frontend/storybook-static/
 *.local
 
 # Python / Backend
@@ -46,3 +48,6 @@ backend/.env.*
 *.sln
 *.sw?
 .claude/
+
+*storybook.log
+storybook-static
