@@ -114,7 +114,11 @@ interface ArmaCombateCardProps {
 const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandida, toggleExpandir, modificacoesHook, maldicoesHook, onAddMunicao, municoesHook, itensHook, armasHook }) => {
   const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, status } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
+  const [mostrarStatsGrupo, setMostrarStatsGrupo] = React.useState(false);
+  
   const { arma, modificacoes, maldicoes } = armaInv;
+  const grupoArma = armasHook?.gruposArmas?.find((g: any) => g.Codigo_Grupo === arma.Codigo_Grupo);
+  const temGrupoStats = grupoArma && (grupoArma.RD_Grupo || grupoArma.PV_Grupo);
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
     let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;

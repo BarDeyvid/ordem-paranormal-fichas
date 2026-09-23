@@ -186,6 +186,7 @@ export interface Arma {
   dt_item: string | null;
   'Automatica?': boolean | null;
   'Improvisada?'?: boolean | null;
+  Codigo_Grupo?: number | null;
   Fonte_Arma: string;
   Dano_Secundario?: string;
 }
@@ -306,4 +307,10 @@ export interface ItemAmaldicoadoInventario {
   id: string;
   item: ItemAmaldicoado;
   equipado?: boolean;
+}
+
+export interface GrupoArma {
+  Codigo_Grupo: number;
+  RD_Grupo?: number | string | null;
+  PV_Grupo?: number | string | null;
 }

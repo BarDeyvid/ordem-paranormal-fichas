@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../services/supabase';
-import type { Arma, ArmaInventario } from '../types';
+import type { Arma, ArmaInventario, GrupoArma } from '../types';
 
 export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> = new Set()) {
   const [armas, setArmas] = useState<Arma[]>([]);
+  const [gruposArmas, setGruposArmas] = useState<GrupoArma[]>([]);
   const [armasInventario, setArmasInventario] = useState<ArmaInventario[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +14,13 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
     async function carregar() {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase.from('Armas').select('*');
+      const [armasRes, gruposRes] = await Promise.all([
+        supabase.from('Armas').select('*'),
+        supabase.from('Grupos Armas').select('*')
+      ]);
+      const data = armasRes.data;
+      const error = armasRes.error;
+      if (gruposRes.data) setGruposArmas(gruposRes.data as GrupoArma[]);
       if (cancelled) return;
       if (error) {
         setError(error.message);
@@ -245,7 +252,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
     return counts;
   }, [armasInventario]);
 
-  return { armas, armasInventario,    adicionarArma,
+  return { armas, armasInventario, gruposArmas,    adicionarArma,
     removerArma,
     reordenarArmas,
     acoplarMunicao,
