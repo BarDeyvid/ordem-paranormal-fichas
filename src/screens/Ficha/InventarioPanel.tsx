@@ -609,8 +609,8 @@ export function InventarioPanel() {
     return true;
   });
   
-  const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
-  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada); console.log(\'Armas Amaldicoadas Exibidas:\', armasAmaldicoadasExibidas);
+  const armasNormaisExibidas = armasExibidas; // DEBUG: Show all weapons in Armas tab
+  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
 
   const municoesSoltas = (municoesHook?.municoesInventario || []).filter(minv => {
     // É solta se não estiver acoplada a nenhuma arma
