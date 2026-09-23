@@ -80,7 +80,10 @@ export function ModalEditarArma({
   );
 
   const renderLabel = (baseLabel: string, baseValue: any, finalValue: any, isMultiplier = false) => {
-    const isModified = String(baseValue).toLowerCase() !== String(finalValue).toLowerCase();
+    let isModified = String(baseValue).trim().toLowerCase() !== String(finalValue).trim().toLowerCase();
+      if ((baseValue === '-' || !baseValue || String(baseValue).trim().toLowerCase() === 'corpo a corpo') && String(finalValue).trim().toLowerCase() === 'corpo a corpo') {
+        isModified = false;
+      }
     const displayFinal = isMultiplier ? `x${finalValue}` : finalValue;
     return (
       <div className="flex justify-between items-center mb-1.5 min-h-[22px]">
@@ -282,9 +285,8 @@ export function ModalEditarArma({
                     { value: "Corpo a Corpo", label: "Corpo a Corpo" },
                     { value: "Arma de Disparo", label: "Arma de Disparo" },
                     { value: "Arma de Fogo", label: "Arma de Fogo" },
-                    { value: "Arma de Arremesso", label: "Arma de Arremesso" },
-                    { value: "Explosivos", label: "Explosivos" }
-                  ]}
+                    { value: "Arma de Arremesso", label: "Arma de Arremesso" }
+                    ]}
                   wrapperClassName="w-full"
                   className={selectClass}
                 />
