@@ -117,10 +117,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const [mostrarStatsGrupo, setMostrarStatsGrupo] = React.useState(false);
   
   const { arma, modificacoes, maldicoes } = armaInv;
-  const armaBase = armasHook?.armas?.find((a: any) => a.Nome_Item === arma.Nome_Item);
+  const armaBase = armasHook?.armas?.find((a: any) => a.Codigo_Arma === arma.Codigo_Arma || a.Nome_Item === arma.Nome_Item);
   const codigoGrupoFinal = arma.Codigo_Grupo ?? armaBase?.Codigo_Grupo;
-  const grupoArma = armasHook?.gruposArmas?.find((g: any) => g.Codigo_Grupo === codigoGrupoFinal);
-  const temGrupoStats = grupoArma && (grupoArma.RD_Grupo || grupoArma.PV_Grupo);
+  const grupoArma = armasHook?.gruposArmas?.find((g: any) => String(g.Codigo_Grupo) === String(codigoGrupoFinal));
+  const temGrupoStats = grupoArma && (grupoArma.RD_Grupo != null || grupoArma.PV_Grupo != null);
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
     let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;
@@ -545,13 +545,31 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 </>
               )}
             </div>
-          </Collapse>
+                      </Collapse>
 
-        </div>
-      </Collapse>
-    </div>
-  );
-};
+            {temGrupoStats && (
+              <>
+                <button
+                  onClick={() => setMostrarStatsGrupo(!mostrarStatsGrupo)}
+                  className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
+                >
+                  <span className={`transition-transform ${mostrarStatsGrupo ? 'rotate-180' : ''}`}>▼</span>
+                  Atributos do Grupo
+                </button>
+                <Collapse isOpen={mostrarStatsGrupo}>
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
+                    {grupoArma.RD_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">RD:</span> {grupoArma.RD_Grupo}</span>}
+                    {grupoArma.PV_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">PV:</span> {grupoArma.PV_Grupo}</span>}
+                  </div>
+                </Collapse>
+              </>
+            )}
+  
+          </div>
+        </Collapse>
+      </div>
+    );
+  };
 
 export const CombatePanel: React.FC = () => {
   const [modalMunicoesAberto, setModalMunicoesAberto] = React.useState(false);
