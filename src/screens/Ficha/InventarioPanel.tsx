@@ -914,43 +914,43 @@ export function InventarioPanel() {
           >
             {(categoriaFiltro === 'Armas' || categoriaFiltro === 'Geral') && (
               <>
-              {categoriaFiltro === 'Geral' && armasExibidas.length > 0 && (
+              {categoriaFiltro === 'Geral' && armasNormaisExibidas.length > 0 && (
                 <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Armas</h3>
               )}
               
               <SortableContext 
-                items={armasExibidas.map(a => a.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                {armasExibidas.map((item: ArmaInventario) => (
-                  <SortableArmaItem
-                    key={item.id}
-                    item={item}
-                    isExpanded={!!expandidos[item.id]}
-                    toggleExpandir={toggleExpandir}
-                    stringDT={calcularDT(item.arma.dt_item, item.arma.Categoria_Item?.toLowerCase().includes('explosivos') || item.arma.Nome_Item?.toLowerCase().includes('explosivo'))}
-                    removerArma={armasHook?.removerArma || (() => {})}
-                      onEditar={() => setArmaEditandoId(item.id)}
-                      onAddMunicao={() => {
-                        if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
-                          setGranadaTargetArmaId(item.id);
-                          setModalGranadasAberto(true);
-                        } else {
-                          setMunicaoTargetArmaId(item.id);
-                          setMunicaoFiltroNome(item.arma.Nome_Item);
-                          setMunicaoFiltroCategoria(item.arma.Categoria_Item);
-                          setModalMunicoesAberto(true);
-                        }
-                      }}
-                    />
-                ))}
-              </SortableContext>
+                  items={armasNormaisExibidas.map(a => a.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {armasNormaisExibidas.map((item: ArmaInventario) => (
+                    <SortableArmaItem
+                      key={item.id}
+                      item={item}
+                      isExpanded={!!expandidos[item.id]}
+                      toggleExpandir={toggleExpandir}
+                      stringDT={calcularDT(item.arma.dt_item, item.arma.Categoria_Item?.toLowerCase().includes('explosivos') || item.arma.Nome_Item?.toLowerCase().includes('explosivo'))}
+                      removerArma={armasHook?.removerArma || (() => {})}
+                        onEditar={() => setArmaEditandoId(item.id)}
+                        onAddMunicao={() => {
+                          if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                            setGranadaTargetArmaId(item.id);
+                            setModalGranadasAberto(true);
+                          } else {
+                            setMunicaoTargetArmaId(item.id);
+                            setMunicaoFiltroNome(item.arma.Nome_Item);
+                            setMunicaoFiltroCategoria(item.arma.Categoria_Item);
+                            setModalMunicoesAberto(true);
+                          }
+                        }}
+                      />
+                  ))}
+                </SortableContext>
               
-              {categoriaFiltro === 'Armas' && armasExibidas.length === 0 && (
+              {categoriaFiltro === 'Armas' && armasNormaisExibidas.length === 0 && (
                 <p className="text-center text-zinc-600 text-sm py-4">Nenhuma arma no inventário.</p>
               )}
               
-              {categoriaFiltro === 'Geral' && armasExibidas.length === 0 && municoesSoltas.length === 0 && protecoesGeral.length === 0 && itensGeral.length === 0 && (
+              {categoriaFiltro === 'Geral' && armasNormaisExibidas.length === 0 && municoesSoltas.length === 0 && protecoesGeral.length === 0 && itensGeral.length === 0 && (
                 <p className="text-center text-zinc-600 text-sm py-4">Inventário vazio.</p>
               )}
 
@@ -1461,7 +1461,21 @@ function SortableArmaItem({
           onClick={() => toggleExpandir(id)}
         >
           <div className="flex flex-col gap-1 flex-1 min-w-0 justify-center">
-            <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{arma.Nome_Item}</span>
+            <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5 flex items-center gap-2">
+  {arma.Nome_Item}
+  {arma.isAmaldicoada && arma.Elemento_Arma && (
+    <span className={`text-[10px] font-bold rounded-sm truncate uppercase tracking-wider w-fit ${
+      arma.Elemento_Arma.toLowerCase().includes('medo') ? 'bg-zinc-200/80 text-zinc-950 px-1' :
+      arma.Elemento_Arma.toLowerCase().includes('sangue') ? 'text-red-500' :
+      arma.Elemento_Arma.toLowerCase().includes('morte') ? 'bg-black/50 text-white px-1' :
+      arma.Elemento_Arma.toLowerCase().includes('conhecimento') ? 'text-yellow-500' :
+      arma.Elemento_Arma.toLowerCase().includes('energia') ? 'text-purple-500' :
+      'text-zinc-400'
+    }`}>
+      {arma.Elemento_Arma}
+    </span>
+  )}
+</span>
 
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300 mt-0.5">

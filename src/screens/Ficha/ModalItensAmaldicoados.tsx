@@ -11,8 +11,8 @@ interface ModalItensAmaldicoadosProps {
 
 export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoadosProps) {
 
-  const { itensAmaldicoadosHook } = useRPG();
-  const { itens, adicionarItem, loading } = itensAmaldicoadosHook;
+  const { itensAmaldicoadosHook, armasHook } = useRPG();
+  const { itens, armasAmaldicoadas, adicionarItem, loading } = itensAmaldicoadosHook;
 
   React.useEffect(() => {
     if (aberto) {
@@ -30,45 +30,30 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
 
   const itensFiltrados = useMemo(() => {
-    return itens.filter(item => {
-      const matchBusca = item.Nome_Ama.toLowerCase().includes(busca.toLowerCase());
-      
-      let matchElemento = true;
+    let baseItens = [
+      ...(itens || []).map(i => ({ ...i, _tipo: 'item' })),
+      ...(armasAmaldicoadas || []).map(a => ({ 
+        ...a, 
+        _tipo: 'arma',
+        Codigo_Item_Ama: 'arma_' + a.Codigo_Arma,
+        Nome_Ama: a.Nome_Item,
+        Desc_Ama: a.Descricao_Item,
+        Elemento_Ama: a.Elemento_Arma,
+        Espacos_Ama: a['Espaços_Item'],
+        Categoria_Ama: a.Categoria_Item
+      }))
+    ];
+    let result = baseItens.filter(item => {
       if (abaElemento) {
-        const itemEl = item.Elemento_Ama?.toLowerCase() || '';
-        matchElemento = itemEl.includes(abaElemento.toLowerCase());
+        if (!item.Elemento_Ama || !item.Elemento_Ama.toLowerCase().includes(abaElemento.toLowerCase())) return false;
       }
-
-      return matchBusca && matchElemento;
-    }).sort((a, b) => {
-      const elementOrder: Record<string, number> = {
-        'sangue': 1,
-        'morte': 2,
-        'conhecimento': 3,
-        'energia': 4,
-        'medo': 5,
-        'varia': 6,
-        'vária': 6,
-        'variável': 6,
-        'variavel': 6
-      };
-      
-      const getRank = (el: string | null | undefined) => {
-        if (!el) return 99;
-        const lower = el.toLowerCase();
-        for (const key in elementOrder) {
-          if (lower.includes(key)) return elementOrder[key];
-        }
-        return 99;
-      };
-
-      const rankA = getRank(a.Elemento_Ama);
-      const rankB = getRank(b.Elemento_Ama);
-      
-      if (rankA !== rankB) return rankA - rankB;
-      return a.Nome_Ama.localeCompare(b.Nome_Ama);
+      if (busca) {
+        if (!item.Nome_Ama.toLowerCase().includes(busca.toLowerCase())) return false;
+      }
+      return true;
     });
-  }, [itens, busca, abaElemento]);
+    return result;
+  }, [itens, armasAmaldicoadas, busca, abaElemento]);
 
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
@@ -214,7 +199,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            adicionarItem(item);
+                            if (item._tipo === 'arma') {
+  armasHook?.adicionarArma({ ...item, isAmaldicoada: true });
+} else {
+  adicionarItem(item);
+}
                             fechar();
                           }}
                           className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
@@ -276,7 +265,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            adicionarItem(item);
+                            if (item._tipo === 'arma') {
+  armasHook?.adicionarArma({ ...item, isAmaldicoada: true });
+} else {
+  adicionarItem(item);
+}
                             fechar();
                           }}
                           className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"

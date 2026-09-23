@@ -5,6 +5,7 @@ import { calcularCategoriaFinal } from '../utils/rpgRules';
 
 export function useItensAmaldicoados() {
   const [itens, setItens] = useState<ItemAmaldicoado[]>([]);
+  const [armasAmaldicoadas, setArmasAmaldicoadas] = useState<any[]>([]);
   const [itensAmaldicoadosInventario, setItensAmaldicoadosInventario] = useState<ItemAmaldicoadoInventario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +81,8 @@ export function useItensAmaldicoados() {
 
   return { 
     itens, 
+    armasAmaldicoadas,
+
     itensAmaldicoadosInventario,
     setItensAmaldicoadosInventario,
     adicionarItem, 

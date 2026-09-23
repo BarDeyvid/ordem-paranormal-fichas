@@ -189,6 +189,9 @@ export interface Arma {
   Codigo_Grupo?: number | null;
   Fonte_Arma: string;
   Dano_Secundario?: string;
+  Elemento_Arma?: string | null;
+  Especial_Arma?: string | null;
+  isAmaldicoada?: boolean;
 }
 
 export interface ArmaInventario {
