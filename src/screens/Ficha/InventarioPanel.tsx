@@ -1463,38 +1463,7 @@ function SortableArmaItem({
           <div className="flex flex-col gap-1 flex-1 min-w-0 justify-center">
             <span className="font-bold text-sm text-zinc-100 truncate leading-none mt-0.5">{arma.Nome_Item}</span>
 
-              {((Array.isArray(item.maldicoes) ? item.maldicoes : []).length > 0) && (
-              <div className="mt-3">
-                <div 
-                  className="flex items-center gap-2 cursor-pointer group py-1.5 px-2 -mx-2 rounded hover:bg-zinc-800/40 transition-colors"
-                  onClick={(e) => { e.stopPropagation(); setExpandirMalds(!expandirMalds); }}
-                >
-                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider group-hover:text-zinc-300 transition-colors">Maldições</span>
-                  <div className="h-px bg-zinc-800 flex-1 group-hover:bg-zinc-700 transition-colors"></div>
-                  <svg className={`w-3 h-3 text-zinc-500 group-hover:text-zinc-300 transition-transform duration-200 ${expandirMalds ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
-                </div>
-                <Collapse isOpen={expandirMalds}>
-                  <div className="flex flex-col gap-2 pt-2 pb-1">
-                    {(Array.isArray(item.maldicoes) ? item.maldicoes : []).map((id: number) => {
-                      const m = maldicoesHook?.maldicoes.find((x: any) => x.Codigo_Mald === id);
-                      if (!m) return null;
-                      const corTexto = getCorElementoTexto ? getCorElementoTexto(m.Elemento_Mald) : 'text-zinc-400';
-                      return (
-                        <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
-                          <div className="flex gap-1 items-center">
-                            <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
-                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
-                          </div>
-                          {m.Descricao_Mald && (
-                            <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Collapse>
-              </div>
-            )}
+
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-300 mt-0.5">
               <span><span className="font-bold text-green-400">Dano:</span> {stats.dano}{stats.danoSecundario ? (stats.danoSecundario.trim().startsWith('+') ? stats.danoSecundario.trim() : '+' + stats.danoSecundario.trim()) : ''}</span>
               {isLancadorGranadas ? (
@@ -1620,6 +1589,38 @@ function SortableArmaItem({
                         <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Modif || '')}</p>
                       </div>
                     ))}
+                  </div>
+                </Collapse>
+              </div>
+            )}
+            {((Array.isArray(item.maldicoes) ? item.maldicoes : []).length > 0) && (
+              <div className="mt-3">
+                <div 
+                  className="flex items-center gap-2 cursor-pointer group py-1.5 px-2 -mx-2 rounded hover:bg-zinc-800/40 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); setExpandirMalds(!expandirMalds); }}
+                >
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider group-hover:text-zinc-300 transition-colors">Maldições</span>
+                  <div className="h-px bg-zinc-800 flex-1 group-hover:bg-zinc-700 transition-colors"></div>
+                  <svg className={`w-3 h-3 text-zinc-500 group-hover:text-zinc-300 transition-transform duration-200 ${expandirMalds ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                </div>
+                <Collapse isOpen={expandirMalds}>
+                  <div className="flex flex-col gap-2 pt-2 pb-1">
+                    {(Array.isArray(item.maldicoes) ? item.maldicoes : []).map((id: number) => {
+                      const m = maldicoesHook?.maldicoes.find((x: any) => x.Codigo_Mald === id);
+                      if (!m) return null;
+                      const corTexto = getCorElementoTexto ? getCorElementoTexto(m.Elemento_Mald) : 'text-zinc-400';
+                      return (
+                        <div key={m.Codigo_Mald} className="flex flex-col gap-0.5">
+                          <div className="flex gap-1 items-center">
+                            <span className={`text-xs font-bold ${corTexto}`}>{m.Nome_Mald}</span>
+                            <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(m.Elemento_Mald)}`}>{m.Elemento_Mald}</span>
+                          </div>
+                          {m.Descricao_Mald && (
+                            <p className="text-[11px] text-zinc-400 leading-relaxed whitespace-pre-wrap">{formatarTexto(m.Descricao_Mald)}</p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </Collapse>
               </div>
