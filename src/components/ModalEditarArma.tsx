@@ -401,9 +401,15 @@ export function ModalEditarArma({
                     ]}
                     className={inputClass}
                   />
+                </div>
+                <div className="col-span-2 flex items-center justify-start mt-4">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-bold uppercase tracking-wider text-zinc-400 hover:text-green-400 transition-colors">
+                    <input type="checkbox" checked={improvisada} onChange={e => setImprovisada(e.target.checked)} className="form-checkbox bg-zinc-900 border-zinc-700 text-green-500 rounded focus:ring-green-500" />
+                    Arma Improvisada?
+                  </label>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
           {/* SECTION: Inventário */}
           <section>
