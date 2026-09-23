@@ -561,7 +561,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                   className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                   <span className={`transition-transform ${mostrarStatsGrupo ? 'rotate-180' : ''}`}>▼</span>
-                  PV e RD da Arma
+                  Estatísticas
                 </button>
                 <Collapse isOpen={mostrarStatsGrupo}>
                   <div className="flex items-center gap-4 mt-1">
