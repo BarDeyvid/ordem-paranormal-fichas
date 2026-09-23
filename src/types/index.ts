@@ -192,6 +192,7 @@ export interface Arma {
   Elemento_Arma?: string | null;
   Especial_Arma?: string | null;
   isAmaldicoada?: boolean;
+  isDuplaObsessivaLinked?: boolean;
 }
 
 export interface ArmaInventario {

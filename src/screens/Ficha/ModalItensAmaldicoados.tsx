@@ -200,7 +200,15 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           onClick={(e) => {
                             e.stopPropagation();
                             if (item._tipo === 'arma') {
-  armasHook?.adicionarArma({ ...item, isAmaldicoada: true });
+  armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined });
+  if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
+    const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
+    if (florete) armasHook?.adicionarArma({ ...florete, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+  }
+  if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
+    const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
+    if (maca) armasHook?.adicionarArma({ ...maca, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+  }
 } else {
   adicionarItem(item);
 }
@@ -266,7 +274,15 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                           onClick={(e) => {
                             e.stopPropagation();
                             if (item._tipo === 'arma') {
-  armasHook?.adicionarArma({ ...item, isAmaldicoada: true });
+  armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined });
+  if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
+    const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
+    if (florete) armasHook?.adicionarArma({ ...florete, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+  }
+  if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
+    const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
+    if (maca) armasHook?.adicionarArma({ ...maca, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+  }
 } else {
   adicionarItem(item);
 }

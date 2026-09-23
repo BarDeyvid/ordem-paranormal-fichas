@@ -297,7 +297,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     rawDano = rawDano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
   }
 
-  const danoOptions = rawDano.includes('/') ? rawDano.split('/').map(s => s.trim()) : [rawDano];
+  const danoOptions = rawDano.includes('|') ? rawDano.split('|').map(s => s.trim()) : (rawDano.includes('/') ? rawDano.split('/').map(s => s.trim()) : [rawDano]);
   const currentDanoIdx = danoIdx >= danoOptions.length ? 0 : danoIdx;
   const danoSelecionado = danoOptions[currentDanoIdx];
 
@@ -318,7 +318,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     })
     .join('');
 
-  const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
+  const danoMedioPrincipal = arma.Nome_Item === 'Arcabuz dos Moretti' ? { normal: 'Veja Texto', critico: 'Veja Texto' } as any : calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
 
   let bonusAtaque = 0;
@@ -622,6 +622,11 @@ export const CombatePanel: React.FC = () => {
     }
   }
 
+  // Sort Duplas Obsessivas together, hide Punhos Enraivecidos
+  armas = armas.filter(a => a.arma.Nome_Item !== 'Punhos Enraivecidos').sort((a, b) => {
+    if (a.arma.Nome_Item?.includes('Dupla Obsessiva') && b.arma.Nome_Item?.includes('Dupla Obsessiva')) return a.arma.Nome_Item.localeCompare(b.arma.Nome_Item);
+    return 0; // maintain original order for others
+  });
   const armasCorpoACorpo = armas.filter(a => a.arma.Tipo_Arma?.toLowerCase() === 'corpo a corpo' || a.arma.Tipo_Arma?.toLowerCase() === 'corpo-a-corpo');
   const armasFogo = armas.filter(a => a.arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && a.arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo');
 
