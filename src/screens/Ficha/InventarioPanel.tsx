@@ -604,11 +604,13 @@ export function InventarioPanel() {
   };
 
   let armasExibidas = [...(armasHook?.armasInventario || [])].filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual');
-
   armasExibidas = armasExibidas.filter((item: ArmaInventario) => {
     if (buscaItem && !item.arma.Nome_Item.toLowerCase().includes(buscaItem.toLowerCase())) return false;
     return true;
   });
+  
+  const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
+  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
 
   const municoesSoltas = (municoesHook?.municoesInventario || []).filter(minv => {
     // É solta se não estiver acoplada a nenhuma arma
