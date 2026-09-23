@@ -17,3 +17,18 @@ export function formatarTexto(texto: string) {
     return part;
   });
 }
+
+export function formatarDescricao(texto: string): string {
+  if (!texto) return '';
+  let resultado = texto;
+  if (!resultado.includes('<') && !resultado.includes('&')) {
+    resultado = resultado
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    resultado = resultado.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+    resultado = resultado.replace(/_(.*?)_/g, '<em>$1</em>');
+  }
+  resultado = resultado.replace(/\n/g, '<br />');
+  return resultado;
+}

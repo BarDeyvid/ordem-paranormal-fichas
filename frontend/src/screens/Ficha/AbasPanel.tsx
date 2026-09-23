@@ -30,132 +30,10 @@ import { ProgressaoNEXPanel } from './ProgressaoNEXPanel';
 import { InventarioPanel } from './InventarioPanel';
 import { CombatePanel } from './CombatePanel';
 import { sendCastRitual } from '../../services/battlematBridge';
-// ═══════════════════════════════════════════════════════════════
-// CORES DOS ELEMENTOS
-// ═══════════════════════════════════════════════════════════════
-const CORES_ELEMENTOS: Record<string, string> = {
-  sangue: '#b31717',
-  conhecimento: '#b07902',
-  energia: '#af27d9',
-  morte: '#000000',
-  medo: '#ffffff',
-  varia: '#888888',
-  lista: '#888888',
-};
-
-function sanidadePorNivel(classe: string | null): number {
-  switch (classe) {
-    case 'Especialista': return 3;
-    case 'Combatente': return 2;
-    case 'Ocultista': return 4;
-    default: return 0;
-  }
-}
-
-function getBadgeElemento(elemento: string): string {
-  if (!elemento) return 'border-zinc-700 bg-zinc-900 text-zinc-400';
-  const el = elemento.toLowerCase();
-  
-  if (el.includes(' e ')) {
-    return 'border-zinc-500 bg-zinc-800 text-zinc-300';
-  }
-
-  switch (el) {
-    case 'morte': return 'border-zinc-700 bg-black/50 text-white';
-    case 'medo': return 'border-zinc-500 bg-zinc-200/80 text-zinc-950';
-    case 'sangue': return 'border-red-900 bg-red-950/20 text-red-500';
-    case 'energia': return 'border-purple-900 bg-purple-950/20 text-purple-500';
-    case 'conhecimento': return 'border-yellow-900 bg-yellow-950/20 text-yellow-500';
-    default: return 'border-zinc-700 bg-zinc-900 text-zinc-400';
-  }
-}
-
-function obterCorBadge(elemento: string): string {
-  if (!elemento) return '#666';
-  const elementoStr = elemento.toLowerCase();
-  if (elementoStr.includes(' e ')) {
-    const partes = elementoStr.split(' e ');
-    const cor1 = CORES_ELEMENTOS[partes[0].trim()] || '#666';
-    const cor2 = CORES_ELEMENTOS[partes[1].trim()] || '#666';
-    return `linear-gradient(135deg, ${cor1} 50%, ${cor2} 50%)`;
-  }
-  return CORES_ELEMENTOS[elementoStr] || '#666';
-}
-
-function obterCorElementoPrimario(elemento: string): string {
-  if (!elemento) return '#666';
-  const elementoStr = elemento.toLowerCase();
-  if (elementoStr.includes(' e ')) {
-    const partes = elementoStr.split(' e ');
-    return CORES_ELEMENTOS[partes[0].trim()] || '#666';
-  }
-  return CORES_ELEMENTOS[elementoStr] || '#666';
-}
-
-function obterCorTexto(elemento: string): string {
-  if (!elemento) return '#ffffff';
-  const e = elemento.toLowerCase();
-  if (e.includes(' e ')) return '#ffffff';
-  if (e === 'medo') return '#000000';
-  return '#ffffff';
-}
-
-function formatarDescricao(texto: string): string {
-  if (!texto) return '';
-  let resultado = texto;
-  if (!resultado.includes('<') && !resultado.includes('&')) {
-    resultado = resultado
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-    resultado = resultado.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-    resultado = resultado.replace(/_(.*?)_/g, '<em>$1</em>');
-  }
-  resultado = resultado.replace(/\n/g, '<br />');
-  return resultado;
-}
-
-/**
- * Extrai o valor correto de um campo com "/" baseado na versão selecionada.
- * Formato: "Normal/Discente/Verdadeiro" ou "Normal/Verdadeiro" (quando só tem verdadeiro).
- */
-function obterValorVersao(
-  campo: string,
-  versao: VersaoRitual,
-  temDiscente: boolean,
-  temVerdadeiro: boolean
-): string {
-  if (!campo || versao === 'normal') {
-    // Na versão normal, pega tudo antes da primeira /
-    if (campo && campo.includes('/')) {
-      return campo.split('/')[0].trim();
-    }
-    return campo || '';
-  }
-
-  const partes = campo.split('/').map(p => p.trim());
-  const normal = partes[0]; // Valor base (Normal)
-
-  if (partes.length === 1) return normal; // Sem /, valor único
-
-  if (versao === 'discente') {
-    // Discente é sempre o segundo valor (índice 1)
-    // Se vazio (convenção // = sem alteração), cai pro Normal
-    return partes[1] || normal;
-  }
-
-  if (versao === 'verdadeiro') {
-    if (temDiscente && temVerdadeiro) {
-      // Formato: Normal/Discente/Verdadeiro → índice 2
-      // Se vazio, cai pro Normal
-      return partes[2] || normal;
-    }
-    // Formato: Normal/Verdadeiro → índice 1
-    return partes[1] || normal;
-  }
-
-  return normal;
-}
+import { RitualCard, obterCorBadge, obterValorVersao } from '../../components/RitualCard';
+import { PoderCard, SlotPoderVazioCard, getBadgeElemento } from '../../components/PoderCard';
+import { TrilhaCard } from '../../components/TrilhaCard';
+import { formatarDescricao } from '../../utils/formatters';
 
 export const AbasPanel: React.FC = () => {
   const {
@@ -842,334 +720,122 @@ export const AbasPanel: React.FC = () => {
                         const renderHab = (hab: any) => {
                           const estaExpandida = habilidadesExpandidas.includes(hab.id);
 
-                        if (hab.isSlotVazio) {
-                          return (
-                            <div
-                              key={hab.id}
-                              onClick={() => {
-                                if (hab.id === 'escolha_extra_regra37') {
-                                  setModalTrilhaExtraAberto(true);
-                                } else if (hab.categoria === 'trilha') {
-                                  if (hab.id === 'escolha_versatilidade') {
-                                    setModalVersatilidadeAberto(true);
-                                  } else {
-                                    setModalTrilhasAberto(true);
-                                  }
-                                } else if (hab.id === 'escolha_extra_regra1') {
-                                  setTipoModalPoderes('utilidade');
-                                  setAbaModalPoderes('paranormais');
-                                  setNexModalAberto('extra_regra1');
-                                } else if (hab.id === 'escolha_extra_regra31') {
-                                  let cat: 'combate' | 'utilidade' | 'gerais' = 'gerais';
-                                  Object.entries(poderesEscolhidos).forEach(([key, p]) => {
-                                    if (p.codigoRegra === 31) {
-                                      const nexSlot = parseInt(key);
-                                      if (!isNaN(nexSlot)) {
-                                        cat = (nexSlot % 2 !== 0) ? 'combate' : 'utilidade';
-                                      } else {
-                                        cat = p.categoria as any;
-                                      }
+                          if (hab.isSlotVazio) {
+                            return (
+                              <SlotPoderVazioCard
+                                key={hab.id}
+                                nome={hab.nome}
+                                tipo={hab.tipo}
+                                descricao={hab.descricao}
+                                onClick={() => {
+                                  if (hab.id === 'escolha_extra_regra37') {
+                                    setModalTrilhaExtraAberto(true);
+                                  } else if (hab.categoria === 'trilha') {
+                                    if (hab.id === 'escolha_versatilidade') {
+                                      setModalVersatilidadeAberto(true);
+                                    } else {
+                                      setModalTrilhasAberto(true);
                                     }
-                                  });
-                                  setCategoriaDiletante(cat);
-                                  setModalPoderOutraClasseAberto(true);
-                                } else if (hab.id === 'escolha_extra_regra32') {
-                                  setModalPoderOutraOrigemAberto(true);
-                                } else if (hab.id === 'escolha_extra_regra39') {
-                                  setNexModalAberto('extra_regra39');
-                                } else {
-                                  const tipo = hab.id.includes('combate') ? 'combate' : 'utilidade';
-                                  setTipoModalPoderes(tipo);
-                                  setAbaModalPoderes(tipo === 'combate' ? 'combate' : 'classe');
-                                  setNexModalAberto(hab.nexDoSlot ?? (extrairKeyDoId(hab.id) as number));
-                                }
-                              }}
-                              className="group flex w-full cursor-pointer flex-col overflow-hidden rounded border-2 border-dashed border-zinc-700 border-l-zinc-600 border-l-4 bg-zinc-900/40 transition hover:border-green-800 hover:bg-zinc-900/80"
-                              style={{ borderLeftStyle: 'solid' }}
-                            >
-                              <div className="flex items-center justify-between gap-3 bg-zinc-800/40 px-4 py-3 transition group-hover:bg-zinc-800/60">
-                                <div className="flex flex-col items-start gap-0.5 text-left">
-                                  <span className="text-sm font-bold text-zinc-400 group-hover:text-zinc-300">{hab.nome}</span>
-                                  <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 group-hover:text-zinc-400">{hab.tipo}</span>
-                                </div>
-                                <span className="whitespace-nowrap rounded bg-green-900/40 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-green-400 transition group-hover:bg-green-900/60 group-hover:text-green-300">+ Adicionar</span>
-                              </div>
-                              <div className="border-t border-zinc-800/50 px-4 py-3 text-left text-xs leading-relaxed text-zinc-500 transition group-hover:text-zinc-400">
-                                {hab.descricao}
-                              </div>
-                            </div>
-                          );
-                        }
-
-                        if (hab.id === 'trilha_selecionada' || hab.id === 'versatilidade_selecionada') {
-                          const isVersatilidade = hab.isVersatilidade;
-                          const t = isVersatilidade ? trilhasHook.versatilidadeSelecionada : trilhasHook.trilhaSelecionada;
-                          
-                          if (!t) return null;
-
-                          const nexLevels = isVersatilidade ? [10] : [10, 40, 65, 99];
-                          
-                          return (
-                            <div key={hab.id} className="mb-2 overflow-hidden rounded-r border-l-4 border-green-800 bg-zinc-900/50">
-                              <div
-                                onClick={() => trilhasHook.toggleTrilhaExpandida(isVersatilidade ? t.Codigo_Trilha + 10000 : t.Codigo_Trilha)}
-                                className="flex cursor-pointer flex-col bg-zinc-800/40 px-4 py-3 transition hover:bg-zinc-700/50"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex flex-col">
-                                    <span className="text-[0.65rem] font-bold uppercase tracking-widest text-zinc-500">
-                                      {hab.tipo}
-                                    </span>
-                                    <div className="flex items-center gap-2">
-                                      <span className="font-bold text-zinc-200">{isVersatilidade ? 'Versatilidade' : t.Nome_Trilha}</span>
-                                      {!isVersatilidade && (
-                                        <span className="text-[10px] uppercase text-zinc-500">
-                                          ({t.nome_pericia})
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <span className="text-xs text-zinc-600">
-                                    {trilhasHook.trilhasExpandidas.includes(isVersatilidade ? t.Codigo_Trilha + 10000 : t.Codigo_Trilha) ? '▲' : '▼'}
-                                  </span>
-                                </div>
-                              </div>
-              
-                              <Collapse isOpen={trilhasHook.trilhasExpandidas.includes(isVersatilidade ? t.Codigo_Trilha + 10000 : t.Codigo_Trilha)}>
-                                <div className="px-4 pb-4 pt-1 text-sm text-zinc-400">
-                                  <div
-                                    className="mb-4 text-zinc-400 text-left leading-relaxed text-sm"
-                                    dangerouslySetInnerHTML={{ __html: formatarDescricao(isVersatilidade ? `Em ${regras['nex_experiencia'] ? 'Nível 10' : 'NEX 50%'}, escolha entre receber um poder de ${classe.toLowerCase()} ou o primeiro poder de uma trilha de ${classe.toLowerCase()} que não a sua.<br/><br/>Trilha Escolhida: <strong>${t.Nome_Trilha}</strong>` : t.Descricao_Trilha) }}
-                                  />
-                                  
-                                  <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-green-400 border-b border-zinc-800 pb-1">
-                                    {isVersatilidade ? 'Poder da Trilha' : 'Habilidades da Trilha'}
-                                  </h4>
-              
-                                  {nexLevels.map((nexLvl) => {
-                                    if (effectiveNex < nexLvl) return null;
-
-                                    const habNameKey = `Nome_Habilidade_${nexLvl}` as keyof typeof t;
-                                    const habDescKey = `Descricao_Habilidade_${nexLvl}` as keyof typeof t;
-                                    const nomeHab = t[habNameKey] as string;
-                                    const descHab = t[habDescKey] as string;
-              
-                                    if (!nomeHab) return null;
-              
-                                    const uniqueHabId = `trilha_${isVersatilidade ? 'versatilidade_' : ''}${t.Codigo_Trilha}_hab_${nexLvl}`;
-                                    const isHabExpanded = habilidadesExpandidas.includes(uniqueHabId);
-              
-                                    return (
-                                      <div key={nexLvl} className="mb-2 overflow-hidden rounded border border-zinc-800 bg-zinc-900/50">
-                                        <div
-                                          onClick={() => setHabilidadesExpandidas(prev => prev.includes(uniqueHabId) ? prev.filter(id => id !== uniqueHabId) : [...prev, uniqueHabId])}
-                                          className="flex cursor-pointer items-center justify-between px-3 py-2 transition hover:bg-zinc-800"
-                                        >
-                                          <span className="font-bold text-zinc-200 text-xs">
-                                            {regras['nex_experiencia'] ? `Nível ${calcularNivel(nexLvl)}` : `NEX ${nexLvl}%`} - <span className="text-zinc-400">{nomeHab}</span>
-                                          </span>
-                                          <span className="text-xs text-zinc-600">
-                                            {isHabExpanded ? '▲' : '▼'}
-                                          </span>
-                                        </div>
-                                        <Collapse isOpen={isHabExpanded}>
-                                          <div
-                                            className="px-3 pb-3 pt-1 text-xs text-zinc-400"
-                                            dangerouslySetInnerHTML={{ __html: formatarDescricao(descHab) }}
-                                          />
-                                        </Collapse>
-                                      </div>
-                                    );
-                                  })}
-                                  {t.Fonte_Trilha && (
-                                     <div className="mt-3 flex justify-end">
-                                       <span className="text-[10px] uppercase tracking-wider text-zinc-600">Fonte: {t.Fonte_Trilha}</span>
-                                     </div>
-                                  )}
-
-                                  <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-zinc-800/50">
-                                    {!isVersatilidade && (
-                                      <button onClick={(e) => { e.stopPropagation(); setEditandoTrilha(true); }}
-                                        className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-yellow-700 hover:bg-yellow-900/20 text-zinc-300 hover:text-yellow-400 transition-colors"
-                                      >Editar</button>
-                                    )}
-                                    <button onClick={(e) => { e.stopPropagation(); isVersatilidade ? trilhasHook.setVersatilidadeSelecionada(null) : trilhasHook.setTrilhaSelecionada(null); }}
-                                      className="text-xs text-green-500 hover:text-green-400 bg-green-950/30 hover:bg-green-900/50 px-3 py-1.5 rounded border border-green-900/50 transition-colors"
-                                    >Remover</button>
-                                  </div>
-                                </div>
-                              </Collapse>
-                            </div>
-                          );
-                        }
-
-                        let corBordaLeft = 'border-l-green-800';
-                        if (hab.categoria === 'paranormais' && hab.elemento) {
-                          const elStr = hab.elemento.toLowerCase();
-                          corBordaLeft = elStr.includes('medo') ? 'border-l-zinc-200' :
-                                         elStr.includes('sangue') ? 'border-l-red-600' :
-                                         elStr.includes('morte') ? 'border-l-black' :
-                                         elStr.includes('conhecimento') ? 'border-l-yellow-600' :
-                                         elStr.includes('energia') ? 'border-l-purple-600' : 
-                                         (elStr.includes('varia') || elStr.includes('vária')) ? 'border-l-green-600' : 'border-l-zinc-600';
-                        }
-
-                        return (
-                          <div key={hab.id}
-                            className={`overflow-hidden rounded-r border-l-4 bg-zinc-900/50 ${corBordaLeft}`}
-                          >
-                            <div onClick={() => {
-                              setHabilidadesExpandidas(prev =>
-                                prev.includes(hab.id) ? prev.filter(id => id !== hab.id) : [...prev, hab.id]
-                              );
-                            }}
-                              className="flex cursor-pointer justify-between gap-3 relative bg-zinc-800/40 px-4 py-3 transition hover:bg-zinc-700/50 ${simboloImg ? 'items-stretch' : 'items-center'}"
-                            >
-                              <div className="flex items-center gap-3 min-w-0 flex-1">
-                                <span className="text-sm font-bold text-zinc-100 truncate">{hab.nome}</span>
-                                {hab.extra && <span className="rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 text-xs font-bold text-amber-400 shrink-0">{hab.extra}</span>}
-                                
-                              </div>
-                              <div className="flex items-center gap-2.5">
-                                {hab.elemento && (
-                                  <span className={`rounded px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ${getBadgeElemento(hab.elemento)}`}>
-                                    {hab.elemento}
-                                  </span>
-                                )}
-                                <span className="rounded border border-zinc-800 bg-zinc-950 px-2 py-0.5 text-[0.65rem] uppercase tracking-wider text-zinc-500">{hab.tipo}</span>
-                                <span className="text-xs text-zinc-600">{estaExpandida ? '▲' : '▼'}</span>
-                              </div>
-                            </div>
-
-                            <Collapse isOpen={estaExpandida}>
-                              <div className="px-4 py-4 text-left text-sm leading-relaxed text-zinc-400">
-                                {hab.automatico && (
-                                  <div className="mb-3 flex items-center gap-2 border-b border-zinc-800/50 pb-2">
-                                    <span
-                                      title={hab.automatico.toLowerCase().trim() === 'sim' ? 'Totalmente automático' : 'Semi-automático'}
-                                      className={`shrink-0 flex items-center gap-1 px-1.5 py-0.5 rounded text-[0.6rem] font-bold uppercase tracking-wider ${
-                                        hab.automatico.toLowerCase().trim() === 'sim'
-                                          ? 'bg-green-950/60 text-green-400 border border-green-800/50'
-                                          : 'bg-yellow-950/60 text-yellow-400 border border-yellow-800/50'
-                                      }`}
-                                    >
-                                      {hab.automatico.toLowerCase().trim() === 'sim' ? (
-                                        <>
-                                          <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>
-                                          Auto
-                                        </>
-                                      ) : (
-                                        <>
-                                          <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3L4 14h7l-1 7 9-11h-7l1-7z" opacity="0.5"/><path d="M19 3v4m0 4v10" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round"/></svg>
-                                          Semi
-                                        </>
-                                      )}
-                                    </span>
-                                    <span className="text-[10px] text-zinc-500 italic">
-                                      {hab.automatico.toLowerCase().trim() === 'sim' 
-                                        ? 'Os bônus deste poder já estão aplicados na sua ficha.' 
-                                        : 'Uma parte deste poder é aplicada automaticamente na sua ficha, e a outra não.'}
-                                    </span>
-                                  </div>
-                                )}
-                                <div dangerouslySetInnerHTML={{ __html: formatarDescricao(hab.descricao) }} />
-
-                                {/* 🔥 Afinidade: texto puro */}
-                                {hab.afinidade && (
-                                  <div className={`mt-2 text-sm leading-relaxed transition-opacity duration-300 ${hab.afinidadeAtiva ? 'text-zinc-300 opacity-100' : 'text-zinc-500 opacity-40'}`}>
-                                    {hab.afinidadeAtiva && hab.afinidadeAdquiridaKey && (
-                                      <div className="flex justify-end mb-2">
-                                        <span className="text-[0.65rem] uppercase tracking-widest text-zinc-500 font-semibold bg-zinc-800/50 px-2 py-0.5 rounded">
-                                          {String(hab.afinidadeAdquiridaKey).startsWith('extra_') ? 'Transcender Extra' : (
-                                            (parseInt(String(hab.afinidadeAdquiridaKey), 10) >= 1000) ? 
-                                            `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10) - 1000}%` :
-                                            `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10)}%`
-                                          )}
-                                        </span>
-                                      </div>
-                                    )}
-                                    <p>
-                                      <strong className={hab.afinidadeAtiva ? 'text-zinc-100' : 'text-zinc-400'}>Afinidade:</strong> {hab.afinidade}
-                                    </p>
-                                    {hab.afinidadeAtiva && hab.afinidadeAdquiridaKey && (
-                                      <div className="mt-2 flex justify-end">
-                                        <button 
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            poderesHook.removerPoder(hab.afinidadeAdquiridaKey as number | string);
-                                          }}
-                                          className="text-[10px] font-bold uppercase tracking-wider text-green-500/70 transition hover:text-green-400"
-                                        >
-                                          Remover
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-
-                                <div className="mt-3 text-[0.6rem] uppercase tracking-wider text-zinc-600">Fonte: {hab.fonte || 'NÃO DEFINIDA'}</div>
-
-                                {hab.subPoder && (
-                                  <div className="mt-4 rounded-r border-l-2 border-amber-500 bg-zinc-900/80 p-3">
-                                    <div className="mb-1.5 flex items-center justify-between">
-                                      <span className="text-sm font-bold text-zinc-100">{hab.subPoder.nome}</span>
-                                      {hab.subPoder.extra && <span className="rounded border border-zinc-700 bg-zinc-950 px-1.5 py-0.5 text-xs font-bold text-amber-400">{hab.subPoder.extra}</span>}
-                                    </div>
-                                    <div className="text-xs text-zinc-400">{hab.subPoder.descricao}</div>
-                                  </div>
-                                )}
-
-                                {hab.limiteCirculos && (
-                                  <div className="mt-4 rounded-r border-l-2 border-zinc-400 bg-zinc-900/80 p-3">
-                                    <div className="mb-2 text-sm font-bold text-zinc-100">Rituais:</div>
-                                    <div className="flex flex-wrap gap-2">
-                                      {([['1° Círculo', hab.limiteCirculos.c1], ['2° Círculo', hab.limiteCirculos.c2], ['3° Círculo', hab.limiteCirculos.c3], ['4° Círculo', hab.limiteCirculos.c4]] as const).map(([r,q]) => (
-                                        <span key={r} className={`rounded border border-zinc-800 bg-zinc-950 px-2 py-1 text-xs ${q > 0 ? 'text-zinc-100' : 'text-zinc-600'}`}>{r}: <strong>{q}</strong></span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {hab.preRequisitos && (
-                                  <div className="mt-3 inline-block rounded bg-amber-400/5 px-2.5 py-1.5 text-xs italic text-amber-400">
-                                    <strong>Pré-requisitos:</strong> {hab.preRequisitos}
-                                  </div>
-                                )}
-
-                                {(!hab.isSlotVazio && (hab.id.startsWith('escolha_nex_') || hab.id.startsWith('escolha_extra_'))) && (
-                                  <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-zinc-800/50">
-                                    <button onClick={(e) => { e.stopPropagation(); const nivel = extrairKeyDoId(hab.id); if (nivel !== null) { setNexPoderEditando(nivel); setNomeEditando(hab.nome); setDescricaoEditando(hab.descricao); setAfinidadeEditando(hab.afinidade || ''); } }}
-                                      className="text-xs px-3 py-1.5 rounded bg-zinc-900 border border-zinc-700 hover:border-yellow-700 hover:bg-yellow-900/20 text-zinc-300 hover:text-yellow-400 transition-colors"
-                                    >Editar</button>
-                                    <button onClick={(e) => { 
-                                      e.stopPropagation(); 
-                                      const nivel = extrairKeyDoId(hab.id); 
-                                      if (nivel !== null) {
-                                        const escolhido = poderesEscolhidos[nivel as any];
-                                        if (escolhido) {
-                                          const nomePoder = escolhido.nome.toLowerCase();
-                                          const isResistir = nomePoder.startsWith('resistir a ');
-                                          const baseName = nomePoder.startsWith('aprender ritual (') ? 'aprender ritual' : (isResistir ? 'resistir a <elemento>' : nomePoder);
-                                          const isParanormal = poderesParanormaisMap.has(baseName) || baseName === 'aprender ritual';
-                                          
-                                          // A penalidade de sanidade é atualizada automaticamente pelo useStatus
-
-                                          if (baseName === 'aprender ritual') {
-                                            const ra = rituaisHook.rituaisAprendidos.find(r => r.origem === `poder_57_${nivel}` || r.origem === `poder_57_combate_${nivel}`);
-                                            if (ra) rituaisHook.esquecerRitual(ra.origem);
-                                          }
+                                  } else if (hab.id === 'escolha_extra_regra1') {
+                                    setTipoModalPoderes('utilidade');
+                                    setAbaModalPoderes('paranormais');
+                                    setNexModalAberto('extra_regra1');
+                                  } else if (hab.id === 'escolha_extra_regra31') {
+                                    let cat: 'combate' | 'utilidade' | 'gerais' = 'gerais';
+                                    Object.entries(poderesEscolhidos).forEach(([key, p]) => {
+                                      if (p.codigoRegra === 31) {
+                                        const nexSlot = parseInt(key);
+                                        if (!isNaN(nexSlot)) {
+                                          cat = (nexSlot % 2 !== 0) ? 'combate' : 'utilidade';
+                                        } else {
+                                          cat = p.categoria as any;
                                         }
-                                        removerPoder(nivel); 
                                       }
-                                    }}
-                                      className="text-xs text-green-500 hover:text-green-400 bg-green-950/30 hover:bg-green-900/50 px-3 py-1.5 rounded border border-green-900/50 transition-colors"
-                                    >Remover</button>
-                                  </div>
-                                )}
-                              </div>
-                            </Collapse>
-                          </div>
-                        );
+                                    });
+                                    setCategoriaDiletante(cat);
+                                    setModalPoderOutraClasseAberto(true);
+                                  } else if (hab.id === 'escolha_extra_regra32') {
+                                    setModalPoderOutraOrigemAberto(true);
+                                  } else if (hab.id === 'escolha_extra_regra39') {
+                                    setNexModalAberto('extra_regra39');
+                                  } else {
+                                    const tipo = hab.id.includes('combate') ? 'combate' : 'utilidade';
+                                    setTipoModalPoderes(tipo);
+                                    setAbaModalPoderes(tipo === 'combate' ? 'combate' : 'classe');
+                                    setNexModalAberto(hab.nexDoSlot ?? (extrairKeyDoId(hab.id) as number));
+                                  }
+                                }}
+                              />
+                            );
+                          }
+
+                          if (hab.id === 'trilha_selecionada' || hab.id === 'versatilidade_selecionada') {
+                            const isVersatilidade = hab.isVersatilidade;
+                            const t = isVersatilidade ? trilhasHook.versatilidadeSelecionada : trilhasHook.trilhaSelecionada;
+                            if (!t) return null;
+
+                            const trilhaKey = isVersatilidade ? t.Codigo_Trilha + 10000 : t.Codigo_Trilha;
+
+                            return (
+                              <TrilhaCard
+                                key={hab.id}
+                                trilha={t}
+                                isVersatilidade={isVersatilidade}
+                                tipoRotulo={hab.tipo}
+                                classe={classe || ''}
+                                isNEXExperiencia={!!regras['nex_experiencia']}
+                                effectiveNex={effectiveNex}
+                                estaExpandida={trilhasHook.trilhasExpandidas.includes(trilhaKey)}
+                                toggleExpandir={() => trilhasHook.toggleTrilhaExpandida(trilhaKey)}
+                                habilidadesExpandidas={habilidadesExpandidas}
+                                toggleHabilidadeExpandida={(id) =>
+                                  setHabilidadesExpandidas(prev =>
+                                    prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+                                  )
+                                }
+                                onEditar={!isVersatilidade ? () => setEditandoTrilha(true) : undefined}
+                                onRemover={() => (isVersatilidade ? trilhasHook.setVersatilidadeSelecionada(null) : trilhasHook.setTrilhaSelecionada(null))}
+                              />
+                            );
+                          }
+
+                          const isNEXorExtra = !hab.isSlotVazio && (hab.id.startsWith('escolha_nex_') || hab.id.startsWith('escolha_extra_'));
+                          const nivel = extrairKeyDoId(hab.id);
+
+                          return (
+                            <PoderCard
+                              key={hab.id}
+                              poder={hab}
+                              estaExpandida={estaExpandida}
+                              toggleExpandir={() =>
+                                setHabilidadesExpandidas(prev =>
+                                  prev.includes(hab.id) ? prev.filter(id => id !== hab.id) : [...prev, hab.id]
+                                )
+                              }
+                              onEditar={isNEXorExtra && nivel !== null ? () => {
+                                setNexPoderEditando(nivel);
+                                setNomeEditando(hab.nome);
+                                setDescricaoEditando(hab.descricao);
+                                setAfinidadeEditando(hab.afinidade || '');
+                              } : undefined}
+                              onRemover={isNEXorExtra && nivel !== null ? () => {
+                                const escolhido = poderesEscolhidos[nivel as any];
+                                if (escolhido) {
+                                  const nomePoder = escolhido.nome.toLowerCase();
+                                  const isResistir = nomePoder.startsWith('resistir a ');
+                                  const baseName = nomePoder.startsWith('aprender ritual (') ? 'aprender ritual' : (isResistir ? 'resistir a <elemento>' : nomePoder);
+                                  if (baseName === 'aprender ritual') {
+                                    const ra = rituaisHook.rituaisAprendidos.find((r: any) => r.origem === `poder_57_${nivel}` || r.origem === `poder_57_combate_${nivel}`);
+                                    if (ra) rituaisHook.esquecerRitual(ra.origem);
+                                  }
+                                }
+                                removerPoder(nivel);
+                              } : undefined}
+                              onRemoverAfinidade={hab.afinidadeAtiva && hab.afinidadeAdquiridaKey ? () => {
+                                poderesHook.removerPoder(hab.afinidadeAdquiridaKey as number | string);
+                              } : undefined}
+                            />
+                          );
                         }; // Fim renderHab
 
                         if (categoria === 'paranormais') {
@@ -1506,379 +1172,78 @@ export const AbasPanel: React.FC = () => {
                                 </div>
                                 <div className="flex flex-col gap-2.5">
                                 {ritualsOfElement.map(ritual => {
-                        if (!ritual) return null;
-                        
-                        // O código único na interface do usuário agora é uma combinação do código do ritual e a origem (para suportar o mesmo ritual pego mais de uma vez, caso aconteça)
-                        const chaveUnica = `${ritual.Codigo_Ritual}_${ritual.Origem}`;
-                        const expandido = rituaisExpandidos.includes(chaveUnica as any);
-                        const versao: VersaoRitual = versaoRitual[chaveUnica] || 'normal';
+                                  if (!ritual) return null;
+                                  const chaveUnica = `${ritual.Codigo_Ritual}_${ritual.Origem}`;
+                                  const expandido = rituaisExpandidos.includes(chaveUnica as any);
+                                  const versao: VersaoRitual = versaoRitual[chaveUnica] || 'normal';
+                                  const simboloImg = rituaisHook.simbolosRituais?.get(ritual.Codigo_Ritual) || '';
 
-                        const isLista = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
-                        // Usa a escolha permanente feita na hora de aprender
-                        const elementoEscolhido = isLista ? (ritual.ElementoEscolhidoPermanente || 'Sangue') : ritual.Elemento_Ritual;
-
-                        const corElemento = obterCorBadge(elementoEscolhido);
-                        const corPrimaria = obterCorElementoPrimario(elementoEscolhido);
-                        const corTextoElemento = obterCorTexto(elementoEscolhido);
-                        const simboloImg = rituaisHook.simbolosRituais?.get(ritual.Codigo_Ritual) || '';
-
-                        // Valores dinâmicos baseados na versão
-                        const peOriginal = ritual.customProps?.[versao]?.PE_Ritual || obterValorVersao(ritual.PE_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        let peValor = parseInt(String(peOriginal).replace(/\D+/g, ''), 10);
-                        if (!isNaN(peValor)) {
-                          if (regrasAutomaticasAtivas.has(34)) {
-                            const temDesconto34 = Object.values(poderesEscolhidos).some(p => p.codigoRegra === 34 && p.elemento === elementoEscolhido);
-                            if (temDesconto34) peValor -= 1;
-                          }
-                          if (regrasAutomaticasAtivas.has(35)) {
-                            const desconto35 = Object.values(poderesEscolhidos).filter(p => p.codigoRegra === 35 && p.elemento === (ritual.customNome || ritual.Nome_Ritual)).length;
-                            peValor -= desconto35;
-                          }
-                          peValor = Math.max(1, peValor);
-                        }
-                        const pe = isNaN(peValor) ? peOriginal : String(peOriginal).replace(/\d+/, peValor.toString());
-                        const alcance = ritual.customProps?.[versao]?.Alcance_Ritual || obterValorVersao(ritual.Alcance_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const area = ritual.customProps?.[versao]?.Area_Ritual || obterValorVersao(ritual.Area_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const alvo = ritual.customProps?.[versao]?.Alvo_Ritual || obterValorVersao(ritual.Alvo_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const duracao = ritual.customProps?.[versao]?.Duracao_Ritual || obterValorVersao(ritual.Duracao_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const execucao = ritual.customProps?.[versao]?.Execucao_Ritual || obterValorVersao(ritual.Execucao_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const efeito = ritual.customProps?.[versao]?.Efeito_Ritual || obterValorVersao(ritual.Efeito_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const resistencia = ritual.customProps?.[versao]?.Resistencia_Ritual || obterValorVersao(ritual.Resistencia_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-                        const dados = ritual.customProps?.[versao]?.Dados_Ritual || obterValorVersao(ritual.Dados_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
-
-                        // Opções de versão disponíveis
-                        const reqNormal = verificarAcessoCirculo(ritual.Circulo_Ritual, nivel, classe);
-                        const versoesDisponiveis: { value: VersaoRitual; label: string; disabled?: boolean; title?: string }[] = [
-                          { 
-                            value: 'normal', 
-                            label: 'Normal',
-                            disabled: !reqNormal.atende
-                          },
-                        ];
-                        if (ritual.Tem_Discente) {
-                          const req = verificarRequisitoRitual(ritual.Requisito_Discente, nivel, classe, afinidadeAtiva, afinidadeEscolhida, ritual.Elemento_Ritual);
-                          versoesDisponiveis.push({ 
-                            value: 'discente', 
-                            label: 'Discente',
-                            disabled: !req.atende
-                          });
-                        }
-                        if (ritual.Tem_Verdadeiro) {
-                          const req = verificarRequisitoRitual(ritual.Requisito_Verdadeiro, nivel, classe, afinidadeAtiva, afinidadeEscolhida, ritual.Elemento_Ritual);
-                          versoesDisponiveis.push({ 
-                            value: 'verdadeiro', 
-                            label: 'Verdadeiro',
-                            disabled: !req.atende
-                          });
-                        }
-
-                        return (
-                          <div key={chaveUnica} className="overflow-hidden rounded-r border-l-4 bg-zinc-900/70" style={{ borderLeftColor: corPrimaria }}>
-
-                            {/* ══════ CABEÇALHO (sempre visível) ══════ */}
-                            <div
-                              onClick={() =>
-                                setRituaisExpandidos(prev =>
-                                  prev.includes(chaveUnica as any)
-                                    ? prev.filter(id => id !== chaveUnica)
-                                    : [...prev, chaveUnica as any]
-                                )
-                              }
-                              className="flex cursor-pointer items-center justify-between gap-2 bg-zinc-800/60 px-4 py-3 transition hover:bg-zinc-700/50"
-                            >
-                              <div className="flex items-center">
-                                {simboloImg && (
-                                  <>
-                                    <div
-                                      className="overflow-hidden shrink-0 flex items-center justify-center"
-                                      style={{
-                                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                                        width: expandido ? '0px' : '64px',
-                                        height: '64px',
-                                        marginTop: '-6px',
-                                        marginBottom: '-6px',
-                                        opacity: expandido ? 0 : 1,
-                                      }}
-                                    >
-                                      <img
-                                        src={simboloImg}
-                                        loading="lazy"
-                                        alt=""
-                                        className="h-16 w-16 object-contain drop-shadow-md max-w-none"
-                                      />
-                                    </div>
-                                    <div
-                                      className="shrink-0 bg-white/20 rounded-full"
-                                      style={{
-                                        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                                        width: expandido ? '0px' : '1px',
-                                        height: '36px',
-                                        marginLeft: expandido ? '0px' : '10px',
-                                        marginRight: expandido ? '0px' : '10px',
-                                        opacity: expandido ? 0 : 1,
-                                      }}
-                                    />
-                                  </>
-                                )}
-                                <div className="flex flex-col gap-1 justify-center py-1">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm font-bold text-zinc-100">{ritual.customNome || ritual.Nome_Ritual}</span>
-                                    <span className="rounded bg-blue-950/30 px-1.5 py-0.5 text-[10px] font-bold text-blue-400 border border-blue-900/50">
-                                      {pe} PE
-                                    </span>
-                                  </div>
-                                  {/* Dados abaixo do título — todas as versões, ativa acesa */}
-                                  {ritual.Dados_Ritual && (() => {
-                                    const partesDados = ritual.Dados_Ritual.split('/').map(p => p.trim());
-                                    const normal = partesDados[0];
-                                    if (partesDados.length === 1 && normal) {
-                                      return <span className="text-sm font-bold text-zinc-100">{normal}</span>;
-                                    }
-                                    const preenchidas = partesDados.map(p => p || normal);
-                                    if (!preenchidas.some(p => p)) return null;
-                                    let ativo = 0;
-                                    if (versao === 'discente') ativo = 1;
-                                    if (versao === 'verdadeiro') {
-                                      ativo = (ritual.Tem_Discente && ritual.Tem_Verdadeiro) ? 2 : 1;
-                                    }
-                                    return (
-                                      <div className="flex items-center gap-2">
-                                        {preenchidas.map((parte, idx) => (
-                                          <React.Fragment key={idx}>
-                                            {idx > 0 && <span className="text-xs text-zinc-700">›</span>}
-                                            <span
-                                              className={`text-sm font-bold transition-all duration-300 ${idx === ativo ? 'text-zinc-100' : 'text-zinc-600'}`}
-                                            >
-                                              {parte}
-                                            </span>
-                                          </React.Fragment>
-                                        ))}
-                                      </div>
-                                    );
-                                  })()}
-                                </div>
-                              </div>
-
-                              <div className={`flex flex-col justify-between shrink-0 ml-2 ${simboloImg ? 'items-end pb-1 pt-0 mt-[-4px]' : 'items-end pb-1 pt-0 mt-[-4px]'}`}>
-                                {/* Badge do elemento */}
-                                <span
-                                  className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 uppercase tracking-wider leading-tight ${
-                                    (() => {
-                                      const elStr = elementoEscolhido.toLowerCase();
-                                      if (elStr.includes('medo')) return 'bg-zinc-200/80 text-zinc-950 px-1';
-                                      if (elStr.includes('sangue')) return 'text-red-500';
-                                      if (elStr.includes('morte')) return 'bg-black/50 text-white px-1';
-                                      if (elStr.includes('conhecimento')) return 'text-yellow-500';
-                                      if (elStr.includes('energia')) return 'text-purple-500';
-                                      return 'text-zinc-400';
-                                    })()
-                                  }`}
-                                >
-                                  <span className="text-[9px] font-bold">{elementoEscolhido}</span>
-                                  <span className="text-[11px] font-black">{ritual.Circulo_Ritual}</span>
-                                </span>
-
-                                <div className={`flex items-center gap-2 ${simboloImg ? 'mt-auto' : 'mt-2'}`}>
-                                  {/* Seta */}
-                                  <span className="text-xs text-zinc-600 ml-1">{expandido ? '▲' : '▼'}</span>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            {/* ══════ CONTEÚDO EXPANDIDO ══════ */}
-                            <Collapse isOpen={expandido}>
-                              <div className="border-t border-zinc-800 px-4 py-4 text-left text-sm leading-relaxed text-zinc-400">
-                                
-                                <div className="flex flex-row items-center justify-between gap-4">
-                                  <div className="flex flex-col flex-1 min-w-0">
-                                    
-                                    {/* Dropdowns de configurações (Elemento e Versão) */}
-                                    {(isLista || versoesDisponiveis.length > 1) && (
-                                      <div className="mb-4 flex flex-wrap items-center justify-between border-b border-zinc-800/50 pb-3">
-                                        <div className="flex items-center gap-5">
-                                          {/* Dropdown de Versão */}
-                                          {versoesDisponiveis.length > 1 && (
-                                            <div className="flex items-center gap-2">
-                                              <span className="text-[0.65rem] font-bold uppercase tracking-wider text-zinc-600">Versão:</span>
-                                              <CustomSelect
-                                                value={versao}
-                                                onChange={(val) => {
-                                                  setVersaoRitual(prev => ({
-                                                    ...prev,
-                                                    [chaveUnica]: val as VersaoRitual,
-                                                  }));
-                                                }}
-                                                wrapperClassName="w-[120px]"
-                                                className="cursor-pointer rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-xs font-bold text-zinc-200 outline-none transition hover:bg-zinc-800 focus:border-green-700"
-                                                options={versoesDisponiveis.map(v => ({ value: v.value, label: v.label, disabled: v.disabled }))}
-                                              />
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {/* Campos de metadados — só mostram se têm valor */}
-                                    <div className="mb-4 flex flex-col gap-1">
-                                      {execucao && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Execução: </span>
-                                          <span className="text-zinc-400">{execucao}</span>
-                                        </div>
-                                      )}
-                                      {alcance && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Alcance: </span>
-                                          <span className="text-zinc-400">{alcance}</span>
-                                        </div>
-                                      )}
-                                      {area && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Área: </span>
-                                          <span className="text-zinc-400">{area}</span>
-                                        </div>
-                                      )}
-                                      {alvo && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Alvo: </span>
-                                          <span className="text-zinc-400">{alvo}</span>
-                                        </div>
-                                      )}
-                                      {duracao && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Duração: </span>
-                                          <span className="text-zinc-400">{duracao}</span>
-                                        </div>
-                                      )}
-                                      {efeito && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Efeito: </span>
-                                          <span className="text-zinc-400">{efeito}</span>
-                                        </div>
-                                      )}
-                                      {resistencia && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Resistência: </span>
-                                          <span className="text-zinc-400">{resistencia}</span>
-                                        </div>
-                                      )}
-                                      {dados && (
-                                        <div className="text-xs">
-                                          <span className="font-bold text-zinc-300">Dados: </span>
-                                          <span className="text-zinc-400">{dados}</span>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* Símbolo do Ritual Centralizado Verticalmente */}
-                                  {simboloImg && (
-                                    <img
-                                      src={simboloImg}
-                                      alt=""
-                                      className="w-32 h-32 sm:w-40 sm:h-40 mr-2 sm:mr-6 object-contain shrink-0 drop-shadow-lg"
-                                    />
-                                  )}
-                                </div>
-
-                              </div>
-                            </Collapse>
-                            <Collapse isOpen={expandido}>
-                              <div className="px-4 pb-4 text-left text-sm leading-relaxed text-zinc-400">
-                                {/* Descrição formatada com versões dimmed */}
-                                <div className="text-sm leading-relaxed text-zinc-400">
-                                  {(() => {
-                                    let currentScope = 'normal';
-                                    return (ritual.customDesc || ritual.Descricao_Ritual).split('\n').map((linha, i) => {
-                                      const linhaLower = linha.trim().toLowerCase();
-                                      const isHeaderDiscente = linhaLower.startsWith('*discente') || linhaLower.startsWith('discente');
-                                      const isHeaderVerdadeiro = linhaLower.startsWith('*verdadeiro') || linhaLower.startsWith('verdadeiro');
-
-                                      if (isHeaderDiscente) currentScope = 'discente';
-                                      if (isHeaderVerdadeiro) currentScope = 'verdadeiro';
-
-                                      let dimmed = false;
-                                      if (currentScope === 'discente' && versao !== 'discente') dimmed = true;
-                                      if (currentScope === 'verdadeiro' && versao !== 'verdadeiro') dimmed = true;
-
-                                      return (
-                                        <span
-                                          key={i}
-                                          className={`block ${dimmed ? 'opacity-50' : ''} ${currentScope !== 'normal' && !dimmed ? 'text-zinc-300' : ''}`}
-                                          style={{ transition: 'opacity 0.2s ease' }}
-                                          dangerouslySetInnerHTML={{ __html: formatarDescricao(linha) }}
-                                        />
-                                      );
-                                    });
-                                  })()}
-                                </div>
-
-                                <div className="mt-4 flex justify-end gap-2 border-t border-zinc-800/50 pt-3">
-                                  <button
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      const nomeRitual = ritual.customNome || ritual.Nome_Ritual;
-                                      const res = await sendCastRitual(nomeRitual, elementoEscolhido, alcance || 'Curto', peValor || 1);
-                                      if (res.success) {
-                                        alert(`✨ ${res.message}`);
-                                      } else {
-                                        alert(`⚠️ ${res.message}`);
+                                  return (
+                                    <RitualCard
+                                      key={chaveUnica}
+                                      ritual={ritual}
+                                      expandido={expandido}
+                                      onToggleExpandir={() =>
+                                        setRituaisExpandidos(prev =>
+                                          prev.includes(chaveUnica as any)
+                                            ? prev.filter(id => id !== chaveUnica)
+                                            : [...prev, chaveUnica as any]
+                                        )
                                       }
-                                    }}
-                                    className="rounded bg-red-950/80 border border-red-700/60 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-red-200 transition hover:bg-red-800 hover:text-white flex items-center gap-1.5"
-                                    title="Projetar o Símbolo e o Alcance deste Ritual no Tabuleiro Digital (Unreal Engine)"
-                                  >
-                                    <span>🎲</span>
-                                    <span>Projetar na Mesa</span>
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setRitualEditandoOrigem(ritual.Origem);
-                                      setRitualNomeEditando(ritual.customNome || ritual.Nome_Ritual);
-                                      setRitualDescricaoEditando(ritual.customDesc || ritual.Descricao_Ritual);
-                                      setRitualPropsEditando(ritual.customProps || {});
-                                      setRitualVersaoEditando('normal');
-                                    }}
-                                    className="rounded bg-zinc-800 border border-zinc-700 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-300 transition hover:bg-zinc-700 hover:text-zinc-100"
-                                  >
-                                    Editar Ritual
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      if (ritual.Origem.startsWith('poder_57_')) {
-                                        const nivel = parseInt(ritual.Origem.replace('poder_57_', '').replace('combate_', ''), 10);
-                                        const poderExistente = poderesEscolhidos[nivel];
-                                        if (poderExistente && poderExistente.nome.toLowerCase().startsWith('aprender ritual (')) {
-                                          const ppBase = poderesParanormais.find(p => p.Nome.toLowerCase() === 'aprender ritual');
-                                          if (ppBase) {
-                                            poderesHook.escolherPoder(nivel, {
-                                              codigo_poder: 57,
-                                              Nome: 'Aprender Ritual',
-                                              Descricao: ppBase?.Descricao || '',
-                                              PreRequisitos: ppBase?.PreRequisitos || '',
-                                              Afinidade: ppBase?.Afinidade,
-                                              Elemento: ppBase?.Elemento,
-                                              Fonte: ppBase?.Fonte,
-                                              PreRequisitosAfinidade: ppBase?.PreRequisitosAfinidade
-                                            } as any);
+                                      versao={versao}
+                                      onMudarVersao={(val) => {
+                                        setVersaoRitual(prev => ({
+                                          ...prev,
+                                          [chaveUnica]: val,
+                                        }));
+                                      }}
+                                      simboloImg={simboloImg}
+                                      nivel={nivel}
+                                      classe={classe}
+                                      afinidadeAtiva={afinidadeAtiva}
+                                      afinidadeEscolhida={afinidadeEscolhida}
+                                      regrasAutomaticasAtivas={regrasAutomaticasAtivas}
+                                      poderesEscolhidos={poderesEscolhidos}
+                                      onProjetarMesa={async (nome, elemento, alcance, pe) => {
+                                        const res = await sendCastRitual(nome, elemento, alcance, pe);
+                                        if (res.success) {
+                                          alert(`✨ ${res.message}`);
+                                        } else {
+                                          alert(`⚠️ ${res.message}`);
+                                        }
+                                      }}
+                                      onEditar={() => {
+                                        setRitualEditandoOrigem(ritual.Origem);
+                                        setRitualNomeEditando(ritual.customNome || ritual.Nome_Ritual);
+                                        setRitualDescricaoEditando(ritual.customDesc || ritual.Descricao_Ritual);
+                                        setRitualPropsEditando(ritual.customProps || {});
+                                        setRitualVersaoEditando('normal');
+                                      }}
+                                      onEsquecer={() => {
+                                        if (ritual.Origem.startsWith('poder_57_')) {
+                                          const nivelSlot = parseInt(ritual.Origem.replace('poder_57_', '').replace('combate_', ''), 10);
+                                          const poderExistente = poderesEscolhidos[nivelSlot];
+                                          if (poderExistente && poderExistente.nome.toLowerCase().startsWith('aprender ritual (')) {
+                                            const ppBase = poderesParanormais.find(p => p.Nome.toLowerCase() === 'aprender ritual');
+                                            if (ppBase) {
+                                              poderesHook.escolherPoder(nivelSlot, {
+                                                codigo_poder: 57,
+                                                Nome: 'Aprender Ritual',
+                                                Descricao: ppBase?.Descricao || '',
+                                                PreRequisitos: ppBase?.PreRequisitos || '',
+                                                Afinidade: ppBase?.Afinidade,
+                                                Elemento: ppBase?.Elemento,
+                                                Fonte: ppBase?.Fonte,
+                                                PreRequisitosAfinidade: ppBase?.PreRequisitosAfinidade
+                                              } as any);
+                                            }
                                           }
                                         }
-                                      }
-                                      rituaisHook.esquecerRitual(ritual.Origem);
-                                    }}
-                                    className="rounded bg-green-900/30 border border-green-800 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-green-500 transition hover:bg-green-900/50 hover:text-green-400"
-                                  >
-                                    Esquecer Ritual
-                                  </button>
-                                </div>
-
-                              </div>
-                            </Collapse>
-                          </div>
-                        );
-                      })}
+                                        rituaisHook.esquecerRitual(ritual.Origem);
+                                      }}
+                                    />
+                                  );
+                                })}
                                 </div>
                               </div>
                             );

@@ -464,3 +464,33 @@ export function calcularAtributosArmaFinais(
     alcanceFinal
   };
 }
+
+export function calcularEspacosFinais(
+  espacoBase: number | string,
+  modificacoesIds?: number[],
+  todasModificacoes?: any[],
+  isRegra43Ativa?: boolean
+): number {
+  let val = Number(String(espacoBase).replace(',', '.').replace(/[^0-9.-]+/g, ''));
+  if (isNaN(val)) val = 0;
+
+  if (isRegra43Ativa && val === 0.5) {
+    val = 0.25;
+  }
+
+  if (modificacoesIds && modificacoesIds.length > 0 && todasModificacoes) {
+    let extra = 0;
+    modificacoesIds.forEach(id => {
+      const m = todasModificacoes.find((mod: any) => mod.Codigo_Modif === id);
+      const nome = m?.Nome_Modif.trim().toLowerCase() || '';
+      if (nome === 'discreto' || nome === 'discreta') {
+        extra -= 1;
+      } else if (nome === 'blindada' || nome === 'reforçada') {
+        extra += 1;
+      }
+    });
+    val = Math.max(0, val + extra);
+  }
+  return val;
+}
+
