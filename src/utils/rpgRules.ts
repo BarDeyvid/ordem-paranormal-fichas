@@ -401,8 +401,8 @@ export function calcularCategoriaFinal(categoriaBase: string | number | null | u
       return mod?.Nome_Modif.trim().toLowerCase() === 'apocalíptica';
     });
     if (temApocaliptica) {
-      modificador -= 1;
-    }
+        modificador -= 2;
+      }
   }
 
   let custoMaldicoes = 0;

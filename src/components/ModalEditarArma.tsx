@@ -162,7 +162,7 @@ export function ModalEditarArma({
   
     const catNum = categoriaRomanParaNum(categoria);
     let modificador = modificacoes.length;
-    if (temApocaliptica) modificador -= 1;
+    if (temApocaliptica) modificador -= 2;
     let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
     const catFinal = catNum + modificador + custoMaldicoes;
     const custoAtual = modificador + custoMaldicoes;
