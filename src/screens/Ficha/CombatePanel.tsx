@@ -120,7 +120,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const armaBase = armasHook?.armas?.find((a: any) => a.Codigo_Arma === arma.Codigo_Arma || a.Nome_Item === arma.Nome_Item);
   const codigoGrupoFinal = arma.Codigo_Grupo ?? armaBase?.Codigo_Grupo;
   const grupoArma = armasHook?.gruposArmas?.find((g: any) => String(g.Codigo_Grupo) === String(codigoGrupoFinal));
-  const temGrupoStats = grupoArma && (grupoArma.RD_Grupo != null || grupoArma.PV_Grupo != null);
+  const numMaldicoes = Array.isArray(maldicoes) ? maldicoes.length : 0;
+  const finalRD = grupoArma?.RD_Grupo != null ? Number(grupoArma.RD_Grupo) + (numMaldicoes * 10) : null;
+  const finalPV = grupoArma?.PV_Grupo != null ? Number(grupoArma.PV_Grupo) + (numMaldicoes * 10) : null;
+  const temGrupoStats = finalRD != null || finalPV != null;
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
     let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;
@@ -562,8 +565,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 </button>
                 <Collapse isOpen={mostrarStatsGrupo}>
                   <div className="flex items-center gap-4 mt-1">
-                    {grupoArma.RD_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">RD:</span> {grupoArma.RD_Grupo}</span>}
-                    {grupoArma.PV_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">PV:</span> {grupoArma.PV_Grupo}</span>}
+                    {finalRD != null && <span className="text-zinc-300"><span className="font-bold text-green-400">RD:</span> {finalRD}</span>}
+                    {finalPV != null && <span className="text-zinc-300"><span className="font-bold text-green-400">PV:</span> {finalPV}</span>}
                   </div>
                 </Collapse>
               </>
