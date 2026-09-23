@@ -610,7 +610,7 @@ export function InventarioPanel() {
   });
   
   const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
-  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
+  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada); console.log(\'Armas Amaldicoadas Exibidas:\', armasAmaldicoadasExibidas);
 
   const municoesSoltas = (municoesHook?.municoesInventario || []).filter(minv => {
     // É solta se não estiver acoplada a nenhuma arma
@@ -1136,7 +1136,7 @@ export function InventarioPanel() {
                 </SortableContext>
                 {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && armasAmaldicoadasExibidas.length === 0 && (
                     <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
-                  )};
+                  )}
             setEditingItem(null);
           }}
           onClose={() => setEditingItem(null)}
