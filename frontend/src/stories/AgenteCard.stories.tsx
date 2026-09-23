@@ -31,6 +31,7 @@ const mockCombatente: FichaSummary = {
   sanMax: 36,
   peAtual: 18,
   peMax: 24,
+  avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
   dataAtualizacao: new Date().toISOString(),
 };
 
@@ -50,6 +51,7 @@ const mockOcultista: FichaSummary = {
   sanMax: 70,
   peAtual: 52,
   peMax: 65,
+  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
   dataAtualizacao: new Date(Date.now() - 3600000 * 5).toISOString(),
 };
 
@@ -69,6 +71,7 @@ const mockEspecialista: FichaSummary = {
   sanMax: 40,
   peAtual: 15,
   peMax: 20,
+  avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
   dataAtualizacao: new Date(Date.now() - 86400000 * 2).toISOString(),
 };
 

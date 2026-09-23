@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react-vite';
 import '../src/index.css';
+import { RPGProvider } from '../src/context/RPGContext';
 
 const preview: Preview = {
   parameters: {
@@ -22,11 +23,13 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div className="bg-zinc-950 text-zinc-100 min-h-[160px] p-6 antialiased font-sans flex items-center justify-center">
-        <div className="w-full max-w-xl">
-          <Story />
+      <RPGProvider>
+        <div className="bg-zinc-950 text-zinc-100 min-h-[160px] p-6 antialiased font-sans flex items-center justify-center">
+          <div className="w-full max-w-xl">
+            <Story />
+          </div>
         </div>
-      </div>
+      </RPGProvider>
     ),
   ],
 };

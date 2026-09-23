@@ -27,25 +27,25 @@ export const AgenteCard: React.FC<AgenteCardProps> = ({
     switch (agente.classe) {
       case 'Combatente':
         return {
-          borderL: 'border-l-red-600',
+          borderDivider: 'border-r-red-600',
           badge: 'bg-red-950/70 text-red-400 border border-red-800/80',
           accent: 'text-red-400',
         };
       case 'Especialista':
         return {
-          borderL: 'border-l-sky-500',
+          borderDivider: 'border-r-sky-500',
           badge: 'bg-sky-950/70 text-sky-400 border border-sky-800/80',
           accent: 'text-sky-400',
         };
       case 'Ocultista':
         return {
-          borderL: 'border-l-purple-600',
+          borderDivider: 'border-r-purple-600',
           badge: 'bg-purple-950/70 text-purple-400 border border-purple-800/80',
           accent: 'text-purple-400',
         };
       default:
         return {
-          borderL: 'border-l-zinc-600',
+          borderDivider: 'border-r-zinc-600',
           badge: 'bg-zinc-800 text-zinc-300 border border-zinc-700',
           accent: 'text-zinc-400',
         };
@@ -84,68 +84,87 @@ export const AgenteCard: React.FC<AgenteCardProps> = ({
 
   return (
     <div
-      className={`group relative flex flex-col rounded-r-lg border border-zinc-800 bg-zinc-900/90 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-zinc-700 hover:shadow-xl border-l-4 ${theme.borderL} ${
+      className={`group relative flex flex-row rounded-lg border border-zinc-800 bg-zinc-900/90 shadow-md backdrop-blur-sm transition-all duration-200 hover:border-zinc-700 hover:shadow-xl overflow-hidden ${
         isActive ? 'ring-2 ring-emerald-500/60 shadow-emerald-950/20' : ''
       }`}
     >
-      {/* Header do Card */}
-      <div className="p-4 pb-3">
-        <div className="flex items-start justify-between gap-3">
-          {/* Avatar e Títulos */}
-          <div className="flex items-center gap-3">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded border border-zinc-700 bg-zinc-950/80 shadow-inner flex items-center justify-center">
-              {agente.avatarUrl ? (
-                <img src={agente.avatarUrl} alt={agente.nome} className="h-full w-full object-cover" />
-              ) : (
-                <span className="text-2xl select-none opacity-60">🕵️‍♂️</span>
-              )}
-            </div>
+      {/* Coluna Esquerda: Foto do Personagem na Altura Total do Card */}
+      <div
+        className={`relative shrink-0 w-28 sm:w-36 md:w-40 bg-zinc-950 flex flex-col items-center justify-center self-stretch border-r-4 ${theme.borderDivider} overflow-hidden select-none`}
+      >
+        {agente.avatarUrl ? (
+          <img
+            src={agente.avatarUrl}
+            alt={agente.nome}
+            className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center p-3 text-center h-full w-full opacity-60 group-hover:opacity-85 transition">
+            <span className="text-4xl sm:text-5xl mb-1 filter drop-shadow">🕵️‍♂️</span>
+            <span className="text-[0.6rem] font-mono uppercase tracking-widest text-zinc-500 font-bold">
+              DOSSIÊ
+            </span>
+          </div>
+        )}
 
+        {/* Gradiente escuro sutil na base da foto */}
+        <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+
+        {/* Badge de Ativo sobre a foto */}
+        {isActive && (
+          <div className="absolute top-2 left-2 z-10">
+            <span className="rounded bg-emerald-950/95 px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-600 shadow-md">
+              Ativo
+            </span>
+          </div>
+        )}
+
+        {/* Patente sobre a base da foto */}
+        {agente.patente && (
+          <div className="absolute bottom-2 inset-x-2 z-10 text-center">
+            <span className="inline-block truncate max-w-full rounded bg-black/75 px-1.5 py-0.5 text-[0.55rem] font-mono font-bold uppercase tracking-wider text-zinc-300 border border-zinc-700/80 backdrop-blur-xs shadow-md">
+              {agente.patente}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Coluna Direita: Informações e Ações do Dossiê */}
+      <div className="flex flex-1 flex-col justify-between min-w-0">
+        <div className="p-4 pb-3">
+          {/* Header do Dossiê */}
+          <div className="flex items-start justify-between gap-3">
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="truncate text-base font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors">
-                  {agente.nome || 'Agente Sem Nome'}
-                </h3>
-                {isActive && (
-                  <span className="rounded bg-emerald-950/80 px-1.5 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-700/80">
-                    Ativo
-                  </span>
-                )}
-              </div>
+              <h3 className="truncate text-base font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors">
+                {agente.nome || 'Agente Sem Nome'}
+              </h3>
               <span className="truncate text-xs font-mono text-zinc-400">
                 {agente.jogador ? `Jogador: ${agente.jogador}` : 'Sem jogador definido'}
               </span>
             </div>
-          </div>
 
-          {/* Badges de Classe e NEX */}
-          <div className="flex flex-col items-end gap-1 shrink-0">
-            <span className={`rounded px-2 py-0.5 text-xs font-bold uppercase tracking-wider ${theme.badge}`}>
-              {agente.classe || 'Indefinida'}
-            </span>
-            <span className="font-mono text-xs font-bold text-zinc-300">
-              NEX <span className={theme.accent}>{agente.nex}%</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Informações de Trilha e Origem */}
-        <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
-          <div className="flex items-center gap-1 rounded bg-zinc-800/80 px-2 py-0.5 text-zinc-300 border border-zinc-700/60">
-            <span className="text-[0.65rem] uppercase font-bold text-zinc-500">Origem:</span>
-            <span className="font-medium truncate max-w-[120px]">{agente.origem || '—'}</span>
-          </div>
-          <div className="flex items-center gap-1 rounded bg-zinc-800/80 px-2 py-0.5 text-zinc-300 border border-zinc-700/60">
-            <span className="text-[0.65rem] uppercase font-bold text-zinc-500">Trilha:</span>
-            <span className="font-medium truncate max-w-[120px]">{agente.trilha || '—'}</span>
-          </div>
-          {agente.patente && (
-            <div className="flex items-center gap-1 rounded bg-zinc-800/80 px-2 py-0.5 text-zinc-300 border border-zinc-700/60">
-              <span className="text-[0.65rem] uppercase font-bold text-zinc-500">Patente:</span>
-              <span className="font-medium">{agente.patente}</span>
+            {/* Badges de Classe e NEX */}
+            <div className="flex flex-col items-end gap-1 shrink-0">
+              <span className={`rounded px-2 py-0.5 text-xs font-bold uppercase tracking-wider ${theme.badge}`}>
+                {agente.classe || 'Indefinida'}
+              </span>
+              <span className="font-mono text-xs font-bold text-zinc-300">
+                NEX <span className={theme.accent}>{agente.nex}%</span>
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+
+          {/* Informações de Trilha e Origem */}
+          <div className="mt-3 flex flex-wrap gap-1.5 text-xs">
+            <div className="flex items-center gap-1 rounded bg-zinc-800/80 px-2 py-0.5 text-zinc-300 border border-zinc-700/60">
+              <span className="text-[0.65rem] uppercase font-bold text-zinc-500">Origem:</span>
+              <span className="font-medium truncate max-w-[120px]">{agente.origem || '—'}</span>
+            </div>
+            <div className="flex items-center gap-1 rounded bg-zinc-800/80 px-2 py-0.5 text-zinc-300 border border-zinc-700/60">
+              <span className="text-[0.65rem] uppercase font-bold text-zinc-500">Trilha:</span>
+              <span className="font-medium truncate max-w-[120px]">{agente.trilha || '—'}</span>
+            </div>
+          </div>
 
         {/* Barras de Status Rápidas (PV / SAN / PE) */}
         <div className="mt-3 space-y-1.5 rounded bg-zinc-950/60 p-2.5 border border-zinc-800/80">
@@ -295,6 +314,7 @@ export const AgenteCard: React.FC<AgenteCardProps> = ({
             🗑️
           </button>
         )}
+      </div>
       </div>
     </div>
   );
