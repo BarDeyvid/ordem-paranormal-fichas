@@ -39,10 +39,11 @@ export function ModalEditarArma({
   const [nome, setNome] = useState(arma.Nome_Item || '');
   const [descricao, setDescricao] = useState(arma.Descricao_Item || '');
   const [dano, setDano] = useState(arma.Dano_Arma || '');
+  const [danoSecundario, setDanoSecundario] = useState(arma.Dano_Secundario || '');
   const [critico, setCritico] = useState(arma.Critico_Arma?.toString() || '');
   const [multiplicador, setMultiplicador] = useState(arma.Multiplicador_Arma?.toString() || '');
   const [alcance, setAlcance] = useState(arma.Alcance_Item || '');
-  const [danoSecundario, setDanoSecundario] = useState(arma.Dano_Secundario || '');
+
   const [categoria, setCategoria] = useState(arma.Categoria_Item || '');
   const [espacos, setEspacos] = useState(arma['Espaços_Item']?.toString() || '');
   const [dt, setDt] = useState(arma.dt_item || '');
@@ -116,10 +117,11 @@ export function ModalEditarArma({
       Nome_Item: nome,
       Descricao_Item: editorDesc.current?.innerHTML || descricao,
       Dano_Arma: dano,
+      Dano_Secundario: danoSecundario,
       Critico_Arma: Number(critico) || 20,
       Multiplicador_Arma: Number(multiplicador) || 2,
       Alcance_Item: alcance,
-      Dano_Secundario: danoSecundario,
+
       Categoria_Item: categoria,
       'Espaços_Item': getEspacoNumber(espacos),
       dt_item: dt,
@@ -356,7 +358,7 @@ export function ModalEditarArma({
               </div>
 
               <div className="col-span-2 md:col-span-1">
-                <InputLabel label="Dado Bônus" />
+                <InputLabel label="Dano Secundário" />
                 <InputOtimizado
                   value={danoSecundario}
                   onChange={setDanoSecundario}
