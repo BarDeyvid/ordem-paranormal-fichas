@@ -49,9 +49,22 @@ O backend foi construído em `backend/` com as seguintes características:
 - **Banco de Dados SQLite Embutido**:
   - Armazena todas as 18 tabelas do sistema de Ordem Paranormal com fidelidade absoluta de tipos e nomes de campos (inclusive campos com acentos e interrogações como `'Espaços_Item'`, `'Agil?'`, `'Automatico?'`).
   - Função `init_db()` garante **auto-seeding**: se o arquivo SQLite não existir, ele é gerado e populado automaticamente a partir dos JSONs oficiais na inicialização da API.
+- **Motor de Cálculos e Estatísticas (`services/calculator.py`)**:
+  - Implementa as fórmulas e bônus das regras oficiais: PV, PE, Sanidade, Limite de PE por Turno, Defesa Total, Esquiva, Bloqueio, DT de Rituais, Deslocamento e Capacidade de Carga.
+- **Interpretador de Dados RPG (`services/dice.py`)**:
+  - Avaliador de expressões (`1d20+5`, `3d20k1`, `2d8+3`, etc.), cálculo de críticos por margem de ameaça e desastres.
+- **Validador e Auditor do Compêndio (`services/validator.py`)**:
+  - Verifica integridade de todas as tabelas e consistência dos 1.121 registros do banco.
+- **CLI Integrada (`cli.py`)**:
+  - Subcomandos de terminal: `audit`, `seed`, `roll` e `calc`.
+- **Suíte de Testes com Pytest (`tests/`)**:
+  - 30 testes automatizados cobrindo rotas, banco, regras e rolagem de dados.
 - **Tabelas e Endpoints Disponíveis**:
   | Recurso | Endpoint | Descrição |
   |---|---|---|
+  | **Cálculo de Personagem** | `POST /api/calc` | Calcula PV, PE, Sanidade, Defesa e Bônus passivos |
+  | **Rolador de Dados** | `POST/GET /api/roll` | Avalia expressões e rola dados com detalhamento |
+  | **Auditoria** | `GET /api/audit` | Relatório de integridade do compêndio |
   | **Armas** | `GET /api/armas` | Lista de armas, categorias, danos e alcances |
   | **Itens Gerais** | `GET /api/itens` | Itens operacionais, acessórios e equipamentos |
   | **Itens Amaldiçoados** | `GET /api/itens-amaldicoados` | Itens com afinidade ao Outro Lado |

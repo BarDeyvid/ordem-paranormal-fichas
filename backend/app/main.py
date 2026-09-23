@@ -17,6 +17,9 @@ from .routers import (
     battlemat_router,
     fichas_router,
     data_router,
+    calc_router,
+    dice_router,
+    audit_router,
 )
 
 @asynccontextmanager
@@ -65,6 +68,9 @@ app.include_router(regras_router, prefix=API_PREFIX)
 app.include_router(battlemat_router, prefix=API_PREFIX)
 app.include_router(fichas_router, prefix=API_PREFIX)
 app.include_router(data_router, prefix=API_PREFIX)
+app.include_router(calc_router, prefix=API_PREFIX)
+app.include_router(dice_router, prefix=API_PREFIX)
+app.include_router(audit_router, prefix=API_PREFIX)
 
 if __name__ == "__main__":
     import uvicorn

@@ -14,6 +14,9 @@ from .regras import router as regras_router
 from .battlemat import router as battlemat_router
 from .fichas import router as fichas_router
 from .data import router as data_router
+from .calc import router as calc_router
+from .dice import router as dice_router
+from .audit import router as audit_router
 
 __all__ = [
     "armas_router",
@@ -29,4 +32,7 @@ __all__ = [
     "battlemat_router",
     "fichas_router",
     "data_router",
+    "calc_router",
+    "dice_router",
+    "audit_router",
 ]
