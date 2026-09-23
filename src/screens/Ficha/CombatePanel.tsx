@@ -117,7 +117,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const [mostrarStatsGrupo, setMostrarStatsGrupo] = React.useState(false);
   
   const { arma, modificacoes, maldicoes } = armaInv;
-  const grupoArma = armasHook?.gruposArmas?.find((g: any) => g.Codigo_Grupo === arma.Codigo_Grupo);
+  const armaBase = armasHook?.armas?.find((a: any) => a.Nome_Item === arma.Nome_Item);
+  const codigoGrupoFinal = arma.Codigo_Grupo ?? armaBase?.Codigo_Grupo;
+  const grupoArma = armasHook?.gruposArmas?.find((g: any) => g.Codigo_Grupo === codigoGrupoFinal);
   const temGrupoStats = grupoArma && (grupoArma.RD_Grupo || grupoArma.PV_Grupo);
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
     let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
