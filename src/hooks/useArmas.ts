@@ -100,13 +100,13 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       }
 
       // 2. Coronhada
-      const armasDeFogo = next.filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual' && a.arma.Tipo_Arma?.toLowerCase().includes('fogo'));
+      const armasDeFogo = next.filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual' && (a.arma.Tipo_Arma?.toLowerCase() || '').includes('fogo'));
       const coronhadaIndex = next.findIndex(a => a.id === 'coronhada-virtual');
       const hasCoronhada = coronhadaIndex !== -1;
 
       if (armasDeFogo.length > 0) {
-        const temDuasMaos = armasDeFogo.some(a => a.arma.Empunhadura_Arma?.toLowerCase().includes('duas'));
-        const temUmaMao = armasDeFogo.some(a => !a.arma.Empunhadura_Arma?.toLowerCase().includes('duas'));
+        const temDuasMaos = armasDeFogo.some(a => (a.arma.Empunhadura_Arma?.toLowerCase() || '').includes('duas'));
+        const temUmaMao = armasDeFogo.some(a => !(a.arma.Empunhadura_Arma?.toLowerCase() || '').includes('duas'));
         
         let danoCoronhada = '1d4';
         let empunhadura = 'Uma Mão';
@@ -167,7 +167,9 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
 
   const adicionarArma = (arma: Arma) => {
     const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
-    setArmasInventario(prev => [...prev, { id: newId, arma }]);
+    let mods = [] as number[];
+    if (arma.Nome_Item === 'Fuzil Alheio') mods = [10, 11]; // Mira Laser, Mira Telescópica
+    setArmasInventario(prev => [...prev, { id: newId, arma, modificacoes: mods }]);
   };
 
   const removerArma = (id: string) => {
