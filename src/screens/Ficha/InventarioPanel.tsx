@@ -1086,12 +1086,39 @@ export function InventarioPanel() {
               </>
             )}
 
-            {(categoriaFiltro === 'Amaldiçoados' || (categoriaFiltro === 'Geral' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0)) && (
-              <>
-                {categoriaFiltro === 'Geral' && (
-                  <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Amaldiçoados</h3>
-                )}
-                <SortableContext items={(itensAmaldicoadosHook?.itensAmaldicoadosInventario || []).map(i => i.id)} strategy={verticalListSortingStrategy}>
+            {(categoriaFiltro === 'Amaldiçoados' || categoriaFiltro === 'Geral') && ((itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 || armasAmaldicoadasExibidas.length > 0) && (
+                <>
+                  {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && armasAmaldicoadasExibidas.length > 0 && (
+                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Armas Amaldiçoadas</h3>
+                  )}
+                  <SortableContext items={armasAmaldicoadasExibidas.map(a => a.id)} strategy={verticalListSortingStrategy}>
+                    {armasAmaldicoadasExibidas.map((item: ArmaInventario) => (
+                      <SortableArmaItem
+                        key={item.id}
+                        item={item}
+                        isExpanded={!!expandidos[item.id]}
+                        toggleExpandir={toggleExpandir}
+                        stringDT={calcularDT(item.arma.dt_item, item.arma.Categoria_Item?.toLowerCase().includes('explosivos') || item.arma.Nome_Item?.toLowerCase().includes('explosivo'))}
+                        removerArma={armasHook?.removerArma || (() => {})}
+                          onEditar={() => setArmaEditandoId(item.id)}
+                          onAddMunicao={() => {
+                            if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                              setGranadaTargetArmaId(item.id);
+                              setModalGranadasAberto(true);
+                            } else {
+                              setMunicaoTargetArmaId(item.id);
+                              setMunicaoFiltroNome(item.arma.Nome_Item);
+                              setMunicaoFiltroCategoria(item.arma.Categoria_Item);
+                              setModalMunicoesAberto(true);
+                            }
+                          }}
+                        />
+                    ))}
+                  </SortableContext>
+                  {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 && (
+                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Itens Amaldiçoados</h3>
+                  )}
+                  <SortableContext items={(itensAmaldicoadosHook?.itensAmaldicoadosInventario || []).map(i => i.id)} strategy={verticalListSortingStrategy}>
                   {(itensAmaldicoadosHook?.itensAmaldicoadosInventario || [])
                     .filter(item => buscaItem.trim() === '' || item.item.Nome_Ama.toLowerCase().includes(buscaItem.toLowerCase()))
                     .map(item => (
@@ -1107,115 +1134,9 @@ export function InventarioPanel() {
                     />
                   ))}
                 </SortableContext>
-                {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && (
-                  <p className="text-center text-zinc-600 text-sm py-4">Nenhum item amaldiçoado no inventário.</p>
-                )}
-              </>
-            )}
-
-            <DragOverlay>
-              {activeDragItem?.fullItem ? (
-                <div className="w-full">
-                  {activeDragItem.type === 'arma' && <SortableArmaItem item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerArma={() => {}} stringDT={activeDragItem.stringDT || null} isOverlay onAddMunicao={() => {}} />}
-                  {activeDragItem.type === 'protecao' && <SortableProtecaoItem item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerProtecao={() => {}} toggleEquipado={() => {}} isOverlay />}
-                  {activeDragItem.type === 'item' && <SortableItemGeral item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} stringDT={null} toggleEquipado={() => {}} isOverlay />}
-                  {activeDragItem.type === 'municao' && <SortableMunicaoItem id={activeDragItem.id} item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} isOverlay />}
-                  {activeDragItem.type === 'amaldicoado' && <SortableItemAmaldicoado item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} stringDT={null} toggleEquipado={() => {}} isOverlay />}
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-
-          {categoriaFiltro !== 'Armas' && categoriaFiltro !== 'Geral' && categoriaFiltro !== 'Munições' && categoriaFiltro !== 'Proteções' && categoriaFiltro !== 'Amaldiçoados' && !itensHook?.gruposUnicos.includes(categoriaFiltro) && (
-            <p className="text-center text-zinc-600 text-sm py-8">Esta categoria ainda não possui itens implementados.</p>
-          )}
-        </div>
-      </div>
-
-      <ModalArmas
-        aberto={modalArmasAberto}
-        onFechar={() => setModalArmasAberto(false)}
-      />
-      {modalMunicoesAberto && (
-        <ModalMunicoes
-          onFechar={() => setModalMunicoesAberto(false)}
-          armaFiltroNome={municaoFiltroNome}
-          armaFiltroCategoria={municaoFiltroCategoria}
-          onSelect={municao => {
-            if (municao.Codigo_Municao === 67) {
-              setFlechaExplosivaPendente(municao);
-              setModalGranadasAberto(true);
-              setModalMunicoesAberto(false);
-              return;
-            }
-            const idGerado = municoesHook?.adicionarMunicao(municao);
-            if (idGerado && municaoTargetArmaId) {
-              armasHook?.acoplarMunicao(municaoTargetArmaId, idGerado);
-            }
-            setModalMunicoesAberto(false);
-          }}
-        />
-      )}
-
-      {armaEditandoId && (
-        <ModalEditarArma
-          armaInventario={armasHook?.armasInventario.find(a => a.id === armaEditandoId)!}
-          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
-            armasHook?.editarArma(armaEditandoId, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
-          }}
-          onClose={() => setArmaEditandoId(null)}
-        />
-      )}
-
-      {editingItemAmaldicoado && itensAmaldicoadosHook && (
-        <ModalEditarItemAmaldicoado
-          itemInventario={editingItemAmaldicoado}
-          onSave={(novosDados) => itensAmaldicoadosHook.editarItem(editingItemAmaldicoado.id, novosDados)}
-          onClose={() => setEditingItemAmaldicoado(null)}
-        />
-      )}
-
-      <ModalProtecoes
-        aberto={modalProteçõesAberto}
-        onFechar={() => setModalProtecoesAberto(false)}
-      />
-      
-      <ModalItensAmaldicoados
-        aberto={modalItensAmaldicoadosAberto}
-        fechar={() => setModalItensAmaldicoadosAberto(false)}
-      />
-      <ModalItens
-        aberto={modalItensAberto}
-        onFechar={() => setModalItensAberto(false)}
-        grupoAba={abaItensAberta}
-      />
-
-      {protecaoEditandoId && (
-        <ModalEditarProtecao
-          protecao={protecoesHook?.protecoesInventario.find(p => p.id === protecaoEditandoId)!}
-          onSave={(id, dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
-            protecoesHook?.editarProtecao(protecaoEditandoId, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
-          }}
-          onClose={() => setProtecaoEditandoId(null)}
-        />
-      )}
-
-      {editingItem?.tipo === 'item' && getItemParaEditar() && (
-        <ModalEditarItem
-          itemInventario={getItemParaEditar()!}
-          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
-            itensHook.editarItem(editingItem.id, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
-            setEditingItem(null);
-          }}
-          onClose={() => setEditingItem(null)}
-        />
-      )}
-
-      {editingItem?.tipo === 'municao' && getMunicaoParaEditar() && (
-        <ModalEditarMunicao
-          itemInventario={getMunicaoParaEditar()!}
-          onSave={(municaoEditada, modificacoes) => {
-            municoesHook.atualizarMunicao(editingItem.id, { municao: { ...getMunicaoParaEditar()!.municao, ...municaoEditada }, modificacoes });
+                {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && armasAmaldicoadasExibidas.length === 0 && (
+                    <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
+                  )};
             setEditingItem(null);
           }}
           onClose={() => setEditingItem(null)}
