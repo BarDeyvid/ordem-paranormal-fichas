@@ -344,7 +344,15 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           <div className="flex items-center gap-1 min-w-0">
             <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
             
-            {arma['Agil?'] && (
+            {arma['Improvisada?'] && (
+                <span className="relative group/imp cursor-help">
+                  <span className="text-sm text-orange-400">🔨</span>
+                  <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/imp:opacity-100 group-hover/imp:visible transition-all duration-300 group-hover/imp:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
+                    Arma improvisada: Sofre -1d20 em testes de ataque com essa arma.
+                  </span>
+                </span>
+              )}
+              {arma['Agil?'] && (
               <span className="relative group/agil cursor-help">
                 <span className="text-sm text-yellow-400">⚡</span>
                 <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/agil:opacity-100 group-hover/agil:visible transition-all duration-300 group-hover/agil:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
