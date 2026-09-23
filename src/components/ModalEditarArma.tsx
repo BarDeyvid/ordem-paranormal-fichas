@@ -126,7 +126,8 @@ export function ModalEditarArma({
       Proficiencia: proficiencia,
       Tipo_Arma: tipoArma,
       Empunhadura_Arma: empunhadura,
-      Tipo_Dano_Arma: tipoDano
+      Tipo_Dano_Arma: tipoDano,
+        'Improvisada?': improvisada
     }, modificacoes, maldicoes, maldicoesElementos);
     onClose();
   };
