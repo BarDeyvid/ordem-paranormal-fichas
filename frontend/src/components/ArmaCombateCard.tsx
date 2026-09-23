@@ -130,7 +130,15 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
   itensHook,
   armasHook,
 }) => {
-  const { atributosFinais, proficienciasTotais, regrasAutomaticasAtivas, status } = useRPG();
+  const { 
+    atributosFinais, 
+    proficienciasTotais, 
+    regrasAutomaticasAtivas, 
+    status,
+    periciasHook,
+    executarRolagemAtaque,
+    executarRolagemDano,
+  } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
   const municoesAcopladasList = (armaInv.municoesAcopladas || [])
@@ -484,6 +492,73 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
         >
           ▼
         </span>
+      </div>
+
+      {/* BOTÕES DE ROLAGEM RÁPIDA (1-CLIQUE) */}
+      <div 
+        className="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-zinc-800/80"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={() => {
+            const periciaObj = periciasHook?.pericias?.[pericia];
+            const periciaTreino = periciaObj?.treino || 0;
+            const periciaOutros = periciaObj?.outros || 0;
+            const bonusTotalAtaque = periciaTreino + periciaOutros + bonusAtaque;
+            const atributoAtaque = ((periciaObj?.atributo as any) || defaultAtributo);
+            executarRolagemAtaque?.(
+              arma.Nome_Item,
+              atributoAtaque,
+              bonusTotalAtaque,
+              critico,
+              pericia
+            );
+          }}
+          className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded bg-zinc-900/90 hover:bg-emerald-950/60 border border-zinc-700/60 hover:border-emerald-700/80 text-xs font-bold text-zinc-200 hover:text-emerald-400 shadow-sm transition"
+          title={`Rolar Teste de Ataque (${pericia}, Margem Crítica: ${critico})`}
+        >
+          <span className="text-xs">⚔️</span>
+          <span>Atacar</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            executarRolagemDano?.(
+              arma.Nome_Item,
+              danoStrFull,
+              multCrit,
+              false
+            );
+          }}
+          className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 text-xs font-bold text-zinc-300 hover:text-white shadow-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
+          title={`Rolar Dano Normal (${danoStrFull || '-'})`}
+          disabled={!danoStrFull || danoStrFull === '-'}
+        >
+          <span className="text-xs">💥</span>
+          <span>Dano</span>
+        </button>
+
+        {!isLancadorGranadas && (
+          <button
+            type="button"
+            onClick={() => {
+              executarRolagemDano?.(
+                arma.Nome_Item,
+                danoStrFull,
+                multCrit,
+                true
+              );
+            }}
+            className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded bg-zinc-900/90 hover:bg-red-950/60 border border-zinc-700/60 hover:border-red-800/80 text-xs font-bold text-zinc-300 hover:text-red-400 shadow-sm transition disabled:opacity-40 disabled:cursor-not-allowed"
+            title={`Rolar Dano Crítico (${danoStrFull || '-'} x${multCrit})`}
+            disabled={!danoStrFull || danoStrFull === '-'}
+          >
+            <span className="text-xs">🔥</span>
+            <span>Crítico</span>
+          </button>
+        )}
       </div>
 
       <Collapse isOpen={estaExpandida}>

@@ -10,6 +10,7 @@ import { obterCorBadge } from '../../utils/rpgRules';
 import { CharacterHeader } from './CharacterHeader';
 import { BonusCondicionaisPanel } from './BonusCondicionaisPanel';
 import { MatrixBackground } from './MatrixBackground';
+import { DiceTray } from '../../components/DiceRoller/DiceTray';
 
 export const FichaScreen: React.FC = () => {
   const {
@@ -77,6 +78,7 @@ export const FichaScreen: React.FC = () => {
       </button>
 
       {(nexModalAberto !== null || nexPoderEditando !== null) && <ModalPoderes />}
+      <DiceTray />
       </div>
     </div>
   );

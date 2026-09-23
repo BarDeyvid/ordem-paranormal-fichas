@@ -7,7 +7,9 @@ import type {
   AbaDireita,
   AbaModalPoderes,
   VersaoRitual,
+  ResultadoRolagem,
 } from '../types';
+import { rolarPericia, rolarAtaque, rolarDano, rolarLivre } from '../services/diceRoller';
 import { usePoderes } from '../hooks/usePoderes';
 import { usePericias } from '../hooks/usePericias';
 import { useStatus } from '../hooks/useStatus';
@@ -152,6 +154,15 @@ interface RPGContextType {
   escolhaRegra53: 'FOR' | 'AGI' | null;
   setEscolhaRegra53: React.Dispatch<React.SetStateAction<'FOR' | 'AGI' | null>>;
   atributosFinais: Atributos;
+  historicoRolagens: ResultadoRolagem[];
+  ultimaRolagem: ResultadoRolagem | null;
+  diceTrayAberto: boolean;
+  setDiceTrayAberto: React.Dispatch<React.SetStateAction<boolean>>;
+  executarRolagemPericia: (periciaNome: string, atributoNome: AtributoKey, bonusTotal: number) => ResultadoRolagem;
+  executarRolagemAtaque: (armaNome: string, atributoNome: AtributoKey, bonusAtaque: number, margemCritico?: number, periciaUsada?: string) => ResultadoRolagem;
+  executarRolagemDano: (armaNome: string, expressaoDano: string, multCritico?: number, isCritico?: boolean) => ResultadoRolagem;
+  executarRolagemLivre: (qtd: number, faces: number, mod?: number, keepMode?: 'highest' | 'lowest' | 'all', descricao?: string) => ResultadoRolagem;
+  limparHistoricoRolagens: () => void;
 }
 
 const RPGContext = createContext<RPGContextType | null>(null);
@@ -207,6 +218,10 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const [progressaoNexEditados, setProgressaoNexEditados] = useState<Record<number, string>>({});
   const [elementoRegra18, setElementoRegra18] = useState<string | null>(null);
   const [escolhaRegra53, setEscolhaRegra53] = useState<'FOR' | 'AGI' | null>(null);
+
+  const [historicoRolagens, setHistoricoRolagens] = useState<ResultadoRolagem[]>([]);
+  const [ultimaRolagem, setUltimaRolagem] = useState<ResultadoRolagem | null>(null);
+  const [diceTrayAberto, setDiceTrayAberto] = useState<boolean>(false);
 
   const toggleRegra = useCallback((nome: string) => {
     setRegras(prev => {
@@ -679,6 +694,46 @@ const atributosFinais = useMemo(() => {
   ]);
 
   // ============================================================
+  // FUNÇÕES DO ROLADOR DE DADOS
+  // ============================================================
+  const registrarRolagem = useCallback((resultado: ResultadoRolagem) => {
+    setUltimaRolagem(resultado);
+    setHistoricoRolagens(prev => [resultado, ...prev.slice(0, 49)]);
+    setDiceTrayAberto(true);
+  }, []);
+
+  const executarRolagemPericia = useCallback((periciaNome: string, atributoNome: AtributoKey, bonusTotal: number) => {
+    const valorAtributo = atributosFinais[atributoNome] ?? 1;
+    const resultado = rolarPericia(periciaNome, valorAtributo, bonusTotal, atributoNome);
+    registrarRolagem(resultado);
+    return resultado;
+  }, [atributosFinais, registrarRolagem]);
+
+  const executarRolagemAtaque = useCallback((armaNome: string, atributoNome: AtributoKey, bonusAtaque: number, margemCritico: number = 20, periciaUsada: string = 'Pontaria') => {
+    const valorAtributo = atributosFinais[atributoNome] ?? 1;
+    const resultado = rolarAtaque(armaNome, valorAtributo, bonusAtaque, margemCritico, periciaUsada);
+    registrarRolagem(resultado);
+    return resultado;
+  }, [atributosFinais, registrarRolagem]);
+
+  const executarRolagemDano = useCallback((armaNome: string, expressaoDano: string, multCritico: number = 2, isCritico: boolean = false) => {
+    const resultado = rolarDano(armaNome, expressaoDano, multCritico, isCritico);
+    registrarRolagem(resultado);
+    return resultado;
+  }, [registrarRolagem]);
+
+  const executarRolagemLivre = useCallback((qtd: number, faces: number, mod: number = 0, keepMode: 'highest' | 'lowest' | 'all' = 'all', descricao?: string) => {
+    const resultado = rolarLivre(qtd, faces, mod, keepMode, descricao);
+    registrarRolagem(resultado);
+    return resultado;
+  }, [registrarRolagem]);
+
+  const limparHistoricoRolagens = useCallback(() => {
+    setHistoricoRolagens([]);
+    setUltimaRolagem(null);
+  }, []);
+
+  // ============================================================
   // VALUE DO CONTEXTO
   // ============================================================
   // Calcula status reais
@@ -743,7 +798,16 @@ const atributosFinais = useMemo(() => {
     elementoRegra18, setElementoRegra18,
     regrasAutomaticasAtivas,
     escolhaRegra53, setEscolhaRegra53,
-    atributosFinais
+    atributosFinais,
+    historicoRolagens,
+    ultimaRolagem,
+    diceTrayAberto,
+    setDiceTrayAberto,
+    executarRolagemPericia,
+    executarRolagemAtaque,
+    executarRolagemDano,
+    executarRolagemLivre,
+    limparHistoricoRolagens
   };
 
   return <RPGContext.Provider value={value}>{children}</RPGContext.Provider>;

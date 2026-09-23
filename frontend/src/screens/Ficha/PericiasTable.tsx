@@ -23,8 +23,7 @@ const BORDA_TREINO: Record<number, string> = {
 export const PericiasTable: React.FC = () => {
   const { 
     periciasHook, regrasAtivas, setRegrasAtivas, regrasAutomaticasAtivas, protecoesHook,
-    
-    itensHook
+    itensHook, executarRolagemPericia
   } = useRPG();
   const { pericias, handleMudarPericia, limites, totais } = periciasHook;
 
@@ -235,7 +234,15 @@ export const PericiasTable: React.FC = () => {
                   </td>
 
                   <td className={`px-2 py-1.5 text-center font-bold ${corTexto}`}>
-                    ( {totalBonus} )
+                    <button
+                      type="button"
+                      onClick={() => executarRolagemPericia(nome, dadosPericia.atributo, totalBonus)}
+                      className="group inline-flex items-center justify-center gap-1 px-1.5 py-0.5 rounded hover:bg-zinc-800/80 transition cursor-pointer"
+                      title={`Rolar teste de ${nome} (${dadosPericia.atributo} + ${totalBonus})`}
+                    >
+                      <span>( {totalBonus} )</span>
+                      <span className="text-[10px] opacity-35 group-hover:opacity-100 group-hover:scale-125 transition">🎲</span>
+                    </button>
                   </td>
 
                   <td className="px-2 py-1.5 text-center">

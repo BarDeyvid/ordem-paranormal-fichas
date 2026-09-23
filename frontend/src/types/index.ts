@@ -40,6 +40,27 @@ export interface FichaStorage {
   conteudo: Record<string, any>;
 }
 
+export interface DadoIndividual {
+  faces: number;
+  valor: number;
+  mantido: boolean;
+  critico: boolean;
+  desastre: boolean;
+}
+
+export interface ResultadoRolagem {
+  id: string;
+  titulo: string;
+  subtitulo?: string;
+  tipo: 'pericia' | 'ataque' | 'dano' | 'livre' | 'ritual';
+  dados: DadoIndividual[];
+  modificador: number;
+  total: number;
+  ehCritico: boolean;
+  ehDesastre: boolean;
+  detalhes: string;
+  dataHora: string;
+}
 
 export type ClasseRPG = 'Combatente' | 'Especialista' | 'Ocultista' | null;
 
