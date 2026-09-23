@@ -6,7 +6,7 @@ Este documento organiza as próximas grandes funcionalidades e marcos arquitetur
 
 ## 🎯 Prioridades e Fases de Implementação
 
-### 🎲 Fase 1: Rolador de Dados & Painel de Testes Integrado *(Em Andamento)*
+### 🎲 Fase 1: Rolador de Dados & Painel de Testes Integrado *(Concluída)*
 > **Objetivo:** Permitir rolagem imediata de qualquer teste da ficha com um clique, aplicando regras oficiais de dados de atributo, vantagens, desvantagens, margens de crítico e transmissão em tempo real.
 
 - **Testes com 1 Clique em Perícias:**
@@ -26,7 +26,7 @@ Este documento organiza as próximas grandes funcionalidades e marcos arquitetur
 
 ---
 
-### 🩸 Fase 2: Painel de Condições & Estados Paranormais
+### 🩸 Fase 2: Painel de Condições & Estados Paranormais *(Concluída)*
 > **Objetivo:** Rastrear condições físicas e mentais que afetam os investigadores, aplicando debuffs automáticos na ficha em tempo real.
 
 - **Catálogo de Condições Oficiais:**

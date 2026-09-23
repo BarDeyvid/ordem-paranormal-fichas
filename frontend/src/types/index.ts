@@ -410,3 +410,71 @@ export interface RitualAprendido {
   customProps?: any;
   [key: string]: any;
 }
+
+// ============================================================
+// CONDIÇÕES & ESTADOS PARANORMAIS
+// ============================================================
+export type CategoriaCondicao = 'fisica' | 'mental' | 'sentidos' | 'critica';
+
+export type CondicaoId =
+  // Físicas
+  | 'caido'
+  | 'debilitado'
+  | 'desprevenido'
+  | 'enredado'
+  | 'exausto'
+  | 'fatigado'
+  | 'fraco'
+  | 'imovel'
+  | 'inconsciente'
+  | 'indefeso'
+  | 'lento'
+  | 'paralisado'
+  | 'pasmo'
+  | 'sangrando'
+  | 'sufocado'
+  | 'vulneravel'
+  // Mentais
+  | 'abalado'
+  | 'apavorado'
+  | 'confuso'
+  | 'enfeiticado'
+  | 'esmorecido'
+  | 'fascinado'
+  | 'frustrado'
+  | 'perturbado'
+  // Sentidos
+  | 'cego'
+  | 'surdo'
+  // Críticas
+  | 'morrendo'
+  | 'enlouquecendo';
+
+export interface PenalidadesCondicao {
+  defesa?: number;
+  deslocamentoMult?: number;
+  deslocamentoFixo?: number;
+  dadosAtributo?: Partial<Record<AtributoKey, number>>;
+  dadosTodos?: number;
+  reflexos?: number;
+  ataqueD20?: number;
+  danoPorTurno?: string;
+  imuneReacoes?: boolean;
+}
+
+export interface CondicaoDef {
+  id: CondicaoId;
+  nome: string;
+  categoria: CategoriaCondicao;
+  icone: string;
+  descricao: string;
+  resumoEfeito: string;
+  penalidades: PenalidadesCondicao;
+}
+
+export interface EstadoSobrevivencia {
+  morrendo: boolean;
+  enlouquecendo: boolean;
+  falhasMorte: number;
+  rodadasMorrendo: number;
+}

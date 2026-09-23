@@ -11,6 +11,7 @@ import { CharacterHeader } from './CharacterHeader';
 import { BonusCondicionaisPanel } from './BonusCondicionaisPanel';
 import { MatrixBackground } from './MatrixBackground';
 import { DiceTray } from '../../components/DiceRoller/DiceTray';
+import { ModalCondicoes } from '../../components/ModalCondicoes';
 
 export const FichaScreen: React.FC = () => {
   const {
@@ -79,6 +80,7 @@ export const FichaScreen: React.FC = () => {
 
       {(nexModalAberto !== null || nexPoderEditando !== null) && <ModalPoderes />}
       <DiceTray />
+      <ModalCondicoes />
       </div>
     </div>
   );

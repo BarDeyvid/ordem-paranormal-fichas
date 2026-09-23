@@ -8,7 +8,10 @@ import type {
   AbaModalPoderes,
   VersaoRitual,
   ResultadoRolagem,
+  CondicaoId,
+  EstadoSobrevivencia,
 } from '../types';
+import { calcularPenalidadesCondicoes, type ResumoPenalidadesCalculadas } from '../data/condicoes';
 import { rolarPericia, rolarAtaque, rolarDano, rolarLivre } from '../services/diceRoller';
 import { usePoderes } from '../hooks/usePoderes';
 import { usePericias } from '../hooks/usePericias';
@@ -163,6 +166,20 @@ interface RPGContextType {
   executarRolagemDano: (armaNome: string, expressaoDano: string, multCritico?: number, isCritico?: boolean) => ResultadoRolagem;
   executarRolagemLivre: (qtd: number, faces: number, mod?: number, keepMode?: 'highest' | 'lowest' | 'all', descricao?: string) => ResultadoRolagem;
   limparHistoricoRolagens: () => void;
+  condicoesAtivas: CondicaoId[];
+  setCondicoesAtivas: React.Dispatch<React.SetStateAction<CondicaoId[]>>;
+  toggleCondicao: (id: CondicaoId) => void;
+  adicionarCondicao: (id: CondicaoId) => void;
+  removerCondicao: (id: CondicaoId) => void;
+  limparCondicoes: () => void;
+  modalCondicoesAberto: boolean;
+  setModalCondicoesAberto: React.Dispatch<React.SetStateAction<boolean>>;
+  penalidadesCondicoes: ResumoPenalidadesCalculadas;
+  estadoSobrevivencia: EstadoSobrevivencia;
+  setEstadoSobrevivencia: React.Dispatch<React.SetStateAction<EstadoSobrevivencia>>;
+  estabilizarMorrendo: () => void;
+  estabilizarEnlouquecendo: () => void;
+  registrarFalhaMorte: () => void;
 }
 
 const RPGContext = createContext<RPGContextType | null>(null);
@@ -222,6 +239,100 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const [historicoRolagens, setHistoricoRolagens] = useState<ResultadoRolagem[]>([]);
   const [ultimaRolagem, setUltimaRolagem] = useState<ResultadoRolagem | null>(null);
   const [diceTrayAberto, setDiceTrayAberto] = useState<boolean>(false);
+
+  // Estados de Condições & Sobrevivência
+  const [condicoesAtivas, setCondicoesAtivas] = useState<CondicaoId[]>([]);
+  const [modalCondicoesAberto, setModalCondicoesAberto] = useState<boolean>(false);
+  const [estadoSobrevivencia, setEstadoSobrevivencia] = useState<EstadoSobrevivencia>({
+    morrendo: false,
+    enlouquecendo: false,
+    falhasMorte: 0,
+    rodadasMorrendo: 0,
+  });
+
+  const penalidadesCondicoes = useMemo(() => {
+    return calcularPenalidadesCondicoes(condicoesAtivas);
+  }, [condicoesAtivas]);
+
+  const toggleCondicao = useCallback((id: CondicaoId) => {
+    setCondicoesAtivas(prev =>
+      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
+    );
+  }, []);
+
+  const adicionarCondicao = useCallback((id: CondicaoId) => {
+    setCondicoesAtivas(prev => (prev.includes(id) ? prev : [...prev, id]));
+  }, []);
+
+  const removerCondicao = useCallback((id: CondicaoId) => {
+    setCondicoesAtivas(prev => prev.filter(c => c !== id));
+  }, []);
+
+  const limparCondicoes = useCallback(() => {
+    setCondicoesAtivas([]);
+    setEstadoSobrevivencia({
+      morrendo: false,
+      enlouquecendo: false,
+      falhasMorte: 0,
+      rodadasMorrendo: 0,
+    });
+  }, []);
+
+  const estabilizarMorrendo = useCallback(() => {
+    setCondicoesAtivas(prev => prev.filter(c => c !== 'morrendo'));
+    setEstadoSobrevivencia(prev => ({
+      ...prev,
+      morrendo: false,
+      falhasMorte: 0,
+      rodadasMorrendo: 0,
+    }));
+    if ((status.pvAtual ?? 0) <= 0) {
+      status.setPvAtual(1);
+    }
+  }, [status]);
+
+  const estabilizarEnlouquecendo = useCallback(() => {
+    setCondicoesAtivas(prev => {
+      const sem = prev.filter(c => c !== 'enlouquecendo');
+      return sem.includes('perturbado') ? sem : [...sem, 'perturbado'];
+    });
+    setEstadoSobrevivencia(prev => ({
+      ...prev,
+      enlouquecendo: false,
+    }));
+    if ((status.sanAtual ?? 0) <= 0) {
+      status.setSanAtual(1);
+    }
+  }, [status]);
+
+  const registrarFalhaMorte = useCallback(() => {
+    setEstadoSobrevivencia(prev => ({
+      ...prev,
+      falhasMorte: Math.min(3, prev.falhasMorte + 1),
+    }));
+  }, []);
+
+  // Monitora 0 PV para Morrendo
+  useEffect(() => {
+    if (status.pvAtual === 0 && status.pvMax > 0) {
+      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev : [...prev, 'morrendo']));
+      setEstadoSobrevivencia(prev => ({ ...prev, morrendo: true }));
+    } else if (status.pvAtual !== null && status.pvAtual > 0) {
+      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev.filter(c => c !== 'morrendo') : prev));
+      setEstadoSobrevivencia(prev => (prev.morrendo ? { ...prev, morrendo: false, falhasMorte: 0, rodadasMorrendo: 0 } : prev));
+    }
+  }, [status.pvAtual, status.pvMax]);
+
+  // Monitora 0 SAN para Enlouquecendo
+  useEffect(() => {
+    if (!regras['sem_sanidade'] && status.sanAtual === 0 && status.sanMax > 0) {
+      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev : [...prev, 'enlouquecendo']));
+      setEstadoSobrevivencia(prev => ({ ...prev, enlouquecendo: true }));
+    } else if (status.sanAtual !== null && status.sanAtual > 0) {
+      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev.filter(c => c !== 'enlouquecendo') : prev));
+      setEstadoSobrevivencia(prev => (prev.enlouquecendo ? { ...prev, enlouquecendo: false } : prev));
+    }
+  }, [status.sanAtual, status.sanMax, regras]);
 
   const toggleRegra = useCallback((nome: string) => {
     setRegras(prev => {
@@ -593,7 +704,7 @@ const atributosFinais = useMemo(() => {
     return acc + defVal;
   }, 0);
 
-  const defesaTotal = 10 + atributos.AGI + bonusAtributos.AGI + defEquip + defOutros + defOutrosBonusRegra4 + defOutrosBonusRegra12 + defOutrosBonusRegra21 + defOutrosBonusRegra25 + totalDefesaProtecoes + (bonusVestimentas?.defesa || 0) + (bonusMaldicoes?.defesa || 0);
+  const defesaTotal = 10 + atributos.AGI + bonusAtributos.AGI + defEquip + defOutros + defOutrosBonusRegra4 + defOutrosBonusRegra12 + defOutrosBonusRegra21 + defOutrosBonusRegra25 + totalDefesaProtecoes + (bonusVestimentas?.defesa || 0) + (bonusMaldicoes?.defesa || 0) + penalidadesCondicoes.penalidadeDefesa;
 
   // ============================================================
   // UTILITÁRIOS
@@ -614,6 +725,8 @@ const atributosFinais = useMemo(() => {
     setProtecoes([]);
     setResistencias([]);
     setProficiencias([]);
+    setCondicoesAtivas([]);
+    setEstadoSobrevivencia({ morrendo: false, enlouquecendo: false, falhasMorte: 0, rodadasMorrendo: 0 });
     status.resetarStatus();
   }, [status]);
 
@@ -647,6 +760,8 @@ const atributosFinais = useMemo(() => {
     setElementoRitual({});
     setElementoRegra18(null);
     setEscolhaRegra53(null);
+    setCondicoesAtivas([]);
+    setEstadoSobrevivencia({ morrendo: false, enlouquecendo: false, falhasMorte: 0, rodadasMorrendo: 0 });
     status.resetarStatus();
     if (periciasHook?.setPericiasStatus) periciasHook.setPericiasStatus({});
     if (poderesHook?.setPoderesEscolhidos) poderesHook.setPoderesEscolhidos({});
@@ -703,18 +818,29 @@ const atributosFinais = useMemo(() => {
   }, []);
 
   const executarRolagemPericia = useCallback((periciaNome: string, atributoNome: AtributoKey, bonusTotal: number) => {
-    const valorAtributo = atributosFinais[atributoNome] ?? 1;
-    const resultado = rolarPericia(periciaNome, valorAtributo, bonusTotal, atributoNome);
+    const valorAtributoBase = atributosFinais[atributoNome] ?? 1;
+    const penalidadeAttr = penalidadesCondicoes.penalidadeDadosAtributos[atributoNome] || 0;
+    const penalidadeGeral = penalidadesCondicoes.penalidadeDadosTodos || 0;
+    const penalidadeTotalDados = penalidadeAttr + penalidadeGeral;
+    const valorAtributoFinal = Math.max(0, valorAtributoBase + penalidadeTotalDados);
+
+    const resultado = rolarPericia(periciaNome, valorAtributoFinal, bonusTotal, atributoNome, penalidadeTotalDados);
     registrarRolagem(resultado);
     return resultado;
-  }, [atributosFinais, registrarRolagem]);
+  }, [atributosFinais, penalidadesCondicoes, registrarRolagem]);
 
   const executarRolagemAtaque = useCallback((armaNome: string, atributoNome: AtributoKey, bonusAtaque: number, margemCritico: number = 20, periciaUsada: string = 'Pontaria') => {
-    const valorAtributo = atributosFinais[atributoNome] ?? 1;
-    const resultado = rolarAtaque(armaNome, valorAtributo, bonusAtaque, margemCritico, periciaUsada);
+    const valorAtributoBase = atributosFinais[atributoNome] ?? 1;
+    const penalidadeAttr = penalidadesCondicoes.penalidadeDadosAtributos[atributoNome] || 0;
+    const penalidadeGeral = penalidadesCondicoes.penalidadeDadosTodos || 0;
+    const penalidadeAtaque = penalidadesCondicoes.penalidadeAtaque || 0;
+    const penalidadeTotalDados = penalidadeAttr + penalidadeGeral + penalidadeAtaque;
+    const valorAtributoFinal = Math.max(0, valorAtributoBase + penalidadeTotalDados);
+
+    const resultado = rolarAtaque(armaNome, valorAtributoFinal, bonusAtaque, margemCritico, periciaUsada, penalidadeTotalDados);
     registrarRolagem(resultado);
     return resultado;
-  }, [atributosFinais, registrarRolagem]);
+  }, [atributosFinais, penalidadesCondicoes, registrarRolagem]);
 
   const executarRolagemDano = useCallback((armaNome: string, expressaoDano: string, multCritico: number = 2, isCritico: boolean = false) => {
     const resultado = rolarDano(armaNome, expressaoDano, multCritico, isCritico);
@@ -807,7 +933,21 @@ const atributosFinais = useMemo(() => {
     executarRolagemAtaque,
     executarRolagemDano,
     executarRolagemLivre,
-    limparHistoricoRolagens
+    limparHistoricoRolagens,
+    condicoesAtivas,
+    setCondicoesAtivas,
+    toggleCondicao,
+    adicionarCondicao,
+    removerCondicao,
+    limparCondicoes,
+    modalCondicoesAberto,
+    setModalCondicoesAberto,
+    penalidadesCondicoes,
+    estadoSobrevivencia,
+    setEstadoSobrevivencia,
+    estabilizarMorrendo,
+    estabilizarEnlouquecendo,
+    registrarFalhaMorte,
   };
 
   return <RPGContext.Provider value={value}>{children}</RPGContext.Provider>;

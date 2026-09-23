@@ -33,6 +33,8 @@ export function serializeFicha(rpg: any): Record<string, any> {
     escolhaRegra53: rpg.escolhaRegra53,
     nomeEditando: rpg.nomeEditando,
     jogadorEditando: rpg.jogadorEditando,
+    condicoesAtivas: rpg.condicoesAtivas,
+    estadoSobrevivencia: rpg.estadoSobrevivencia,
 
     // Status Hook
     status: {
@@ -113,6 +115,8 @@ export function loadFichaIntoContext(data: any, rpg: any): void {
   if (data.escolhaRegra53 !== undefined && rpg.setEscolhaRegra53) rpg.setEscolhaRegra53(data.escolhaRegra53);
   if (data.nomeEditando !== undefined && rpg.setNomeEditando) rpg.setNomeEditando(data.nomeEditando);
   if (data.jogadorEditando !== undefined && rpg.setJogadorEditando) rpg.setJogadorEditando(data.jogadorEditando);
+  if (data.condicoesAtivas !== undefined && rpg.setCondicoesAtivas) rpg.setCondicoesAtivas(data.condicoesAtivas);
+  if (data.estadoSobrevivencia !== undefined && rpg.setEstadoSobrevivencia) rpg.setEstadoSobrevivencia(data.estadoSobrevivencia);
 
   if (data.regras !== undefined && rpg.setRegras) {
     rpg.setRegras(data.regras);

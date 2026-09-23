@@ -26,7 +26,8 @@ export function rolarPericia(
   periciaNome: string,
   atributoValor: number,
   bonusTotal: number,
-  atributoNome: string
+  atributoNome: string,
+  penalidadeDados: number = 0
 ): ResultadoRolagem {
   const attr = Math.max(0, atributoValor);
   const qtdDados = attr === 0 ? 2 : attr;
@@ -77,8 +78,8 @@ export function rolarPericia(
   const detalhes = `${dadosStr} ${sinalMod}`;
 
   const subtitulo = attr === 0 
-    ? `Atributo ${atributoNome} 0 (Desvantagem: 2d20 escolhe o pior)` 
-    : `Atributo ${atributoNome} ${attr} (${attr}d20 escolhe o melhor)`;
+    ? `Atributo ${atributoNome} ${penalidadeDados < 0 ? `(${penalidadeDados}d20) ` : ''}(Desvantagem: 2d20 escolhe o pior)` 
+    : `Atributo ${atributoNome} ${attr} ${penalidadeDados < 0 ? `(${penalidadeDados}d20) ` : ''}(${attr}d20 escolhe o melhor)`;
 
   return {
     id: gerarId(),
@@ -105,7 +106,8 @@ export function rolarAtaque(
   atributoValor: number,
   bonusAtaque: number,
   margemCritico: number = 20,
-  periciaUsada: string = 'Pontaria'
+  periciaUsada: string = 'Pontaria',
+  penalidadeDados: number = 0
 ): ResultadoRolagem {
   const attr = Math.max(0, atributoValor);
   const qtdDados = attr === 0 ? 2 : attr;
@@ -154,9 +156,10 @@ export function rolarAtaque(
   const sinalMod = bonusAtaque >= 0 ? `+ ${bonusAtaque}` : `- ${Math.abs(bonusAtaque)}`;
   const detalhes = `${dadosStr} ${sinalMod}`;
 
+  const infoPenalidade = penalidadeDados < 0 ? ` (${penalidadeDados}d20)` : '';
   const subtitulo = ehCritico
-    ? `Ataque com ${periciaUsada} (Ameaça de Crítico na margem ${margemCritico}!)`
-    : `Ataque com ${periciaUsada} (Margem de Crítico: ${margemCritico})`;
+    ? `Ataque com ${periciaUsada}${infoPenalidade} (Ameaça de Crítico na margem ${margemCritico}!)`
+    : `Ataque com ${periciaUsada}${infoPenalidade} (Margem de Crítico: ${margemCritico})`;
 
   return {
     id: gerarId(),

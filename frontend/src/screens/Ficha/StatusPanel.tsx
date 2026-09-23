@@ -4,6 +4,7 @@ import { NEX_OPTIONS, CORES_ELEMENTOS, obterElementoOpressor } from '../../utils
 import { ModalAfinidade } from '../../components/ModalAfinidade';
 import { CustomSelect } from '../../components/CustomSelect';
 import { BarraStatus } from '../../components/BarraStatus';
+import { CONDICOES_MAP } from '../../data/condicoes';
 
 const NIVEL_OPTIONS = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -25,6 +26,16 @@ export const StatusPanel: React.FC = () => {
     escolhaRegra53, setEscolhaRegra53,
     bonusVestimentas,
     bonusMaldicoes,
+    condicoesAtivas,
+    removerCondicao,
+    setModalCondicoesAberto,
+    penalidadesCondicoes,
+    estadoSobrevivencia,
+    estabilizarMorrendo,
+    estabilizarEnlouquecendo,
+    registrarFalhaMorte,
+    executarRolagemPericia,
+    periciasHook,
   } = useRPG();
 
   const regraNexExperiencia = regras['nex_experiencia'];
@@ -86,6 +97,30 @@ export const StatusPanel: React.FC = () => {
       }
     }
   }, [peMax, hasPeTemp, peTempAtual, setPeAtual, setPeTempAtual]);
+
+  const bonusFortitude = (periciasHook?.pericias?.['Fortitude']?.treino || 0) + (periciasHook?.pericias?.['Fortitude']?.outros || 0);
+  const handleTesteMorte = useCallback(() => {
+    const res = executarRolagemPericia('Fortitude', 'VIG', bonusFortitude);
+    if (res.total >= 20) {
+      estabilizarMorrendo();
+    } else {
+      if (res.total <= 15) {
+        registrarFalhaMorte();
+        registrarFalhaMorte();
+        registrarFalhaMorte();
+      } else {
+        registrarFalhaMorte();
+      }
+    }
+  }, [bonusFortitude, executarRolagemPericia, estabilizarMorrendo, registrarFalhaMorte]);
+
+  const bonusVontade = (periciasHook?.pericias?.['Vontade']?.treino || 0) + (periciasHook?.pericias?.['Vontade']?.outros || 0);
+  const handleTesteSanidade = useCallback(() => {
+    const res = executarRolagemPericia('Vontade', 'PRE', bonusVontade);
+    if (res.total >= 20) {
+      estabilizarEnlouquecendo();
+    }
+  }, [bonusVontade, executarRolagemPericia, estabilizarEnlouquecendo]);
 
   return (
     <div>
@@ -167,7 +202,13 @@ export const StatusPanel: React.FC = () => {
               type="number"
               value={(() => {
                 const bonusDesloc = (regrasAutomaticasAtivas.has(12) ? 3 : 0) + (regrasAutomaticasAtivas.has(22) ? 3 : 0) + (regrasAutomaticasAtivas.has(41) ? 3 : 0) + (bonusVestimentas?.deslocamento || 0) + (bonusMaldicoes?.deslocamento || 0);
-                return deslocM + bonusDesloc;
+                let baseM = deslocM + bonusDesloc;
+                if (penalidadesCondicoes.deslocamentoFixo !== null) {
+                  baseM = penalidadesCondicoes.deslocamentoFixo;
+                } else {
+                  baseM = Math.floor(baseM * penalidadesCondicoes.deslocamentoMultiplicador);
+                }
+                return baseM;
               })()}
               onChange={(e) => {
                 const bonusDesloc = (regrasAutomaticasAtivas.has(12) ? 3 : 0) + (regrasAutomaticasAtivas.has(22) ? 3 : 0) + (regrasAutomaticasAtivas.has(41) ? 3 : 0) + (bonusVestimentas?.deslocamento || 0) + (bonusMaldicoes?.deslocamento || 0);
@@ -183,8 +224,13 @@ export const StatusPanel: React.FC = () => {
               type="number"
               value={(() => {
                 const bonusDesloc = (regrasAutomaticasAtivas.has(12) ? 3 : 0) + (regrasAutomaticasAtivas.has(22) ? 3 : 0) + (regrasAutomaticasAtivas.has(41) ? 3 : 0) + (bonusVestimentas?.deslocamento || 0) + (bonusMaldicoes?.deslocamento || 0);
-                const bonusDeslocQ = Math.floor(bonusDesloc / 1.5);
-                return deslocQ + bonusDeslocQ;
+                let baseM = deslocM + bonusDesloc;
+                if (penalidadesCondicoes.deslocamentoFixo !== null) {
+                  baseM = penalidadesCondicoes.deslocamentoFixo;
+                } else {
+                  baseM = Math.floor(baseM * penalidadesCondicoes.deslocamentoMultiplicador);
+                }
+                return Math.floor(baseM / 1.5);
               })()}
               onChange={(e) => {
                 const bonusDesloc = (regrasAutomaticasAtivas.has(12) ? 3 : 0) + (regrasAutomaticasAtivas.has(22) ? 3 : 0) + (regrasAutomaticasAtivas.has(41) ? 3 : 0) + (bonusVestimentas?.deslocamento || 0) + (bonusMaldicoes?.deslocamento || 0);
@@ -311,6 +357,160 @@ export const StatusPanel: React.FC = () => {
             tempMax={pdTempMax}
             setTempMax={setPdTempMax}
           />
+        )}
+      </div>
+
+      {/* BANNER DE EMERGÊNCIA: MORRENDO */}
+      {estadoSobrevivencia.morrendo && (
+        <div className="mb-4 rounded-lg border-2 border-red-600 bg-red-950/80 p-3.5 shadow-[0_0_20px_rgba(239,68,68,0.4)]">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl animate-bounce">☠️</span>
+              <div>
+                <h4 className="font-display text-sm font-black uppercase tracking-wider text-red-300">
+                  Estado Crítico: Morrendo!
+                </h4>
+                <p className="text-[11px] text-red-200/80">
+                  O agente está inconsciente (0 PV). Falhas de morte: {estadoSobrevivencia.falhasMorte}/3
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3].map((num) => (
+                <span
+                  key={num}
+                  className={`h-5 w-5 rounded-full border flex items-center justify-center text-[10px] font-black ${
+                    estadoSobrevivencia.falhasMorte >= num
+                      ? 'bg-red-600 border-red-400 text-white'
+                      : 'border-red-900 bg-red-950/60 text-red-700'
+                  }`}
+                >
+                  ✕
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-2">
+            <button
+              type="button"
+              onClick={handleTesteMorte}
+              className="flex-1 rounded bg-red-600 hover:bg-red-500 py-1.5 px-3 text-xs font-bold uppercase tracking-wider text-white shadow transition flex items-center justify-center gap-1.5"
+            >
+              <span>🎲</span>
+              <span>Teste de Morte (Fortitude DT 20)</span>
+            </button>
+            <button
+              type="button"
+              onClick={estabilizarMorrendo}
+              className="rounded bg-zinc-800 hover:bg-zinc-700 py-1.5 px-3 text-xs font-bold uppercase tracking-wider text-zinc-200 border border-zinc-700 transition"
+              title="Estabilizado por socorro médico ou cura"
+            >
+              Estabilizar (1 PV)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* BANNER DE EMERGÊNCIA: ENLOUQUECENDO */}
+      {estadoSobrevivencia.enlouquecendo && (
+        <div className="mb-4 rounded-lg border-2 border-purple-600 bg-purple-950/80 p-3.5 shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl animate-bounce">🕳️</span>
+              <div>
+                <h4 className="font-display text-sm font-black uppercase tracking-wider text-purple-300">
+                  Colapso Mental: Enlouquecendo!
+                </h4>
+                <p className="text-[11px] text-purple-200/80">
+                  A mente do agente está sendo absorvida pelo Outro Lado (0 SAN).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-2">
+            <button
+              type="button"
+              onClick={handleTesteSanidade}
+              className="flex-1 rounded bg-purple-600 hover:bg-purple-500 py-1.5 px-3 text-xs font-bold uppercase tracking-wider text-white shadow transition flex items-center justify-center gap-1.5"
+            >
+              <span>🧠</span>
+              <span>Teste de Lucidez (Vontade DT 20)</span>
+            </button>
+            <button
+              type="button"
+              onClick={estabilizarEnlouquecendo}
+              className="rounded bg-zinc-800 hover:bg-zinc-700 py-1.5 px-3 text-xs font-bold uppercase tracking-wider text-zinc-200 border border-zinc-700 transition"
+              title="Conter delírio com apoio de aliados"
+            >
+              Conter Delírio (1 SAN)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* SEÇÃO DE CONDIÇÕES & ESTADOS PARANORMAIS */}
+      <div className="mb-6 rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm">🩹</span>
+            <span className="font-display text-xs font-bold uppercase tracking-wider text-zinc-300">
+              Condições Ativas ({condicoesAtivas.length})
+            </span>
+            {penalidadesCondicoes.penalidadeDefesa !== 0 && (
+              <span className="rounded bg-red-950/60 border border-red-800/80 px-1.5 py-0.2 text-[10px] font-bold text-red-400">
+                Def {penalidadesCondicoes.penalidadeDefesa}
+              </span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setModalCondicoesAberto(true)}
+            className="rounded bg-zinc-800 hover:bg-emerald-950/60 border border-zinc-700 hover:border-emerald-700/80 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-zinc-200 hover:text-emerald-400 transition flex items-center gap-1"
+          >
+            <span>+</span>
+            <span>Gerenciar</span>
+          </button>
+        </div>
+
+        {condicoesAtivas.length === 0 ? (
+          <p className="text-xs text-zinc-500 italic py-1">
+            Nenhuma condição ativa no momento.
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {condicoesAtivas.map(id => {
+              const c = CONDICOES_MAP[id];
+              if (!c) return null;
+              return (
+                <div
+                  key={id}
+                  className="group flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900/90 pl-2 pr-1.5 py-0.5 text-xs text-zinc-200 shadow-sm transition hover:border-zinc-500"
+                  title={`${c.nome}: ${c.resumoEfeito}`}
+                >
+                  <span className="text-xs select-none">{c.icone}</span>
+                  <span 
+                    className="font-bold cursor-pointer hover:underline"
+                    onClick={() => setModalCondicoesAberto(true)}
+                  >
+                    {c.nome}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removerCondicao(id);
+                    }}
+                    className="ml-0.5 rounded-full text-zinc-500 hover:text-red-400 hover:bg-zinc-800 p-0.5 transition"
+                    title={`Remover ${c.nome}`}
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
