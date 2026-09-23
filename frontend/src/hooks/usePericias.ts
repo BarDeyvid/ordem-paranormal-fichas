@@ -17,6 +17,7 @@ interface UsePericiasReturn {
   debugRegra33: { avaliou: boolean, evalJaTinha: boolean };
   bonusRegra40: Record<string, number>;
   bonusVestimentas: Record<string, number>;
+  setPericiasStatus: (p: PericiasMap) => void;
 }
 
 export function usePericias(
@@ -459,6 +460,7 @@ export function usePericias(
     regrasAtivas,
     jaTinhaProfissao33,
     debugRegra33: { avaliou: avaliouRegra33, evalJaTinha: jaTinhaProfissao33 },
-    bonusRegra40
+    bonusRegra40,
+    setPericiasStatus: setPericias
   };
 }

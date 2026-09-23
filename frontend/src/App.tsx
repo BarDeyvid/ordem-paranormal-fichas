@@ -3,6 +3,7 @@ import { AtributosScreen } from './screens/AtributosScreen';
 import { OrigensScreen } from './screens/OrigensScreen';
 import { ClasseScreen } from './screens/ClasseScreen';
 import { FichaScreen } from './screens/Ficha';
+import { GaleriaScreen } from './screens/GaleriaScreen';
 
 function Rotas() {
   const { telaAtual } = useRPG();
@@ -14,6 +15,8 @@ function Rotas() {
       return <ClasseScreen />;
     case 'ficha':
       return <FichaScreen />;
+    case 'galeria':
+      return <GaleriaScreen />;
     case 'atributos':
     default:
       return <AtributosScreen />;
@@ -31,10 +34,10 @@ function App() {
 function AppContent() {
   const { telaAtual } = useRPG();
   
-  const isFicha = telaAtual === 'ficha';
+  const isFullScreen = telaAtual === 'ficha' || telaAtual === 'galeria';
 
   return (
-    <div className={`min-h-screen w-full bg-zinc-950 overflow-x-hidden ${isFicha ? '' : 'p-4 md:p-6'}`}>
+    <div className={`min-h-screen w-full bg-zinc-950 overflow-x-hidden ${isFullScreen ? '' : 'p-4 md:p-6'}`}>
       <Rotas />
     </div>
   );

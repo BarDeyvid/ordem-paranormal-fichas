@@ -100,8 +100,13 @@ interface RPGContextType {
   setPoderesModalExpandidos: React.Dispatch<React.SetStateAction<number[]>>;
   nexPoderEditando: number | string | null;
   setNexPoderEditando: React.Dispatch<React.SetStateAction<number | string | null>>;
+  fichaIdAtual: string | null;
+  setFichaIdAtual: React.Dispatch<React.SetStateAction<string | null>>;
   nomeEditando: string;
   setNomeEditando: React.Dispatch<React.SetStateAction<string>>;
+  jogadorEditando: string;
+  setJogadorEditando: React.Dispatch<React.SetStateAction<string>>;
+  resetarFichaParaNova: () => void;
   descricaoEditando: string;
   setDescricaoEditando: React.Dispatch<React.SetStateAction<string>>;
   afinidadeEditando: string;
@@ -178,7 +183,9 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const [nexModalAberto, setNexModalAberto] = useState<number | null>(null);
   const [poderesModalExpandidos, setPoderesModalExpandidos] = useState<number[]>([]);
   const [nexPoderEditando, setNexPoderEditando] = useState<number | string | null>(null);
+  const [fichaIdAtual, setFichaIdAtual] = useState<string | null>(null);
   const [nomeEditando, setNomeEditando] = useState('');
+  const [jogadorEditando, setJogadorEditando] = useState('');
   const [descricaoEditando, setDescricaoEditando] = useState('');
   const [afinidadeEditando, setAfinidadeEditando] = useState('');
   const [skillCombatente1, setSkillCombatente1] = useState('');
@@ -595,6 +602,55 @@ const atributosFinais = useMemo(() => {
     status.resetarStatus();
   }, [status]);
 
+  const resetarFichaParaNova = useCallback(() => {
+    setFichaIdAtual(null);
+    setAtributos({ FOR: 1, AGI: 1, INT: 1, PRE: 1, VIG: 1 });
+    setBonusAtributos({ FOR: 0, AGI: 0, INT: 0, PRE: 0, VIG: 0 });
+    setSkillCombatente1('');
+    setSkillCombatente2('');
+    setClasse(null);
+    setNex(5);
+    setNivel(1);
+    setNomeEditando('');
+    setJogadorEditando('');
+    setDescricaoEditando('');
+    setAfinidadeEditando('');
+    setAfinidadeEscolhida(null);
+    setDefEquip(0);
+    setDefOutros(0);
+    setBloqueioData({ base: 0, bonusVig: false });
+    setProtecoes([]);
+    setSentidos([]);
+    setImunidades([]);
+    setVulnerabilidades([]);
+    setResistencias([]);
+    setProficiencias([]);
+    setPoderesExtras({});
+    setProgressaoNexRecusados([]);
+    setProgressaoNexEditados({});
+    setVersaoRitual({});
+    setElementoRitual({});
+    setElementoRegra18(null);
+    setEscolhaRegra53(null);
+    status.resetarStatus();
+    if (periciasHook?.setPericiasStatus) periciasHook.setPericiasStatus({});
+    if (poderesHook?.setPoderesEscolhidos) poderesHook.setPoderesEscolhidos({});
+    if (origensHook?.setOrigemSelecionada) origensHook.setOrigemSelecionada(null);
+    if (rituaisHook?.setRituaisAprendidos) rituaisHook.setRituaisAprendidos([]);
+    if (armasHook?.setArmasInventario) armasHook.setArmasInventario([]);
+    if (protecoesHook?.setProtecoesInventario) protecoesHook.setProtecoesInventario([]);
+    if (municoesHook?.setMunicoesInventario) municoesHook.setMunicoesInventario([]);
+    if (itensHook?.setItensInventario) itensHook.setItensInventario([]);
+    if (itensAmaldicoadosHook?.setItensAmaldicoadosInventario) itensAmaldicoadosHook.setItensAmaldicoadosInventario([]);
+    if (modificacoesHook?.setModificacoesAtivas) modificacoesHook.setModificacoesAtivas({});
+    if (trilhasHook?.setTrilhaSelecionada) trilhasHook.setTrilhaSelecionada(null);
+    if (trilhasHook?.setVersatilidadeSelecionada) trilhasHook.setVersatilidadeSelecionada(null);
+    setTelaAtual('atributos');
+  }, [
+    status, periciasHook, poderesHook, origensHook, rituaisHook, armasHook,
+    protecoesHook, municoesHook, itensHook, itensAmaldicoadosHook, modificacoesHook, trilhasHook
+  ]);
+
   // Sincronização automática com a Mesa Digital (Battlemat) em tempo real
   useEffect(() => {
     if (!classe) return;
@@ -657,6 +713,9 @@ const atributosFinais = useMemo(() => {
     proficiencias, setProficiencias,
     regrasAtivas, setRegrasAtivas,
     bloquearLetras, refazerPersonagem,
+    fichaIdAtual, setFichaIdAtual,
+    jogadorEditando, setJogadorEditando,
+    resetarFichaParaNova,
     filtroHabilidades, setFiltroHabilidades,
     habilidadesExpandidas, setHabilidadesExpandidas,
     nexModalAberto, setNexModalAberto,

@@ -2,7 +2,44 @@
 // TIPOS GLOBAIS — TUDO TIPADO
 // ============================================================
 
-export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha';
+export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha' | 'galeria';
+
+export interface FichaSummary {
+  id: string;
+  nome: string;
+  jogador?: string;
+  classe: string;
+  nex: number;
+  nivel?: number;
+  origem?: string;
+  trilha?: string;
+  patente?: string;
+  pvAtual?: number;
+  pvMax?: number;
+  sanAtual?: number;
+  sanMax?: number;
+  peAtual?: number;
+  peMax?: number;
+  avatarUrl?: string;
+  dataAtualizacao: string;
+  dataCriacao?: string;
+}
+
+export interface FichaStorage {
+  id: string;
+  nome: string;
+  jogador?: string;
+  classe: string;
+  nex: number;
+  origem?: string;
+  trilha?: string;
+  patente?: string;
+  avatarUrl?: string;
+  dataAtualizacao: string;
+  dataCriacao?: string;
+  conteudo: Record<string, any>;
+}
+
 
 export type ClasseRPG = 'Combatente' | 'Especialista' | 'Ocultista' | null;
 

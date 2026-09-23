@@ -34,6 +34,18 @@ export const AtributosScreen: React.FC = () => {
 
   return (
     <div className="mx-auto w-full max-w-5xl">
+      <div className="flex justify-end mb-2">
+        <button
+          type="button"
+          onClick={() => setTelaAtual('galeria')}
+          className="flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400 transition border border-zinc-700 shadow-sm"
+          title="Ver Galeria de Dossiês Salvos"
+        >
+          <span>📂</span>
+          <span>Galeria de Agentes</span>
+        </button>
+      </div>
+
       <header className="mb-10 flex flex-col items-center text-center">
         <h1 className="font-display mb-2 text-3xl uppercase tracking-wide text-zinc-100">
           Criação de Personagem

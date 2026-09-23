@@ -67,6 +67,8 @@ export const CharacterHeader: React.FC = () => {
             <input
               type="text"
               placeholder="Seu Nome"
+              value={rpg.jogadorEditando || ''}
+              onChange={(e) => rpg.setJogadorEditando(e.target.value)}
               className="flex-1 border-b border-zinc-200 bg-transparent py-0.5 text-sm font-bold text-zinc-100 outline-none transition focus:border-green-500"
             />
           </div>
