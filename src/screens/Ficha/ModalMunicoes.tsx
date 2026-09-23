@@ -22,7 +22,7 @@ export function ModalMunicoes({ onFechar, armaFiltroNome, armaFiltroCategoria, o
     return () => { document.body.style.overflow = 'unset'; };
   }, []);
 
-  const { municoesHook, regrasAutomaticasAtivas } = useRPG();
+  const { municoesHook, regrasAutomaticasAtivas, itensHook, armasHook } = useRPG();
   const [busca, setBusca] = useState('');
   
   const [mostrarFiltrosAvançados, setMostrarFiltrosAvançados] = useState(false);
@@ -35,9 +35,36 @@ export function ModalMunicoes({ onFechar, armaFiltroNome, armaFiltroCategoria, o
   const [filtroTipo, setFiltroTipo] = useState<string>('Todos');
 
   // Filtra de acordo com o contexto (todas, ou apenas compatíveis com uma arma específica)
-  const municoesDisponiveis = (armaFiltroNome && armaFiltroCategoria)
+  let municoesDisponiveis = (armaFiltroNome && armaFiltroCategoria)
     ? municoesHook.getMunicoesCompativeis(armaFiltroNome, armaFiltroCategoria)
     : (municoesHook.municoes || []);
+
+  if (armaFiltroNome?.toLowerCase().includes('estilingue')) {
+    const espacosEstilingue = armasHook?.armasInventario.find(a => a.arma.Nome_Item === armaFiltroNome)?.arma['Espaços_Item'] || 1;
+    const bolinhas = {
+      Codigo_Municao: 9991,
+      Nome_Item: "Bolinhas",
+      Descricao_Item: "Pequenas esferas usadas em estilingues. Categoria 0.",
+      Tipo_Arma: "Bolinhas",
+      Categoria_Item: "0",
+      'Espaços_Item': espacosEstilingue
+    };
+    
+    const granadasComoMunicao = (itensHook?.itens || [])
+      .filter(i => i.Nome_Item.toLowerCase().includes('granada') || i.Nome_Item.toLowerCase().includes('explosiv'))
+      .map(g => ({
+         Codigo_Municao: 9992000 + g.Codigo_Item,
+         Nome_Item: g.Nome_Item,
+         Descricao_Item: g.Desc_Item || '',
+         Tipo_Arma: "Granada",
+         Categoria_Item: String(g.Categoria_Item),
+         'Espaços_Item': g.Espacos_Itens,
+         granada_dano: g.Dano_Item,
+         granada_dt: String(g.Dt_Item || '')
+      }));
+
+    municoesDisponiveis = [bolinhas, ...granadasComoMunicao];
+  }
 
   const temFlechaExplosiva = municoesHook.municoesInventario.some(inv => inv.municao.Codigo_Municao === 67);
   

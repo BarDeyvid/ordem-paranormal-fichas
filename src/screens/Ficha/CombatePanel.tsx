@@ -488,7 +488,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 +
               </button>
             
-                {activeAmmo?.municao?.Codigo_Municao === 67 && activeAmmo.municao.granada_dano && (
+                {activeAmmo?.municao?.granada_dano && (
                   <span className="text-zinc-300 w-full">
                     <span className="font-bold text-green-400">Explosivo:</span> {activeAmmo.municao.granada_dano} (DT {activeAmmo.municao.granada_dt || '-'})
                   </span>
