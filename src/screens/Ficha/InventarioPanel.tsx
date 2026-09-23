@@ -609,7 +609,13 @@ export function InventarioPanel() {
     return true;
   });
   
-  const armasNormaisExibidas = armasExibidas; // DEBUG: Show all weapons in Armas tab
+  const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
+  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
+  
+  const armasNormaisExibidas = armasExibidas; // Temp debug: armasExibidas.filter(i => !i.arma.isAmaldicoada);
+  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
+  
+  const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
   const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
 
   const municoesSoltas = (municoesHook?.municoesInventario || []).filter(minv => {
@@ -1102,7 +1108,9 @@ export function InventarioPanel() {
                         removerArma={armasHook?.removerArma || (() => {})}
                           onEditar={() => setArmaEditandoId(item.id)}
                           onAddMunicao={() => {
-                            if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                            if (item.arma.Nome_Item === 'A Antena') {
+                              alert("Por favor, selecione um ritual (em breve modal de seleção)");
+                            } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                               setGranadaTargetArmaId(item.id);
                               setModalGranadasAberto(true);
                             } else {
@@ -1135,8 +1143,116 @@ export function InventarioPanel() {
                   ))}
                 </SortableContext>
                 {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && armasAmaldicoadasExibidas.length === 0 && (
-                    <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
-                  )}
+                  <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
+                )}
+                </>
+              )}
+
+            )}
+
+            <DragOverlay>
+              {activeDragItem?.fullItem ? (
+                <div className="w-full">
+                  {activeDragItem.type === 'arma' && <SortableArmaItem item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerArma={() => {}} stringDT={activeDragItem.stringDT || null} isOverlay onAddMunicao={() => {}} />}
+                  {activeDragItem.type === 'protecao' && <SortableProtecaoItem item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerProtecao={() => {}} toggleEquipado={() => {}} isOverlay />}
+                  {activeDragItem.type === 'item' && <SortableItemGeral item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} stringDT={null} toggleEquipado={() => {}} isOverlay />}
+                  {activeDragItem.type === 'municao' && <SortableMunicaoItem id={activeDragItem.id} item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} isOverlay />}
+                  {activeDragItem.type === 'amaldicoado' && <SortableItemAmaldicoado item={activeDragItem.fullItem} isExpanded={false} toggleExpandir={() => {}} removerItem={() => {}} stringDT={null} toggleEquipado={() => {}} isOverlay />}
+                </div>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+
+          {categoriaFiltro !== 'Armas' && categoriaFiltro !== 'Geral' && categoriaFiltro !== 'Munições' && categoriaFiltro !== 'Proteções' && categoriaFiltro !== 'Amaldiçoados' && !itensHook?.gruposUnicos.includes(categoriaFiltro) && (
+            <p className="text-center text-zinc-600 text-sm py-8">Esta categoria ainda não possui itens implementados.</p>
+          )}
+        </div>
+      </div>
+
+      <ModalArmas
+        aberto={modalArmasAberto}
+        onFechar={() => setModalArmasAberto(false)}
+      />
+      {modalMunicoesAberto && (
+        <ModalMunicoes
+          onFechar={() => setModalMunicoesAberto(false)}
+          armaFiltroNome={municaoFiltroNome}
+          armaFiltroCategoria={municaoFiltroCategoria}
+          onSelect={municao => {
+            if (municao.Codigo_Municao === 67) {
+              setFlechaExplosivaPendente(municao);
+              setModalGranadasAberto(true);
+              setModalMunicoesAberto(false);
+              return;
+            }
+            const idGerado = municoesHook?.adicionarMunicao(municao);
+            if (idGerado && municaoTargetArmaId) {
+              armasHook?.acoplarMunicao(municaoTargetArmaId, idGerado);
+            }
+            setModalMunicoesAberto(false);
+          }}
+        />
+      )}
+
+      {armaEditandoId && (
+        <ModalEditarArma
+          armaInventario={armasHook?.armasInventario.find(a => a.id === armaEditandoId)!}
+          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
+            armasHook?.editarArma(armaEditandoId, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
+          }}
+          onClose={() => setArmaEditandoId(null)}
+        />
+      )}
+
+      {editingItemAmaldicoado && itensAmaldicoadosHook && (
+        <ModalEditarItemAmaldicoado
+          itemInventario={editingItemAmaldicoado}
+          onSave={(novosDados) => itensAmaldicoadosHook.editarItem(editingItemAmaldicoado.id, novosDados)}
+          onClose={() => setEditingItemAmaldicoado(null)}
+        />
+      )}
+
+      <ModalProtecoes
+        aberto={modalProteçõesAberto}
+        onFechar={() => setModalProtecoesAberto(false)}
+      />
+      
+      <ModalItensAmaldicoados
+        aberto={modalItensAmaldicoadosAberto}
+        fechar={() => setModalItensAmaldicoadosAberto(false)}
+      />
+      <ModalItens
+        aberto={modalItensAberto}
+        onFechar={() => setModalItensAberto(false)}
+        grupoAba={abaItensAberta}
+      />
+
+      {protecaoEditandoId && (
+        <ModalEditarProtecao
+          protecao={protecoesHook?.protecoesInventario.find(p => p.id === protecaoEditandoId)!}
+          onSave={(id, dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
+            protecoesHook?.editarProtecao(protecaoEditandoId, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
+          }}
+          onClose={() => setProtecaoEditandoId(null)}
+        />
+      )}
+
+      {editingItem?.tipo === 'item' && getItemParaEditar() && (
+        <ModalEditarItem
+          itemInventario={getItemParaEditar()!}
+          onSave={(dadosEditados, modificacoes, maldicoes, maldicoesElementos) => {
+            itensHook.editarItem(editingItem.id, dadosEditados, modificacoes, maldicoes, maldicoesElementos);
+            setEditingItem(null);
+          }}
+          onClose={() => setEditingItem(null)}
+        />
+      )}
+
+      {editingItem?.tipo === 'municao' && getMunicaoParaEditar() && (
+        <ModalEditarMunicao
+          itemInventario={getMunicaoParaEditar()!}
+          onSave={(municaoEditada, modificacoes) => {
+            municoesHook.atualizarMunicao(editingItem.id, { municao: { ...getMunicaoParaEditar()!.municao, ...municaoEditada }, modificacoes });
             setEditingItem(null);
           }}
           onClose={() => setEditingItem(null)}
