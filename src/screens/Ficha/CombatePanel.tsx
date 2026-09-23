@@ -558,10 +558,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                   className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                   <span className={`transition-transform ${mostrarStatsGrupo ? 'rotate-180' : ''}`}>▼</span>
-                  Atributos do Grupo
+                  PV e RD da Arma
                 </button>
                 <Collapse isOpen={mostrarStatsGrupo}>
-                  <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
+                  <div className="flex items-center gap-4 mt-1">
                     {grupoArma.RD_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">RD:</span> {grupoArma.RD_Grupo}</span>}
                     {grupoArma.PV_Grupo != null && <span className="text-zinc-300"><span className="font-bold text-green-400">PV:</span> {grupoArma.PV_Grupo}</span>}
                   </div>
