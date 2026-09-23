@@ -1548,7 +1548,7 @@ function SortableArmaItem({
             )}
             {arma['Improvisada?'] && (
                 <span className="relative group/imp cursor-help">
-                  <span className="text-sm text-yellow-500">🛠️</span>
+                  <span className="text-sm text-yellow-500">⚠️</span>
                   <span className="absolute right-full top-1/2 -translate-y-1/2 mr-2 opacity-0 invisible group-hover/imp:opacity-100 group-hover/imp:visible transition-all duration-300 group-hover/imp:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
                     Sofre -1d20 em testes de ataque com essa arma.
                   </span>
