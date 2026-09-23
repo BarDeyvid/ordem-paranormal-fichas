@@ -486,6 +486,8 @@ export const ModalPoderes: React.FC = () => {
   }, [abaModalPoderes, setAbaModalPoderes]);
 
   if (nexPoderEditando !== null) {
+      const poderSendoEditadoNome = poderesHook.poderesEscolhidos[nexPoderEditando]?.nome || poderesHook.poderesExtras?.find(p => p.id === nexPoderEditando)?.nome || nomeEditando;
+      const ehParanormalEditando = (poderesParanormais || []).some(p => p.Nome.toLowerCase() === poderSendoEditadoNome.toLowerCase());
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div className="absolute inset-0 backdrop-blur-sm bg-black/60 transition-opacity" onClick={() => setNexPoderEditando(null)} />
@@ -543,6 +545,7 @@ export const ModalPoderes: React.FC = () => {
               </div>
             </section>
 
+            {ehParanormalEditando && (
             <section className="flex flex-col gap-3">
               <h4 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Afinidade</h4>
               <div className="overflow-hidden rounded border border-zinc-800/80 bg-zinc-900/30 focus-within:border-green-500/50 focus-within:ring-1 focus-within:ring-green-500/50 transition-all">
@@ -560,6 +563,7 @@ export const ModalPoderes: React.FC = () => {
                 />
               </div>
             </section>
+            )}
 
           </div>
 

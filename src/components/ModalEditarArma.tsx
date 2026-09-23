@@ -51,6 +51,7 @@ export function ModalEditarArma({
   const [tipoArma, setTipoArma] = useState(arma.Tipo_Arma || 'Corpo a Corpo');
   const [empunhadura, setEmpunhadura] = useState(arma.Empunhadura_Arma || 'Uma Mão');
   const [tipoDano, setTipoDano] = useState(arma.Tipo_Dano_Arma || 'Corte');
+  const [improvisada, setImprovisada] = useState(!!arma['Improvisada?']);
 
   const { modificacoesHook, maldicoesHook } = useRPG();
 

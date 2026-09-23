@@ -1823,9 +1823,7 @@ export const AbasPanel: React.FC = () => {
                                       setRitualVersaoEditando('normal');
                                     }}
                                     className="rounded bg-zinc-800 border border-zinc-700 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-300 transition hover:bg-zinc-700 hover:text-zinc-100"
-                                  >
-                                    Editar Ritual
-                                  </button>
+                                  >Editar</button>
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -1851,9 +1849,7 @@ export const AbasPanel: React.FC = () => {
                                       rituaisHook.esquecerRitual(ritual.Origem);
                                     }}
                                     className="rounded bg-green-900/30 border border-green-800 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-green-500 transition hover:bg-green-900/50 hover:text-green-400"
-                                  >
-                                    Esquecer Ritual
-                                  </button>
+                                  >Remover</button>
                                 </div>
 
                               </div>
@@ -2029,8 +2025,8 @@ export const AbasPanel: React.FC = () => {
                     <CustomSelect
                       value={ritualVersaoEditando}
                       onChange={(val) => setRitualVersaoEditando(val as any)}
-                      wrapperClassName="w-fit"
-                      className="rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700/50 focus:outline-none w-fit"
+                      wrapperClassName="w-40"
+                      className="rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700/50 focus:outline-none w-full"
                       options={[
                         { value: 'normal', label: 'Normal' },
                         ...(ritualBase.Tem_Discente ? [{ value: 'discente', label: 'Discente' }] : []),
@@ -2062,7 +2058,7 @@ export const AbasPanel: React.FC = () => {
                     if (prop.key === 'Alcance_Ritual') opts = ['Pessoal', 'Toque', 'Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
                     if (prop.key === 'Resistencia_Ritual') opts = ['Nenhuma', 'Fortitude', 'Reflexos', 'Vontade', 'Fortitude reduz à metade', 'Reflexos reduz à metade', 'Vontade reduz à metade', 'Fortitude anula', 'Reflexos anula', 'Vontade anula'];
                     if (prop.key === 'Duracao_Ritual') opts = ['Instantânea', '1 rodada', 'Cena', 'Sustentada', 'Sustentada (1 rodada)', '1 dia'];
-                    if (prop.key === 'Alvo_Ritual') opts = ['1 ser', '1 objeto', 'Você', 'Área', 'Especial'];
+                    
                     
                     if (opts && currentValue && !opts.includes(currentValue)) {
                       opts = [currentValue, ...opts];

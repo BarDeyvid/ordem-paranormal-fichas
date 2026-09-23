@@ -185,6 +185,7 @@ export interface Arma {
   Capacidade_Municao: number | null;
   dt_item: string | null;
   'Automatica?': boolean | null;
+  'Improvisada?'?: boolean | null;
   Fonte_Arma: string;
   Dano_Secundario?: string;
 }
