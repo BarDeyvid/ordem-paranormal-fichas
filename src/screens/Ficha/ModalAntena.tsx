@@ -43,7 +43,7 @@ export const ModalAntena: React.FC<ModalAntenaProps> = ({ onFechar, onSelect }) 
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onFechar} />
       
-      <div className="flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950 shadow-2xl relative max-h-[90vh]">
+      <div className="flex h-full max-h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950 shadow-2xl relative">
         <div className="flex flex-col border-b border-zinc-800 p-5 pb-4 bg-zinc-900/50">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -77,8 +77,9 @@ export const ModalAntena: React.FC<ModalAntenaProps> = ({ onFechar, onSelect }) 
                   return (
                   <div key={ritual.origem} onClick={() => toggleExpandir(ritual.origem)} className="bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
-                        <span className={getCorElemento(ritual.elemento)}>{ritual.nome}</span>
+                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate flex items-center gap-2">
+                        {ritual.nome}
+                        <span className={`text-[10px] uppercase tracking-wider ${getCorElemento(ritual.elemento)}`}>{ritual.elemento}</span>
                       </h3>
                     </div>
                     
@@ -118,8 +119,9 @@ export const ModalAntena: React.FC<ModalAntenaProps> = ({ onFechar, onSelect }) 
                   return (
                   <div key={ritual.origem} onClick={() => toggleExpandir(ritual.origem)} className="bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col overflow-hidden transition-all duration-300 ease-in-out cursor-pointer">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
-                        <span className={getCorElemento(ritual.elemento)}>{ritual.nome}</span>
+                      <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate flex items-center gap-2">
+                        {ritual.nome}
+                        <span className={`text-[10px] uppercase tracking-wider ${getCorElemento(ritual.elemento)}`}>{ritual.elemento}</span>
                       </h3>
                     </div>
                     
