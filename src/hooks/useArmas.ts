@@ -42,11 +42,24 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       let danoDesarmado = '1d3';
       let tipoDanoDesarmado = 'Impacto (Não letal)';
       let agilDesarmado = false;
+      let nomeDesarmado = 'Ataque Desarmado';
+      let elementoDesarmado = '';
+      
+      const temPunhos = next.some(a => a.arma.Nome_Item === 'Punhos Enraivecidos');
 
       if (regrasAutomaticasAtivas.has(84)) { // Artista Marcial
         danoDesarmado = nex >= 70 ? '1d10' : nex >= 35 ? '1d8' : '1d6';
         tipoDanoDesarmado = 'Impacto';
         agilDesarmado = true;
+      }
+
+      if (temPunhos) {
+        nomeDesarmado = 'Punhos Enraivecidos';
+        elementoDesarmado = 'Sangue';
+        tipoDanoDesarmado = 'Impacto';
+        if (!regrasAutomaticasAtivas.has(84) || nex < 70) {
+          danoDesarmado = '1d8';
+        }
       }
 
       const desarmadoIndex = next.findIndex(a => a.id === 'ataque-desarmado-virtual');
@@ -57,7 +70,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
           id: 'ataque-desarmado-virtual',
           arma: {
             Codigo_Arma: -2,
-            Nome_Item: 'Ataque Desarmado',
+            Nome_Item: nomeDesarmado,
             Descricao_Item: 'Um soco, chute ou outro golpe com o próprio corpo.',
             Proficiencia: 'Armas Simples',
             Tipo_Arma: 'Corpo a Corpo',
@@ -73,8 +86,9 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
             Capacidade_Municao: null,
             dt_item: null,
             'Automatica?': false,
-            Fonte_Arma: 'Sistema'
-          },
+            Fonte_Arma: 'Sistema',
+            Elemento_Arma: elementoDesarmado || undefined
+          } as any,
           modificacoes: [],
           municoesAcopladas: []
         });
@@ -82,18 +96,22 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       } else {
         const desarmado = next[desarmadoIndex];
         if (
+          desarmado.arma.Nome_Item !== nomeDesarmado ||
           desarmado.arma.Dano_Arma !== danoDesarmado ||
           desarmado.arma.Tipo_Dano_Arma !== tipoDanoDesarmado ||
-          desarmado.arma['Agil?'] !== agilDesarmado
+          desarmado.arma['Agil?'] !== agilDesarmado ||
+          desarmado.arma.Elemento_Arma !== elementoDesarmado
         ) {
           next[desarmadoIndex] = {
             ...desarmado,
             arma: {
-              ...desarmado.arma,
-              Dano_Arma: danoDesarmado,
-              Tipo_Dano_Arma: tipoDanoDesarmado,
-              'Agil?': agilDesarmado
-            }
+                ...desarmado.arma,
+                Nome_Item: nomeDesarmado,
+                Dano_Arma: danoDesarmado,
+                Tipo_Dano_Arma: tipoDanoDesarmado,
+                'Agil?': agilDesarmado,
+                Elemento_Arma: elementoDesarmado || undefined
+              } as any
           };
           changed = true;
         }
