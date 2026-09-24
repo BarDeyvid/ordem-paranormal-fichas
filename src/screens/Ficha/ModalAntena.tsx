@@ -96,9 +96,7 @@ export const ModalAntena: React.FC<ModalAntenaProps> = ({ onFechar, onSelect }) 
                     </div>
 
                     <div className="flex flex-nowrap items-center gap-2 mt-auto overflow-hidden transition-all duration-300 ease-in-out text-[11px] border-t border-zinc-800/50 pt-2">
-                      <span className="text-zinc-500 flex items-center gap-1">
-                        • <span className="text-green-400 font-semibold">Elemento:</span> <span className="uppercase tracking-wider text-zinc-400">{ritual.elemento}</span>
-                      </span>
+                      
                       
                       <button
                         onClick={(e) => {
@@ -138,9 +136,7 @@ export const ModalAntena: React.FC<ModalAntenaProps> = ({ onFechar, onSelect }) 
                     </div>
 
                     <div className="flex flex-nowrap items-center gap-2 mt-auto overflow-hidden transition-all duration-300 ease-in-out text-[11px] border-t border-zinc-800/50 pt-2">
-                      <span className="text-zinc-500 flex items-center gap-1">
-                        • <span className="text-green-400 font-semibold">Elemento:</span> <span className="uppercase tracking-wider text-zinc-400">{ritual.elemento}</span>
-                      </span>
+                      
                       
                       <button
                         onClick={(e) => {
