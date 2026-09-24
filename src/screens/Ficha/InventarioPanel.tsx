@@ -557,6 +557,9 @@ export function InventarioPanel() {
   );
 
   const handleDragStart = (event: any) => {
+    if (event.active && expandidos[event.active.id]) {
+      setExpandidos(prev => ({ ...prev, [event.active.id]: false }));
+    }
     const { active } = event;
     
     const type = active.data?.current?.type;
