@@ -57,9 +57,9 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
         nomeDesarmado = 'Punhos Enraivecidos';
         elementoDesarmado = 'Sangue';
         tipoDanoDesarmado = 'Impacto';
-        if (!regrasAutomaticasAtivas.has(84) || nex < 70) {
-          danoDesarmado = '1d8';
-        }
+        danoDesarmado = '1d8';
+        agilDesarmado = false; // Artista Marcial é completamente anulado
+      }
       }
 
       const desarmadoIndex = next.findIndex(a => a.id === 'ataque-desarmado-virtual');
