@@ -963,7 +963,7 @@ export function InventarioPanel() {
                         onEditar={() => setArmaEditandoId(item.id)}
                         onAddMunicao={() => {
                           if (item.arma.Nome_Item === 'A Antena') {
-                            alert("Por favor, selecione um ritual (em breve modal de seleção)");
+                            setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                           } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                             setGranadaTargetArmaId(item.id);
                             setModalGranadasAberto(true);
@@ -1155,7 +1155,7 @@ export function InventarioPanel() {
                                   onEditar={() => setArmaEditandoId(item.id)}
                                   onAddMunicao={() => {
                                     if (item.arma.Nome_Item === 'A Antena') {
-                                      alert("Por favor, selecione um ritual (em breve modal de seleção)");
+                                      setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                                     } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                                       setGranadaTargetArmaId(item.id);
                                       setModalGranadasAberto(true);
@@ -1749,7 +1749,7 @@ function SortableArmaItem({
           <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-zinc-800/50">
             {id !== 'coronhada-virtual' && (
                 <>
-                  {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma && !(arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti') || arma.Nome_Item?.toLowerCase().includes('fuzil alheio'))) && (
+                  {(((arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo') || arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.trim().toLowerCase() === 'a antena\r') && arma.Tipo_Arma && !(arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti') || arma.Nome_Item?.toLowerCase().includes('fuzil alheio'))) && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
