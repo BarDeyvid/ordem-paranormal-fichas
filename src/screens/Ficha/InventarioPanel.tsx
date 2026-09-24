@@ -372,6 +372,18 @@ const getBadgeTextClasses = (minv: any) => {
   if (e === 'medo') return 'text-zinc-950';
   return 'text-green-400';
 };
+const getBadgeCloseClasses = (minv: any) => {
+  if (!minv.isRitual) return 'text-green-600 hover:text-red-400 hover:bg-green-900/50';
+  const e = (minv.elemento || '').trim().toLowerCase();
+  if (e === 'sangue') return 'text-red-700 hover:text-red-400 hover:bg-red-900/50';
+  if (e === 'morte') return 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-700/50';
+  if (e === 'conhecimento') return 'text-yellow-700 hover:text-yellow-400 hover:bg-yellow-900/50';
+  if (e === 'energia') return 'text-purple-700 hover:text-purple-400 hover:bg-purple-900/50';
+  if (e === 'medo') return 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-400/50';
+  return 'text-green-600 hover:text-red-400 hover:bg-green-900/50';
+};
+
+
 
 export function InventarioPanel() {
   const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
@@ -1858,7 +1870,7 @@ function SortableArmaItem({
                     municoesHook?.removerMunicao(minv.id);
                   }}
                   title="Remover Munição"
-                  className="flex items-center justify-center w-4 h-4 rounded-full text-green-600 hover:text-red-400 hover:bg-green-900/50 transition-colors"
+                  className={`flex items-center justify-center w-4 h-4 rounded-full transition-colors ${getBadgeCloseClasses(minv)}`}
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
