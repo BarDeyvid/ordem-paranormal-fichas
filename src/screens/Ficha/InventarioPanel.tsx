@@ -1455,7 +1455,7 @@ function SortableArmaItem({
       if (nome === 'mira laser' || nome === 'perigosa') {
         critico -= 2;
       }
-      if (nome === 'mira telescopica') {
+      if (nome === 'mira telescopica' || nome === 'mira telescópica') {
         const ord = ['Curto', 'Medio', 'Longo', 'Extremo', 'Ilimitado'];
         const idx = ord.indexOf(alcance);
         if (idx !== -1 && idx < ord.length - 1) {
