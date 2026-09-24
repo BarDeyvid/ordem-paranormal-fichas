@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRPG } from '../../context/RPGContext';
 import type { Patente, LimiteCredito } from '../../hooks/useInventario';
 import { ModalArmas, formatarCritico } from './ModalArmas';
-import type { ArmaInventario, ProtecaoInventario, ItemGeralInventario, MunicaoInventario } from '../../types';
+import type { ArmaInventario, ProtecaoInventario, ItemGeralInventario, MunicaoInventario, ItemAmaldicoadoInventario } from '../../types';
 import { ModalProtecoes } from './ModalProtecoes';
 import { ModalItens } from './ModalItens';
 import { ModalItensAmaldicoados } from './ModalItensAmaldicoados';
@@ -520,7 +520,7 @@ export function InventarioPanel() {
       if (fullItem) name = fullItem.item.Nome_Item;
     } else if (type === 'amaldicoado') {
       fullItem = itensAmaldicoadosHook?.itensAmaldicoadosInventario.find(x => x.id === active.id);
-      if (fullItem) name = fullItem.item.Nome_Item;
+      if (fullItem) name = fullItem.item.Nome_Ama;
     }
     
     setActiveDragItem({ id: active.id, type, name, fullItem, stringDT });
