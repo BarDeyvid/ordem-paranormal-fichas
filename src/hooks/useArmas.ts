@@ -56,7 +56,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       if (temPunhos) {
         nomeDesarmado = 'Punhos Enraivecidos';
         elementoDesarmado = 'Sangue';
-        tipoDanoDesarmado = 'Impacto';
+        tipoDanoDesarmado = 'Sangue';
         danoDesarmado = '1d8';
         agilDesarmado = false; // Artista Marcial é completamente anulado
       }
