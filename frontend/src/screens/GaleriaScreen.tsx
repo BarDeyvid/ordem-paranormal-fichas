@@ -272,6 +272,16 @@ export const GaleriaScreen: React.FC = () => {
               </div>
             )}
 
+            <button
+              type="button"
+              onClick={() => setTelaAtual('bestiario')}
+              className="flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-purple-400 transition border border-zinc-700 shadow-sm"
+              title="Abrir Bestiário do Outro Lado (Ameaças & GM Toolkit)"
+            >
+              <span>👾</span>
+              <span>Bestiário</span>
+            </button>
+
             {classe && (
               <button
                 type="button"

@@ -68,7 +68,7 @@ Este documento organiza as próximas grandes funcionalidades e marcos arquitetur
 
 ---
 
-### 👾 Fase 5: Bestiário & Fichas de Ameaças Paranormais (GM Toolkit)
+### 👾 Fase 5: Bestiário & Fichas de Ameaças Paranormais (GM Toolkit) *(Concluída)*
 > **Objetivo:** Equipar mestres com ferramentas rápidas para consultar criaturas e conduzir combates.
 
 - **Catálogo de Criaturas por Elemento:**

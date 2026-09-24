@@ -2,7 +2,7 @@
 // TIPOS GLOBAIS — TUDO TIPADO
 // ============================================================
 
-export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha' | 'galeria';
+export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha' | 'galeria' | 'bestiario';
 
 export interface FichaSummary {
   id: string;
@@ -498,4 +498,61 @@ export interface EstadoSobrevivencia {
   enlouquecendo: boolean;
   falhasMorte: number;
   rodadasMorrendo: number;
+}
+
+// ============================================================
+// AMEAÇAS & BESTIÁRIO (GM TOOLKIT)
+// ============================================================
+export type ElementoAmeaca = 'Sangue' | 'Morte' | 'Conhecimento' | 'Energia' | 'Medo' | 'Variado';
+
+export interface AcaoAmeaca {
+  nome: string;
+  tipo: 'PADRÃO' | 'MOVIMENTO' | 'COMPLETA' | 'REAÇÃO' | 'LIVRE';
+  teste?: string; // ex: "2d20+10" ou "+10"
+  dadoQtd?: number;
+  dadoFaces?: number;
+  bonusAtaque?: number;
+  alcance?: string;
+  dano?: string; // ex: "2d8+5"
+  critico?: string; // ex: "19/x2"
+  especial?: string;
+}
+
+export interface HabilidadeAmeaca {
+  nome: string;
+  descricao: string;
+}
+
+export interface Ameaca {
+  id: string;
+  nome: string;
+  elemento: ElementoAmeaca;
+  vd: number;
+  tamanho: 'Minúsculo' | 'Pequeno' | 'Médio' | 'Grande' | 'Enorme' | 'Colossal';
+  tipo: 'Criatura' | 'Monstro' | 'Animal' | 'Humano';
+  pv: number;
+  defesa: number;
+  deslocamento: string;
+  percepcao?: string;
+  iniciativa?: string;
+  rd?: string;
+  resistencias?: string[];
+  vulnerabilidades?: string[];
+  imunidades?: string[];
+  atributos: {
+    AGI: number;
+    FOR: number;
+    INT: number;
+    PRE: number;
+    VIG: number;
+  };
+  presencaPerturbadora?: {
+    dt: number;
+    dano: string;
+  };
+  pericias?: Record<string, number>;
+  acoes: AcaoAmeaca[];
+  habilidades: HabilidadeAmeaca[];
+  descricao?: string;
+  enigmaDeMedo?: string;
 }

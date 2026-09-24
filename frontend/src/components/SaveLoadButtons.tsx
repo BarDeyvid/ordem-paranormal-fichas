@@ -61,6 +61,17 @@ export const SaveLoadButtons: React.FC = () => {
         <span>Dossiês</span>
       </button>
 
+      {/* Botão para acessar o Bestiário / Ameaças */}
+      <button
+        type="button"
+        onClick={() => rpg.setTelaAtual('bestiario')}
+        className="flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-purple-400 transition border border-zinc-700 shadow-sm"
+        title="Abrir Bestiário do Outro Lado (GM Toolkit / Ameaças)"
+      >
+        <span>👾</span>
+        <span>Bestiário</span>
+      </button>
+
       {/* Botão de Salvar no Dossiê / Galeria */}
       <button
         type="button"
