@@ -265,6 +265,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     const parts = arma.Tipo_Dano_Arma.split('/');
     tipoBase = parts[0].trim();
     tipoSecundario = parts[1].trim();
+  } else if (arma.Elemento_Arma) {
+    tipoSecundario = arma.Elemento_Arma.trim();
   }
 
   if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
