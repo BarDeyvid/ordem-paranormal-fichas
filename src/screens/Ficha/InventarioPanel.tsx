@@ -1418,9 +1418,9 @@ function SortableArmaItem({
       if (typeof mid === 'string' && mid.startsWith('RITUAL_')) {
         const match = mid.match(/^RITUAL_([^_]+)_(.*)$/);
         if (match) {
-           return { id: mid, municao: { Nome_Item: "Ritual: " + match[2] }, isRitual: true, elemento: match[1] };
+           return { id: mid, municao: { Nome_Item: match[2] }, isRitual: true, elemento: match[1] };
         }
-        return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+        return { id: mid, municao: { Nome_Item: mid.substring(7) }, isRitual: true };
       }
     let m = municoesHook?.municoesInventario.find(m => m.id === mid);
     if (m) return m;
@@ -1837,7 +1837,7 @@ function SortableArmaItem({
       
               {municoesAcopladasList.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 px-3 pt-3 pb-1 border-t border-zinc-800/50 bg-zinc-900/30">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Munições:</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{municoesAcopladasList[0]?.isRitual ? 'Ritual:' : 'Munições:'}</span>
             {municoesAcopladasList.map(minv => (
               <div key={minv.id} className="flex items-center gap-1 bg-green-950/40 border border-green-900/50 rounded-full pl-2 pr-1 py-0.5 group">
                 <span className={`text-[11px] font-bold ${minv.isRitual ? getCorElementoMunicao(minv.elemento) : 'text-green-400'} truncate max-w-[150px]`}>{minv.municao.Nome_Item}</span>

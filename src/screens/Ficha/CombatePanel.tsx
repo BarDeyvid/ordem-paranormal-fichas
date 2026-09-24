@@ -129,9 +129,9 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (mid.startsWith('RITUAL_')) {
         const match = mid.match(/^RITUAL_([^_]+)_(.*)$/);
         if (match) {
-           return { id: mid, municao: { Nome_Item: "Ritual: " + match[2] }, isRitual: true, elemento: match[1] };
+           return { id: mid, municao: { Nome_Item: match[2] }, isRitual: true, elemento: match[1] };
         }
-        return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+        return { id: mid, municao: { Nome_Item: mid.substring(7) }, isRitual: true };
       }
       let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;
@@ -459,7 +459,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
           {(((arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo') || arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.trim().toLowerCase() === 'a antena\r') && arma.Tipo_Arma && !(arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti') || arma.Nome_Item?.toLowerCase().includes('fuzil alheio'))) && (
             <div className="flex items-center gap-x-2 gap-y-1 mb-1 flex-wrap">
               <span className="text-zinc-300">
-                <span className="font-bold text-green-400">Munição:</span>{' '}
+                <span className="font-bold text-green-400">{municoesAcopladasList[0]?.isRitual ? 'Ritual:' : 'Munição:'}</span>{' '}
                 {municoesAcopladasList.length > 0 ? (
                   <span className={`${municoesAcopladasList[0].isRitual ? getCorElementoMunicao(municoesAcopladasList[0].elemento) : 'text-zinc-300'} inline-flex items-center`}>
                       {municoesAcopladasList[0].municao.Nome_Item}
