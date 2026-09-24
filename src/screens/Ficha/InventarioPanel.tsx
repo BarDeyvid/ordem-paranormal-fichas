@@ -1505,14 +1505,30 @@ function SortableArmaItem({
     transform: CSS.Translate.toString(transform),
     transition,
     zIndex: isDragging ? 10 : 1,
+    
+  const style = isOverlay ? {} : {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : 1,
     opacity: isDragging ? 0.4 : 1,
   };
+
+  let corBordaLeft = 'border-l-green-700';
+  if (arma.isAmaldicoada && arma.Elemento_Arma) {
+    const elStr = String(arma.Elemento_Arma).toLowerCase();
+    corBordaLeft = elStr.includes('medo') ? 'border-l-zinc-200' :
+                   elStr.includes('sangue') ? 'border-l-red-600' :
+                   elStr.includes('morte') ? 'border-l-black' :
+                   elStr.includes('energia') ? 'border-l-purple-600' :
+                   elStr.includes('conhec') ? 'border-l-yellow-600' :
+                   'border-l-zinc-600';
+  }
 
   return (
     <div
       ref={isOverlay ? undefined : setNodeRef}
       style={style}
-      className={`rounded border border-l-4 border-l-green-700 transition-colors ${
+      className={`rounded border border-l-4 ${corBordaLeft} transition-colors ${
         isOverlay ? 'border-green-500 bg-zinc-900 shadow-2xl scale-[1.02] opacity-90 cursor-grabbing' : 
         isDragging ? 'border-zinc-800 bg-zinc-950/60 opacity-40' : 'border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900/60'
       }`}
