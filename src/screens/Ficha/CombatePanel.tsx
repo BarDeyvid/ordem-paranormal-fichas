@@ -251,17 +251,30 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   }
 
   let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
-    if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
-      tipoBase = 'Impacto';
-    }
+  let tipoSecundario = tipoBase;
+
+  if (arma.Tipo_Dano_Arma && arma.Tipo_Dano_Arma.includes('/')) {
+    const parts = arma.Tipo_Dano_Arma.split('/');
+    tipoBase = parts[0].trim();
+    tipoSecundario = parts[1].trim();
+  }
+
+  if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
+    tipoBase = 'Impacto';
+    tipoSecundario = 'Impacto';
+  }
+
   let rawDano = arma.Dano_Arma || '';
   
-
   if (isLancadorGranadas && granadaAcoplada) {
     const p = granadaAcoplada.Dano_Item?.split(',') || [];
     rawDano = p[0]?.trim() || '-';
       
-    if (p.length > 1) tipoBase = p[1].trim();
+    if (p.length > 1) {
+      const gTipo = p[1].trim();
+      tipoBase = gTipo;
+      tipoSecundario = gTipo;
+    }
   }
 
   let dtGranada = '-';
@@ -310,7 +323,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
   const danoSecStr = arma.Dano_Secundario || '';
   if (danoSecStr && danoSecStr.trim() !== '-') {
-    parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
+    parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
   const danoHeader = parsedDano
