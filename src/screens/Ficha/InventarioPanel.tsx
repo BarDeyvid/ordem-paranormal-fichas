@@ -39,6 +39,22 @@ import { formatarTexto } from '../../utils/formatters';
 import { calcularCategoriaFinal } from '../../utils/rpgRules';
 
   
+
+const CORES_ELEMENTOS_INV: Record<string, string> = {
+  sangue: '#b31717',
+  conhecimento: '#b07902',
+  energia: '#af27d9',
+  morte: '#000000',
+  medo: '#ffffff',
+  outros: '#888888',
+};
+
+function obterCorBadgeInv(elemento: string): string {
+  if (!elemento) return '#666';
+  const elementoStr = elemento.toLowerCase();
+  return CORES_ELEMENTOS_INV[elementoStr] || '#666';
+}
+
 const getCorElementoBarra = (elemento: string) => {
   const e = elemento.toLowerCase();
   if (e.includes('sangue')) return 'bg-red-900/50';
@@ -1119,10 +1135,11 @@ export function InventarioPanel() {
 
                     return (
                       <div key={elemento} className="mb-4">
-                        <div className="flex items-center gap-2 mb-2 mt-4">
-                          <span className={`text-[10px] font-bold uppercase tracking-widest ${getCorElementoTexto(elemento)}`}>{elemento}</span>
-                          <div className={`h-px flex-1 ${getCorElementoBarra(elemento)}`}></div>
-                        </div>
+                        <div className="flex items-center gap-3 mb-2 mt-3">
+                            <span className="h-2 w-2 rounded-full shrink-0" style={{ background: obterCorBadgeInv(elemento) || '#52525b' }}></span>
+                            <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-zinc-500">{elemento}</span>
+                            <div className="flex-1 border-t border-zinc-800/50"></div>
+                          </div>
                         
                         {armasNesteElemento.length > 0 && (
                           <div className="mb-2">
@@ -1501,11 +1518,6 @@ function SortableArmaItem({
 
   const stats = calcularEstatisticasFinaisArma();
 
-  const style = isOverlay ? {} : {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    zIndex: isDragging ? 10 : 1,
-    
   const style = isOverlay ? {} : {
     transform: CSS.Translate.toString(transform),
     transition,
