@@ -1148,8 +1148,6 @@ export function InventarioPanel() {
                 </>
               )}
 
-            )}
-
             <DragOverlay>
               {activeDragItem?.fullItem ? (
                 <div className="w-full">
