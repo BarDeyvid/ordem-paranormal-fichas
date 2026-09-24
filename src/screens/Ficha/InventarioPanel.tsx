@@ -1752,7 +1752,7 @@ function SortableArmaItem({
           <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-zinc-800/50">
             {id !== 'coronhada-virtual' && (
                 <>
-                  {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma) && (
+                  {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma && !arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti')) && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
