@@ -1090,7 +1090,10 @@ export function InventarioPanel() {
             {(categoriaFiltro === 'Amaldiçoados' || categoriaFiltro === 'Geral') && ((itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 || armasAmaldicoadasExibidas.length > 0) && (
                 <>
                   {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && armasAmaldicoadasExibidas.length > 0 && (
-                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Armas Amaldiçoadas</h3>
+                    <div className="flex items-center gap-2 mb-2 mt-4">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Armas Amaldiçoadas</span>
+                        <div className="h-px bg-zinc-800 flex-1"></div>
+                      </div>
                   )}
                   <SortableContext items={armasAmaldicoadasExibidas.map(a => a.id)} strategy={verticalListSortingStrategy}>
                     {armasAmaldicoadasExibidas.map((item: ArmaInventario) => (
@@ -1119,7 +1122,10 @@ export function InventarioPanel() {
                     ))}
                   </SortableContext>
                   {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 && (
-                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Itens Amaldiçoados</h3>
+                    <div className="flex items-center gap-2 mb-2 mt-4">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Itens Amaldiçoados</span>
+                        <div className="h-px bg-zinc-800 flex-1"></div>
+                      </div>
                   )}
                   <SortableContext items={(itensAmaldicoadosHook?.itensAmaldicoadosInventario || []).map(i => i.id)} strategy={verticalListSortingStrategy}>
                   {(itensAmaldicoadosHook?.itensAmaldicoadosInventario || [])
