@@ -60,7 +60,6 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
         danoDesarmado = '1d8';
         agilDesarmado = false; // Artista Marcial é completamente anulado
       }
-      }
 
       const desarmadoIndex = next.findIndex(a => a.id === 'ataque-desarmado-virtual');
       const hasDesarmado = desarmadoIndex !== -1;
