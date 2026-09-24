@@ -478,7 +478,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  alert("Button clicked in Combate! Name: '" + arma.Nome_Item + "'"); if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                  if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                     onAddMunicao?.();
                   } else {
                     const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
@@ -661,7 +661,7 @@ export const CombatePanel: React.FC = () => {
               municoesHook={municoesHook}
               itensHook={itensHook}
               onAddMunicao={() => {
-                alert("onAdd in Combate! Name: '" + armaInv.arma.Nome_Item + "'"); if (armaInv.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
+                if (armaInv.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
                     setAntenaTargetArmaId(armaInv.id);
                     setModalAntenaAberto(true);
                   } else if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {

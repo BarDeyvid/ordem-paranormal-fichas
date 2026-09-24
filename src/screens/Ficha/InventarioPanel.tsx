@@ -352,7 +352,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
 }
 
 export function InventarioPanel() {
-  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais } = useRPG();
+  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
   const {
     prestigio, setPrestigio,
     patente, setPatenteManual,
@@ -964,7 +964,7 @@ export function InventarioPanel() {
                       removerArma={armasHook?.removerArma || (() => {})}
                         onEditar={() => setArmaEditandoId(item.id)}
                         onAddMunicao={() => {
-                          alert("onAdd in Combate! Name: '" + armaInv.arma.Nome_Item + "'"); if (item.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
+                          if (item.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
                             setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                           } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                             setGranadaTargetArmaId(item.id);
@@ -1156,7 +1156,7 @@ export function InventarioPanel() {
                                   removerArma={armasHook?.removerArma || (() => {})}
                                   onEditar={() => setArmaEditandoId(item.id)}
                                   onAddMunicao={() => {
-                                    alert("onAdd in Combate! Name: '" + armaInv.arma.Nome_Item + "'"); if (item.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
+                                    if (item.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
                                       setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                                     } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                                       setGranadaTargetArmaId(item.id);
@@ -1786,7 +1786,7 @@ function SortableArmaItem({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        alert("Button clicked! Name: '" + arma.Nome_Item + "'"); if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                        if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                           onAddMunicao?.();
                         } else {
                           const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
