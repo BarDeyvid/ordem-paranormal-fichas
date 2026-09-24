@@ -661,7 +661,7 @@ export const CombatePanel: React.FC = () => {
               municoesHook={municoesHook}
               itensHook={itensHook}
               onAddMunicao={() => {
-                if (armaInv.arma.Nome_Item === 'A Antena') {
+                if (armaInv.arma.Nome_Item?.trim() === 'A Antena') {
                     setAntenaTargetArmaId(armaInv.id);
                     setModalAntenaAberto(true);
                   } else if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {

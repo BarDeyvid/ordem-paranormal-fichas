@@ -962,7 +962,7 @@ export function InventarioPanel() {
                       removerArma={armasHook?.removerArma || (() => {})}
                         onEditar={() => setArmaEditandoId(item.id)}
                         onAddMunicao={() => {
-                          if (item.arma.Nome_Item === 'A Antena') {
+                          if (item.arma.Nome_Item?.trim() === 'A Antena') {
                             setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                           } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                             setGranadaTargetArmaId(item.id);
@@ -1154,7 +1154,7 @@ export function InventarioPanel() {
                                   removerArma={armasHook?.removerArma || (() => {})}
                                   onEditar={() => setArmaEditandoId(item.id)}
                                   onAddMunicao={() => {
-                                    if (item.arma.Nome_Item === 'A Antena') {
+                                    if (item.arma.Nome_Item?.trim() === 'A Antena') {
                                       setAntenaTargetArmaId(item.id); setModalAntenaAberto(true);
                                     } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                                       setGranadaTargetArmaId(item.id);
@@ -1771,7 +1771,7 @@ function SortableArmaItem({
                           : 'border-zinc-700 hover:border-blue-700 hover:bg-blue-900/20 text-zinc-300 hover:text-blue-400'
                       }`}
                     >
-                      {arma.Nome_Item === 'A Antena' ? '+ Ritual' : ((arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? '+ Granada' : '+ Munição')}
+                      {arma.Nome_Item?.trim() === 'A Antena' ? '+ Ritual' : ((arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) ? '+ Granada' : '+ Munição')}
                     </button>
                   )}
                   <button
