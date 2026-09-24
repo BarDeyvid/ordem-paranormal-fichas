@@ -420,7 +420,7 @@ export function InventarioPanel() {
     const maldsAll = maldicoesHook?.maldicoes || [];
 
     armasHook?.armasInventario?.forEach(a => {
-      const cat = calcularCategoriaFinal(a.arma.Categoria_Item, a.modificacoes, modsAll, a.arma.Codigo_Arma === 71, a.maldicoes, maldsAll);
+      const cat = calcularCategoriaFinal(a.arma.Categoria_Item, a.modificacoes, modsAll, a.arma.Codigo_Arma === 71 ? true : a.arma.Nome_Item, a.maldicoes, maldsAll);
       const idx = getCatIndex(cat);
       if (idx !== -1) noInventario[idx]++;
     });
@@ -1673,7 +1673,7 @@ function SortableArmaItem({
             <span className="italic text-zinc-400">{arma.Tipo_Arma}</span>
           </div>
           <div className="flex flex-col gap-1 text-xs text-zinc-300">
-            <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(arma.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, arma.Codigo_Arma === 71, item.maldicoes, maldicoesHook?.maldicoes)}</span>
+            <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(arma.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, arma.Codigo_Arma === 71 ? true : arma.Nome_Item, item.maldicoes, maldicoesHook?.maldicoes)}</span>
             {stats.alcance && <span><span className="text-green-400 font-bold">Alcance:</span> {stats.alcance}</span>}
             <span><span className="text-green-400 font-bold">Tipo:</span> {municoesAcopladasList[0]?.municao?.Codigo_Municao === 63 ? 'Impacto' : arma.Tipo_Dano_Arma}</span>
               {municoesAcopladasList[0]?.municao?.Codigo_Municao === 67 && municoesAcopladasList[0]?.municao?.granada_dano && (

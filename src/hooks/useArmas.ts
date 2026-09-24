@@ -36,7 +36,18 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
   useEffect(() => {
     setArmasInventario(prev => {
       let changed = false;
-      let next = [...prev];
+        let next = [...prev];
+
+        next = next.map(a => {
+          if (a.arma.Nome_Item?.toLowerCase().includes('fuzil alheio')) {
+            const m = Array.isArray(a.modificacoes) ? [...a.modificacoes] : [];
+            let changedA = false;
+            if (!m.includes(10)) { m.push(10); changedA = true; }
+            if (!m.includes(11)) { m.push(11); changedA = true; }
+            if (changedA) { changed = true; return { ...a, modificacoes: m }; }
+          }
+          return a;
+        });
 
       // 1. Ataque Desarmado
       let danoDesarmado = '1d3';
