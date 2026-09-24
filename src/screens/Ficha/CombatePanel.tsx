@@ -322,7 +322,10 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
 
   let bonusAtaque = 0;
-  // Bônus de ataque vem apenas de modificações (como Certeira, Alongada, etc.)
+    if (arma.Nome_Item?.trim().toLowerCase().includes('enraivecido') || arma.Nome_Item?.trim().toLowerCase().includes('arcabuz dos moretti')) {
+      bonusAtaque += 2;
+    }
+    // Bônus de ataque vem apenas de modificações (como Certeira, Alongada, etc.)
   modsAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Modif?.toLowerCase() || '';
