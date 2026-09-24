@@ -612,11 +612,6 @@ export function InventarioPanel() {
   const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
   const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
   
-  const armasNormaisExibidas = armasExibidas; // Temp debug: armasExibidas.filter(i => !i.arma.isAmaldicoada);
-  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
-  
-  const armasNormaisExibidas = armasExibidas.filter(i => !i.arma.isAmaldicoada);
-  const armasAmaldicoadasExibidas = armasExibidas.filter(i => i.arma.isAmaldicoada);
 
   const municoesSoltas = (municoesHook?.municoesInventario || []).filter(minv => {
     // É solta se não estiver acoplada a nenhuma arma
