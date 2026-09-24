@@ -281,61 +281,12 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const estabilizarMorrendo = useCallback(() => {
-    setCondicoesAtivas(prev => prev.filter(c => c !== 'morrendo'));
-    setEstadoSobrevivencia(prev => ({
-      ...prev,
-      morrendo: false,
-      falhasMorte: 0,
-      rodadasMorrendo: 0,
-    }));
-    if ((status.pvAtual ?? 0) <= 0) {
-      status.setPvAtual(1);
-    }
-  }, [status]);
-
-  const estabilizarEnlouquecendo = useCallback(() => {
-    setCondicoesAtivas(prev => {
-      const sem = prev.filter(c => c !== 'enlouquecendo');
-      return sem.includes('perturbado') ? sem : [...sem, 'perturbado'];
-    });
-    setEstadoSobrevivencia(prev => ({
-      ...prev,
-      enlouquecendo: false,
-    }));
-    if ((status.sanAtual ?? 0) <= 0) {
-      status.setSanAtual(1);
-    }
-  }, [status]);
-
   const registrarFalhaMorte = useCallback(() => {
     setEstadoSobrevivencia(prev => ({
       ...prev,
       falhasMorte: Math.min(3, prev.falhasMorte + 1),
     }));
   }, []);
-
-  // Monitora 0 PV para Morrendo
-  useEffect(() => {
-    if (status.pvAtual === 0 && status.pvMax > 0) {
-      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev : [...prev, 'morrendo']));
-      setEstadoSobrevivencia(prev => ({ ...prev, morrendo: true }));
-    } else if (status.pvAtual !== null && status.pvAtual > 0) {
-      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev.filter(c => c !== 'morrendo') : prev));
-      setEstadoSobrevivencia(prev => (prev.morrendo ? { ...prev, morrendo: false, falhasMorte: 0, rodadasMorrendo: 0 } : prev));
-    }
-  }, [status.pvAtual, status.pvMax]);
-
-  // Monitora 0 SAN para Enlouquecendo
-  useEffect(() => {
-    if (!regras['sem_sanidade'] && status.sanAtual === 0 && status.sanMax > 0) {
-      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev : [...prev, 'enlouquecendo']));
-      setEstadoSobrevivencia(prev => ({ ...prev, enlouquecendo: true }));
-    } else if (status.sanAtual !== null && status.sanAtual > 0) {
-      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev.filter(c => c !== 'enlouquecendo') : prev));
-      setEstadoSobrevivencia(prev => (prev.enlouquecendo ? { ...prev, enlouquecendo: false } : prev));
-    }
-  }, [status.sanAtual, status.sanMax, regras]);
 
   const toggleRegra = useCallback((nome: string) => {
     setRegras(prev => {
@@ -516,7 +467,54 @@ const atributosBaseComBonus = useMemo(() => {
 
   const status = useStatus(classe, effectiveNex, effectiveNivel, atributosBaseComBonus, paranormalPenalty, regrasAutomaticasAtivas, bonusVestimentas.pv + bonusMaldicoes.pv, bonusVestimentas.pe + bonusMaldicoes.pe);
 
-  
+  const estabilizarMorrendo = useCallback(() => {
+    setCondicoesAtivas(prev => prev.filter(c => c !== 'morrendo'));
+    setEstadoSobrevivencia(prev => ({
+      ...prev,
+      morrendo: false,
+      falhasMorte: 0,
+      rodadasMorrendo: 0,
+    }));
+    if ((status.pvAtual ?? 0) <= 0) {
+      status.setPvAtual(1);
+    }
+  }, [status]);
+
+  const estabilizarEnlouquecendo = useCallback(() => {
+    setCondicoesAtivas(prev => {
+      const sem = prev.filter(c => c !== 'enlouquecendo');
+      return sem.includes('perturbado') ? sem : [...sem, 'perturbado'];
+    });
+    setEstadoSobrevivencia(prev => ({
+      ...prev,
+      enlouquecendo: false,
+    }));
+    if ((status.sanAtual ?? 0) <= 0) {
+      status.setSanAtual(1);
+    }
+  }, [status]);
+
+  // Monitora 0 PV para Morrendo
+  useEffect(() => {
+    if (status.pvAtual === 0 && status.pvMax > 0) {
+      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev : [...prev, 'morrendo']));
+      setEstadoSobrevivencia(prev => ({ ...prev, morrendo: true }));
+    } else if (status.pvAtual !== null && status.pvAtual > 0) {
+      setCondicoesAtivas(prev => (prev.includes('morrendo') ? prev.filter(c => c !== 'morrendo') : prev));
+      setEstadoSobrevivencia(prev => (prev.morrendo ? { ...prev, morrendo: false, falhasMorte: 0, rodadasMorrendo: 0 } : prev));
+    }
+  }, [status.pvAtual, status.pvMax]);
+
+  // Monitora 0 SAN para Enlouquecendo
+  useEffect(() => {
+    if (!regras['sem_sanidade'] && status.sanAtual === 0 && status.sanMax > 0) {
+      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev : [...prev, 'enlouquecendo']));
+      setEstadoSobrevivencia(prev => ({ ...prev, enlouquecendo: true }));
+    } else if (status.sanAtual !== null && status.sanAtual > 0) {
+      setCondicoesAtivas(prev => (prev.includes('enlouquecendo') ? prev.filter(c => c !== 'enlouquecendo') : prev));
+      setEstadoSobrevivencia(prev => (prev.enlouquecendo ? { ...prev, enlouquecendo: false } : prev));
+    }
+  }, [status.sanAtual, status.sanMax, regras]);
   React.useEffect(() => {
     if (regrasAutomaticasAtivas.has(83)) {
       if ((regras['nex_experiencia'] && nivel >= 20) || (!regras['nex_experiencia'] && nex >= 95)) {

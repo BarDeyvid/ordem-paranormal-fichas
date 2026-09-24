@@ -411,6 +411,8 @@ export interface RitualAprendido {
   [key: string]: any;
 }
 
+export type VersaoRitual = 'normal' | 'discente' | 'verdadeiro';
+
 export interface ConjurarRitualParams {
   nome: string;
   elemento: string;

@@ -183,9 +183,9 @@ export const GaleriaScreen: React.FC = () => {
     lista.sort((a, b) => {
       switch (ordenacao) {
         case 'recentes':
-          return new Date(b.atualizadoEm).getTime() - new Date(a.atualizadoEm).getTime();
+          return new Date(b.dataAtualizacao || 0).getTime() - new Date(a.dataAtualizacao || 0).getTime();
         case 'antigos':
-          return new Date(a.atualizadoEm).getTime() - new Date(b.atualizadoEm).getTime();
+          return new Date(a.dataAtualizacao || 0).getTime() - new Date(b.dataAtualizacao || 0).getTime();
         case 'nome_asc':
           return (a.nome || '').localeCompare(b.nome || '');
         case 'nome_desc':
