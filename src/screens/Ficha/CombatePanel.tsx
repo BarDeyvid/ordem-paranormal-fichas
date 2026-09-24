@@ -478,7 +478,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                  alert("Button clicked in Combate! Name: '" + arma.Nome_Item + "'"); if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                     onAddMunicao?.();
                   } else {
                     const compativeis = municoesHook?.getMunicoesCompativeis?.(arma.Nome_Item, arma.Categoria_Item) || [];
@@ -661,7 +661,7 @@ export const CombatePanel: React.FC = () => {
               municoesHook={municoesHook}
               itensHook={itensHook}
               onAddMunicao={() => {
-                if (armaInv.arma.Nome_Item?.trim() === 'A Antena') {
+                alert("onAdd in Combate! Name: '" + armaInv.arma.Nome_Item + "'"); if (armaInv.arma.Nome_Item?.trim().toLowerCase() === 'a antena') {
                     setAntenaTargetArmaId(armaInv.id);
                     setModalAntenaAberto(true);
                   } else if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
@@ -698,6 +698,39 @@ export const CombatePanel: React.FC = () => {
           }}
         />
       )}
+      
+      {modalAntenaAberto && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 backdrop-blur-sm bg-black/60" onClick={() => setModalAntenaAberto(false)} />
+          <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[80vh]">
+            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+            <div className="flex items-center justify-between p-5 border-b border-zinc-800/80">
+              <div>
+                <h2 className="text-sm font-bold text-purple-400 uppercase tracking-widest">A Antena (MODAL VISIBLE!)</h2>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Selecione o ritual para acoplar</p>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-2 custom-scrollbar flex flex-col gap-1">
+              {/* @ts-ignore */}
+              {rituaisHook?.rituaisAprendidos?.length === 0 && <p className="p-4 text-center text-xs text-zinc-500">Nenhum ritual aprendido.</p>}
+              {/* @ts-ignore */}
+              {rituaisHook?.rituaisAprendidos?.map((r: any) => (
+                <button
+                  key={r.origem}
+                  onClick={() => {
+                     if (antenaTargetArmaId) armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + (r.customNome || r.ritual.Nome_Ritual));
+                     setModalAntenaAberto(false);
+                  }}
+                  className="text-left px-3 py-2 rounded hover:bg-zinc-800/50 text-xs text-zinc-300 transition-colors border border-transparent hover:border-purple-900/50"
+                >
+                  {r.customNome || r.ritual.Nome_Ritual}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {modalGranadasAberto && (
         <ModalGranadas
           onFechar={() => setModalGranadasAberto(false)}
