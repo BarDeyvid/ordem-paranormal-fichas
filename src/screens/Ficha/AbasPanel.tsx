@@ -207,7 +207,7 @@ export const AbasPanel: React.FC = () => {
     return () => { document.body.style.overflow = 'unset'; };
   }, [ritualEditandoOrigem]);
 
-  const { afinidadeEscolhida, afinidadeAtiva, nivel, regrasAutomaticasAtivas } = useRPG();
+  const { afinidadeEscolhida, afinidadeAtiva, nivel, regrasAutomaticasAtivas, armasHook } = useRPG();
   const effectiveNex = regras['nex_experiencia'] ? (nivel * 5) : nex;
 
   React.useEffect(() => {
@@ -1493,7 +1493,8 @@ export const AbasPanel: React.FC = () => {
                             return a.localeCompare(b);
                           }).map(elemento => {
                             const ritualsOfElement = ritualsByElement[elemento];
-                            const baseDT = 10 + (atributosFinais.PRE || 0) + calcularNivel(nex);
+                            const hasAntena = armasHook?.armasInventario?.some(a => a.arma.Nome_Item?.trim().toLowerCase() === 'a antena');
+                            const baseDT = 10 + (atributosFinais.PRE || 0) + calcularNivel(nex) + (hasAntena ? 3 : 0);
                             
                             return (
                               <div key={elemento} className="mt-2 mb-2 flex flex-col gap-2.5">

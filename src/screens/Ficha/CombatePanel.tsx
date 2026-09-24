@@ -125,7 +125,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const finalPV = grupoArma?.PV_Grupo != null ? Number(grupoArma.PV_Grupo) + (numMaldicoes * 10) : null;
   const temGrupoStats = finalRD != null || finalPV != null;
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
-    let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
+    if (mid.startsWith('RITUAL_')) return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+      let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;
     let i = itensHook?.itensInventario.find((x: any) => x.id === mid);
     if (i) return { id: i.id, municao: i.item, qtd: i.qtd };
@@ -594,13 +595,15 @@ export const CombatePanel: React.FC = () => {
   const [municaoFiltroNome, setMunicaoFiltroNome] = React.useState<string | undefined>(undefined);
   const [municaoFiltroCategoria, setMunicaoFiltroCategoria] = React.useState<string | undefined>(undefined);
   const [modalGranadasAberto, setModalGranadasAberto] = React.useState(false);
+  const [modalAntenaAberto, setModalAntenaAberto] = React.useState(false);
+  const [antenaTargetArmaId, setAntenaTargetArmaId] = React.useState<string | undefined>(undefined);
   const [granadaTargetArmaId, setGranadaTargetArmaId] = React.useState<string | undefined>(undefined);
   const [expandidos, setExpandidos] = React.useState<Record<string, boolean>>({});
 
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
   };
-  const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas, municoesHook } = useRPG();
+  const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas, municoesHook, rituaisHook } = useRPG();
   let armas = [...(armasHook?.armasInventario || [])];
 
   const soqueira = itensHook?.itensInventario.find(i => i.item.Nome_Item.toLowerCase().includes('soqueira'));
@@ -658,7 +661,10 @@ export const CombatePanel: React.FC = () => {
               municoesHook={municoesHook}
               itensHook={itensHook}
               onAddMunicao={() => {
-                if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                if (armaInv.arma.Nome_Item === 'A Antena') {
+                    setAntenaTargetArmaId(armaInv.id);
+                    setModalAntenaAberto(true);
+                  } else if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                   setGranadaTargetArmaId(armaInv.id);
                   setModalGranadasAberto(true);
                 } else {

@@ -2054,7 +2054,7 @@ function SortableProtecaoItem({
 }) {
   const { id, protecao, equipado } = item;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, data: { type: 'protecao' } });
-  const { proficienciasTotais, modificacoesHook, maldicoesHook, regrasAutomaticasAtivas } = useRPG();
+  const { proficienciasTotais, modificacoesHook, maldicoesHook, regrasAutomaticasAtivas, rituaisHook } = useRPG();
   const hasProficiencia = protecao.Proficiencia === 'Nenhuma' || proficienciasTotais.includes(protecao.Proficiencia);
   const [expandirMods, setExpandirMods] = useState(false);
     const [expandirMalds, setExpandirMalds] = useState(false);
