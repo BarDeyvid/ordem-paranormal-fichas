@@ -46,6 +46,10 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
             if (!m.includes(11)) { m.push(11); changedA = true; }
             if (changedA) { changed = true; return { ...a, modificacoes: m }; }
           }
+          if (a.arma.Nome_Item?.trim().toLowerCase() === 'a antena' && !a.arma['Improvisada?']) {
+            changed = true;
+            return { ...a, arma: { ...a.arma, 'Improvisada?': true } };
+          }
           return a;
         });
 
@@ -197,6 +201,9 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
     const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
     let mods = [] as number[];
     if (arma.Nome_Item === 'Fuzil Alheio') mods = [10, 11]; // Mira Laser, Mira Telescópica
+    if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item === 'A Antena\r') {
+      arma = { ...arma, 'Improvisada?': true };
+    }
     setArmasInventario(prev => [...prev, { id: newId, arma, modificacoes: mods }]);
   };
 
