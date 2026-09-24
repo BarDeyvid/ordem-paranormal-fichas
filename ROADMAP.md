@@ -42,7 +42,7 @@ Este documento organiza as próximas grandes funcionalidades e marcos arquitetur
 
 ---
 
-### 🔮 Fase 3: Conjuração Ativa de Rituais & Custo do Paranormal
+### 🔮 Fase 3: Conjuração Ativa de Rituais & Custo do Paranormal *(Concluída)*
 > **Objetivo:** Transformar o Grimório em um painel interativo de conjuração ritualística fiel às regras do Outro Lado.
 
 - **Validação de Limites por NEX:**

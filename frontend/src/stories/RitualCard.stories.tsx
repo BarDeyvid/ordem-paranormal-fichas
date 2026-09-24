@@ -153,3 +153,15 @@ export const DecadenciaMorte: Story = {
     classe: 'Combatente',
   },
 };
+
+export const ConjuracaoInterativa: Story = {
+  render: (args) => <InteractiveRitual {...args} />,
+  args: {
+    ritual: ritualEletrocussao,
+    expandido: true,
+    versao: 'discente',
+    nivel: 5,
+    classe: 'Ocultista',
+  },
+};
+

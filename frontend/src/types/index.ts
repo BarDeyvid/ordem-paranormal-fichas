@@ -411,6 +411,27 @@ export interface RitualAprendido {
   [key: string]: any;
 }
 
+export interface ConjurarRitualParams {
+  nome: string;
+  elemento: string;
+  custoPE: number;
+  versao: VersaoRitual;
+  circulo: number;
+  dadosEfeito?: string;
+  alcance?: string;
+  resistencia?: string;
+  ignorarCustoParanormal?: boolean;
+}
+
+export interface ResultadoConjuracao {
+  sucesso: boolean;
+  mensagem: string;
+  peGasto: number;
+  sanidadePerdida: number;
+  sucessoCustoParanormal: boolean;
+  resultadoTesteOcultismo?: ResultadoRolagem;
+}
+
 // ============================================================
 // CONDIÇÕES & ESTADOS PARANORMAIS
 // ============================================================

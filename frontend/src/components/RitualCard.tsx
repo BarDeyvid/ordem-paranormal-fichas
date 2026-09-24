@@ -3,7 +3,8 @@ import { Collapse } from './Collapse';
 import { CustomSelect } from './CustomSelect';
 import { formatarDescricao } from '../utils/formatters';
 import { verificarRequisitoRitual, verificarAcessoCirculo } from '../utils/rpgRules';
-import type { VersaoRitual } from '../types';
+import { RPGContext } from '../context/RPGContext';
+import type { VersaoRitual, ResultadoConjuracao, ConjurarRitualParams } from '../types';
 
 export const CORES_ELEMENTOS: Record<string, string> = {
   sangue: '#b31717',
@@ -85,6 +86,8 @@ export interface RitualCardProps {
   onProjetarMesa?: (nome: string, elemento: string, alcance: string, pe: number) => Promise<any> | void;
   onEditar?: () => void;
   onEsquecer?: () => void;
+  onConjurar?: (params: ConjurarRitualParams) => ResultadoConjuracao;
+  onRolarDano?: (nome: string, dados: string) => void;
 }
 
 export const RitualCard: React.FC<RitualCardProps> = ({
@@ -103,7 +106,27 @@ export const RitualCard: React.FC<RitualCardProps> = ({
   onProjetarMesa,
   onEditar,
   onEsquecer,
+  onConjurar,
+  onRolarDano,
 }) => {
+  const rpg = React.useContext(RPGContext);
+  const status = rpg?.status;
+  const atributosFinais = rpg?.atributosFinais;
+  const condicoesAtivas = rpg?.condicoesAtivas || [];
+  const conjurarRitualFn = onConjurar || rpg?.conjurarRitual;
+  const rolarDanoFn = onRolarDano || rpg?.executarRolagemDano;
+  const trilhasHook = rpg?.trilhasHook;
+
+  const [feedbackConjuracao, setFeedbackConjuracao] = React.useState<ResultadoConjuracao | null>(null);
+
+  React.useEffect(() => {
+    if (!feedbackConjuracao) return;
+    const timer = setTimeout(() => {
+      setFeedbackConjuracao(null);
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [feedbackConjuracao]);
+
   const isLista = ritual.Elemento_Ritual?.toLowerCase() === 'lista' || ritual.Elemento_Ritual?.toLowerCase() === 'varia';
   const elementoEscolhido = isLista ? (ritual.ElementoEscolhidoPermanente || 'Sangue') : ritual.Elemento_Ritual;
 
@@ -132,6 +155,62 @@ export const RitualCard: React.FC<RitualCardProps> = ({
   const efeito = ritual.customProps?.[versao]?.Efeito_Ritual || obterValorVersao(ritual.Efeito_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
   const resistencia = ritual.customProps?.[versao]?.Resistencia_Ritual || obterValorVersao(ritual.Resistencia_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
   const dados = ritual.customProps?.[versao]?.Dados_Ritual || obterValorVersao(ritual.Dados_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
+
+  // Cálculos de DT
+  const peTurno = status?.peTurno ?? (nivel || 1);
+  const isGraduado = Boolean(
+    trilhasHook?.trilhaSelecionada?.Nome_Trilha?.toLowerCase().includes('graduado') ||
+    trilhasHook?.versatilidadeSelecionada?.Nome_Trilha?.toLowerCase().includes('graduado')
+  );
+  const attrDT = isGraduado ? (atributosFinais?.INT ?? 0) : (atributosFinais?.PRE ?? 0);
+  const dtResistencia = 10 + peTurno + attrDT;
+  const dtCustoParanormal = 20 + (isNaN(peValor) ? 1 : peValor);
+
+  // Validação de Conjuração
+  const estaPerturbado = condicoesAtivas.includes('perturbado');
+  const peAtual = status?.peAtual ?? 0;
+  const peTemp = (status?.hasPeTemp ? status?.peTempAtual : 0) ?? 0;
+  const peTotalDisponivel = peAtual + peTemp;
+  const excedeLimiteTurno = !isNaN(peValor) && peValor > peTurno;
+  const semPeSuficiente = !isNaN(peValor) && peTotalDisponivel < peValor;
+
+  let motivoDesabilitado = '';
+  if (estaPerturbado) {
+    motivoDesabilitado = 'Não pode gastar PE voluntariamente enquanto Perturbado';
+  } else if (excedeLimiteTurno) {
+    motivoDesabilitado = `Custo (${peValor} PE) excede seu limite por turno (${peTurno} PE)`;
+  } else if (semPeSuficiente) {
+    motivoDesabilitado = `PE insuficiente (${peTotalDisponivel}/${peValor} PE)`;
+  }
+
+  const podeConjurar = !motivoDesabilitado && Boolean(conjurarRitualFn);
+
+  const handleConjurar = () => {
+    if (!podeConjurar || !conjurarRitualFn) return;
+    const circuloNum = parseInt(String(ritual.Circulo_Ritual).replace(/\D+/g, ''), 10) || 1;
+    const resultado = conjurarRitualFn({
+      nome: ritual.customNome || ritual.Nome_Ritual,
+      elemento: elementoEscolhido,
+      custoPE: isNaN(peValor) ? 1 : peValor,
+      versao,
+      circulo: circuloNum,
+      dadosEfeito: dados,
+      alcance,
+      resistencia,
+    });
+    setFeedbackConjuracao(resultado);
+  };
+
+  const handleRolarEfeito = () => {
+    if (!rolarDanoFn || !dados) return;
+    const expr = dados.includes('/') ? dados.split('/')[0].trim() : dados.trim();
+    rolarDanoFn(
+      ritual.customNome || ritual.Nome_Ritual,
+      expr,
+      2,
+      false
+    );
+  };
 
   // Opções de versão disponíveis
   const reqNormal = verificarAcessoCirculo(ritual.Circulo_Ritual, nivel, classe);
@@ -201,11 +280,26 @@ export const RitualCard: React.FC<RitualCardProps> = ({
             </>
           )}
           <div className="flex flex-col gap-1 justify-center py-1">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-bold text-zinc-100">{ritual.customNome || ritual.Nome_Ritual}</span>
               <span className="rounded bg-blue-950/30 px-1.5 py-0.5 text-[10px] font-bold text-blue-400 border border-blue-900/50">
                 {pe} PE
               </span>
+              {conjurarRitualFn && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleConjurar();
+                  }}
+                  disabled={!podeConjurar}
+                  title={podeConjurar ? `Conjurar ${ritual.customNome || ritual.Nome_Ritual} (${peValor} PE)` : motivoDesabilitado}
+                  className="inline-flex items-center gap-1 rounded bg-purple-950/70 hover:bg-purple-900/90 border border-purple-700/60 hover:border-purple-500 px-2 py-0.5 text-[10px] font-bold text-purple-200 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                >
+                  <span>🔮</span>
+                  <span>Conjurar</span>
+                </button>
+              )}
             </div>
             {/* Dados abaixo do título — todas as versões, ativa acesa */}
             {ritual.Dados_Ritual && (() => {
@@ -268,6 +362,95 @@ export const RitualCard: React.FC<RitualCardProps> = ({
       <Collapse isOpen={expandido}>
         <div className="border-t border-zinc-800 px-4 py-4 text-left text-sm leading-relaxed text-zinc-400">
           
+          {/* ══ BARRA DE CONJURAÇÃO & DADOS ══ */}
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-zinc-950/80 p-2.5 border border-zinc-800">
+            <div className="flex items-center gap-2 flex-wrap">
+              {conjurarRitualFn && (
+                <button
+                  type="button"
+                  onClick={handleConjurar}
+                  disabled={!podeConjurar}
+                  title={podeConjurar ? `Conjurar ${ritual.customNome || ritual.Nome_Ritual} (${peValor} PE)` : motivoDesabilitado}
+                  className="inline-flex items-center gap-1.5 rounded bg-purple-900/80 hover:bg-purple-800 border border-purple-700 px-3 py-1.5 text-xs font-bold text-purple-100 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed shadow"
+                >
+                  <span>🔮</span>
+                  <span>Conjurar ({peValor} PE)</span>
+                </button>
+              )}
+
+              {dados && rolarDanoFn && (
+                <button
+                  type="button"
+                  onClick={handleRolarEfeito}
+                  className="inline-flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-2.5 py-1.5 text-xs font-bold text-zinc-200 hover:text-white transition shadow"
+                  title={`Rolar dados do efeito: ${dados}`}
+                >
+                  <span>🎲</span>
+                  <span>Rolar Efeito ({dados})</span>
+                </button>
+              )}
+            </div>
+
+            {/* DTs Informativas */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {resistencia && resistencia.toLowerCase() !== 'nenhuma' && (
+                <div
+                  className="flex items-center gap-1 px-2 py-1 rounded bg-amber-950/30 border border-amber-900/50 text-[11px] font-bold text-amber-300"
+                  title={`DT do Ritual = 10 + Limite PE por Turno (${peTurno}) + ${isGraduado ? 'INT' : 'PRE'} (${attrDT})`}
+                >
+                  <span className="text-zinc-400 font-normal">Resistência:</span>
+                  <span>DT {dtResistencia}</span>
+                </div>
+              )}
+
+              <div
+                className="flex items-center gap-1 px-2 py-1 rounded bg-purple-950/30 border border-purple-900/50 text-[11px] font-bold text-purple-300"
+                title="Custo do Paranormal (Ordem Paranormal pág. 118): Teste de Ocultismo (INT) contra DT 20 + PE gastos. Se falhar, perde SAN igual ao PE gasto."
+              >
+                <span className="text-zinc-400 font-normal">Custo Paranormal:</span>
+                <span>DT {dtCustoParanormal}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Banner de Feedback da Conjuração */}
+          {feedbackConjuracao && (
+            <div
+              className={`mb-4 p-2.5 rounded text-xs border flex items-center justify-between gap-2 shadow-md transition-all ${
+                feedbackConjuracao.sucesso
+                  ? feedbackConjuracao.sucessoCustoParanormal
+                    ? 'bg-emerald-950/50 border-emerald-700 text-emerald-200'
+                    : 'bg-amber-950/50 border-amber-700 text-amber-200'
+                  : 'bg-red-950/50 border-red-700 text-red-200'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-base">
+                  {feedbackConjuracao.sucesso
+                    ? feedbackConjuracao.sucessoCustoParanormal
+                      ? '✨'
+                      : '⚡'
+                    : '⚠️'}
+                </span>
+                <div className="flex flex-col">
+                  <span className="font-semibold">{feedbackConjuracao.mensagem}</span>
+                  {feedbackConjuracao.resultadoTesteOcultismo && (
+                    <span className="text-[10px] text-zinc-400 mt-0.5">
+                      Teste de Ocultismo rolado: {feedbackConjuracao.resultadoTesteOcultismo.total} (Total) vs DT {dtCustoParanormal}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFeedbackConjuracao(null)}
+                className="text-zinc-400 hover:text-zinc-200 text-xs px-1 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="flex flex-row items-center justify-between gap-4">
             <div className="flex flex-col flex-1 min-w-0">
               
@@ -328,15 +511,33 @@ export const RitualCard: React.FC<RitualCardProps> = ({
                   </div>
                 )}
                 {resistencia && (
-                  <div className="text-xs">
+                  <div className="text-xs flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-zinc-300">Resistência: </span>
                     <span className="text-zinc-400">{resistencia}</span>
+                    {resistencia.toLowerCase() !== 'nenhuma' && (
+                      <span
+                        className="ml-1 rounded bg-amber-950/40 px-1.5 py-0.5 text-[10px] font-bold text-amber-400 border border-amber-900/50"
+                        title={`DT = 10 + PE/Turno (${peTurno}) + ${isGraduado ? 'INT' : 'PRE'} (${attrDT})`}
+                      >
+                        DT {dtResistencia}
+                      </span>
+                    )}
                   </div>
                 )}
                 {dados && (
-                  <div className="text-xs">
+                  <div className="text-xs flex items-center gap-1.5 flex-wrap">
                     <span className="font-bold text-zinc-300">Dados: </span>
-                    <span className="text-zinc-400">{dados}</span>
+                    <span className="text-zinc-400 font-mono">{dados}</span>
+                    {rolarDanoFn && (
+                      <button
+                        type="button"
+                        onClick={handleRolarEfeito}
+                        className="ml-1 inline-flex items-center gap-1 text-[10px] text-purple-400 hover:text-purple-300 underline font-bold"
+                        title="Rolar dados no Dice Tray"
+                      >
+                        🎲 rolar
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

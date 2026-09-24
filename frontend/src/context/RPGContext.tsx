@@ -10,6 +10,8 @@ import type {
   ResultadoRolagem,
   CondicaoId,
   EstadoSobrevivencia,
+  ConjurarRitualParams,
+  ResultadoConjuracao,
 } from '../types';
 import { calcularPenalidadesCondicoes, type ResumoPenalidadesCalculadas } from '../data/condicoes';
 import { rolarPericia, rolarAtaque, rolarDano, rolarLivre } from '../services/diceRoller';
@@ -30,7 +32,7 @@ import { calcularBonusMaldicoes, type MaldicoesBonusGlobais } from '../utils/mal
 import { useModificacoes } from '../hooks/useModificacoes';
 import { useMaldicoes } from '../hooks/useMaldicoes';
 import { capMaximoAtributo, pontosIniciaisPorNivel, calcularStatusBase } from '../utils/rpgRules';
-import { sendCharacterStatus } from '../services/battlematBridge';
+import { sendCharacterStatus, sendCastRitual } from '../services/battlematBridge';
 
 // ============================================================
 // TUDO QUE O CONTEXTO EXPÕE
@@ -180,9 +182,10 @@ interface RPGContextType {
   estabilizarMorrendo: () => void;
   estabilizarEnlouquecendo: () => void;
   registrarFalhaMorte: () => void;
+  conjurarRitual: (params: ConjurarRitualParams) => ResultadoConjuracao;
 }
 
-const RPGContext = createContext<RPGContextType | null>(null);
+export const RPGContext = createContext<RPGContextType | null>(null);
 
 // ============================================================
 // PROVIDER
@@ -860,6 +863,117 @@ const atributosFinais = useMemo(() => {
   }, []);
 
   // ============================================================
+  // CONJURAÇÃO DE RITUAIS & CUSTO DO PARANORMAL
+  // ============================================================
+  const conjurarRitual = useCallback((params: ConjurarRitualParams): ResultadoConjuracao => {
+    const {
+      nome,
+      elemento,
+      custoPE,
+      versao,
+      circulo,
+      dadosEfeito,
+      alcance,
+      resistencia,
+      ignorarCustoParanormal = false,
+    } = params;
+
+    // 1. Verificação da condição Perturbado
+    if (condicoesAtivas.includes('perturbado')) {
+      return {
+        sucesso: false,
+        mensagem: 'Você está Perturbado e não pode gastar PE voluntariamente.',
+        peGasto: 0,
+        sanidadePerdida: 0,
+        sucessoCustoParanormal: false,
+      };
+    }
+
+    // 2. Verificação do limite de PE por turno (peTurno)
+    const limiteTurno = status.peTurno || 1;
+    if (custoPE > limiteTurno) {
+      return {
+        sucesso: false,
+        mensagem: `O custo de ${custoPE} PE excede seu limite de canalização de ${limiteTurno} PE por rodada.`,
+        peGasto: 0,
+        sanidadePerdida: 0,
+        sucessoCustoParanormal: false,
+      };
+    }
+
+    // 3. Verificação de PE disponível (atual + temporário)
+    const peAtual = status.peAtual ?? 0;
+    const peTemp = status.hasPeTemp ? (status.peTempAtual ?? 0) : 0;
+    const peTotalDisponivel = peAtual + peTemp;
+
+    if (peTotalDisponivel < custoPE) {
+      return {
+        sucesso: false,
+        mensagem: `Pontos de Esforço insuficientes (${peTotalDisponivel}/${custoPE} PE).`,
+        peGasto: 0,
+        sanidadePerdida: 0,
+        sucessoCustoParanormal: false,
+      };
+    }
+
+    // 4. Desconto de PE (priorizando temporário)
+    let danoRestante = custoPE;
+    if (status.hasPeTemp && status.peTempAtual > 0) {
+      const absorvido = Math.min(status.peTempAtual, danoRestante);
+      status.setPeTempAtual(prev => Math.max(0, prev - absorvido));
+      danoRestante -= absorvido;
+    }
+    if (danoRestante > 0) {
+      status.setPeAtual(prev => Math.max(0, (prev ?? 0) - danoRestante));
+    }
+
+    // 5. Custo do Paranormal (Ocultismo contra DT 20 + custoPE)
+    let sucessoCustoParanormal = true;
+    let sanidadePerdida = 0;
+    let resultadoTeste: ResultadoRolagem | undefined;
+
+    if (!ignorarCustoParanormal) {
+      const dtCusto = 20 + custoPE;
+      const ocObj = periciasHook?.pericias?.['Ocultismo'];
+      const bonusOcultismo = (ocObj?.treino || 0) + (ocObj?.outros || 0);
+
+      resultadoTeste = executarRolagemPericia(
+        `Custo Paranormal: ${nome}`,
+        (ocObj?.atributo as AtributoKey) || 'INT',
+        bonusOcultismo
+      );
+
+      if (resultadoTeste.total < dtCusto) {
+        sucessoCustoParanormal = false;
+        sanidadePerdida = custoPE;
+        status.setSanAtual(prev => Math.max(0, (prev ?? 0) - sanidadePerdida));
+      }
+    }
+
+    // 6. Rolar dados de efeito se houver
+    if (dadosEfeito && dadosEfeito.toLowerCase().includes('d')) {
+      const expr = dadosEfeito.includes('/') ? dadosEfeito.split('/')[0].trim() : dadosEfeito.trim();
+      executarRolagemDano(nome, expr, 2, false);
+    }
+
+    // 7. Enviar para battlemat bridge se conectado
+    sendCastRitual(nome, elemento, alcance || 'Curto', custoPE).catch(() => {});
+
+    const msgSucesso = sucessoCustoParanormal
+      ? `Ritual "${nome}" (${versao}) conjurado gastando ${custoPE} PE! Custo do Paranormal superado sem perda de Sanidade.`
+      : `Ritual "${nome}" (${versao}) conjurado gastando ${custoPE} PE! Falhou no Custo do Paranormal (DT ${20 + custoPE}): perdeu ${sanidadePerdida} de Sanidade.`;
+
+    return {
+      sucesso: true,
+      mensagem: msgSucesso,
+      peGasto: custoPE,
+      sanidadePerdida,
+      sucessoCustoParanormal,
+      resultadoTesteOcultismo: resultadoTeste,
+    };
+  }, [condicoesAtivas, status, periciasHook, executarRolagemPericia, executarRolagemDano]);
+
+  // ============================================================
   // VALUE DO CONTEXTO
   // ============================================================
   // Calcula status reais
@@ -948,6 +1062,7 @@ const atributosFinais = useMemo(() => {
     estabilizarMorrendo,
     estabilizarEnlouquecendo,
     registrarFalhaMorte,
+    conjurarRitual,
   };
 
   return <RPGContext.Provider value={value}>{children}</RPGContext.Provider>;
