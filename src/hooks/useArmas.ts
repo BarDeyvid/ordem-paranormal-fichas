@@ -45,7 +45,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       let nomeDesarmado = 'Ataque Desarmado';
       let elementoDesarmado = '';
       
-      const temPunhos = next.some(a => a.arma.Nome_Item === 'Punhos Enraivecidos');
+      const temPunhos = next.some(a => a.arma.Nome_Item?.trim().toLowerCase().includes('enraivecido'));
 
       if (regrasAutomaticasAtivas.has(84)) { // Artista Marcial
         danoDesarmado = nex >= 70 ? '1d10' : nex >= 35 ? '1d8' : '1d6';

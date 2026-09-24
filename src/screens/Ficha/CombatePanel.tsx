@@ -623,7 +623,7 @@ export const CombatePanel: React.FC = () => {
   }
 
   // Sort Duplas Obsessivas together, hide Punhos Enraivecidos
-  armas = armas.filter(a => a.arma.Nome_Item !== 'Punhos Enraivecidos' || a.id === 'ataque-desarmado-virtual').sort((a, b) => {
+  armas = armas.filter(a => !(a.arma.Nome_Item?.trim().toLowerCase().includes('enraivecido')) || a.id === 'ataque-desarmado-virtual').sort((a, b) => {
     if (a.arma.Nome_Item?.includes('Dupla Obsessiva') && b.arma.Nome_Item?.includes('Dupla Obsessiva')) return a.arma.Nome_Item.localeCompare(b.arma.Nome_Item);
     return 0; // maintain original order for others
   });
