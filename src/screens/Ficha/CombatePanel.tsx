@@ -4,6 +4,7 @@ import type { ArmaInventario } from '../../types';
 import { Collapse } from '../../components/Collapse';
 import { ModalMunicoes } from './ModalMunicoes';
 import { ModalGranadas } from './ModalGranadas';
+import { ModalAntena } from './ModalAntena';
 import { CustomSelect } from '../../components/CustomSelect';
 
 const ATRIBUTO_OPTIONS = [
@@ -125,7 +126,13 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const finalPV = grupoArma?.PV_Grupo != null ? Number(grupoArma.PV_Grupo) + (numMaldicoes * 10) : null;
   const temGrupoStats = finalRD != null || finalPV != null;
   const municoesAcopladasList = (armaInv.municoesAcopladas || []).map(mid => {
-    if (mid.startsWith('RITUAL_')) return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+    if (mid.startsWith('RITUAL_')) {
+        const match = mid.match(/^RITUAL_([^_]+)_(.*)$/);
+        if (match) {
+           return { id: mid, municao: { Nome_Item: "Ritual: " + match[2] }, isRitual: true, elemento: match[1] };
+        }
+        return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+      }
       let m = municoesHook?.municoesInventario.find((x: any) => x.id === mid);
     if (m) return m;
     let i = itensHook?.itensInventario.find((x: any) => x.id === mid);
@@ -454,8 +461,8 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
               <span className="text-zinc-300">
                 <span className="font-bold text-green-400">Munição:</span>{' '}
                 {municoesAcopladasList.length > 0 ? (
-                  <span className="text-zinc-300 inline-flex items-center">
-                    {municoesAcopladasList[0].municao.Nome_Item}
+                  <span className={`${municoesAcopladasList[0].isRitual ? getCorElementoMunicao(municoesAcopladasList[0].elemento) : 'text-zinc-300'} inline-flex items-center`}>
+                      {municoesAcopladasList[0].municao.Nome_Item}
                     {municoesAcopladasList.length > 1 && (
                       <span className="ml-1 text-zinc-400 font-bold bg-zinc-800/80 px-1 rounded-sm text-[9px]">
                         +{municoesAcopladasList.length - 1}
@@ -589,6 +596,17 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     );
   };
 
+const getCorElementoMunicao = (elemento?: string) => {
+  if (!elemento) return 'text-zinc-300';
+  const e = elemento.trim().toLowerCase();
+  if (e === 'sangue') return 'text-red-500 font-bold';
+  if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded font-bold';
+  if (e === 'conhecimento') return 'text-yellow-500 font-bold';
+  if (e === 'energia') return 'text-purple-500 font-bold';
+  if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded font-bold';
+  return 'text-zinc-300';
+};
+
 export const CombatePanel: React.FC = () => {
   const [modalMunicoesAberto, setModalMunicoesAberto] = React.useState(false);
   const [municaoTargetArmaId, setMunicaoTargetArmaId] = React.useState<string | undefined>(undefined);
@@ -700,37 +718,19 @@ export const CombatePanel: React.FC = () => {
       )}
       
       {modalAntenaAberto && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 backdrop-blur-sm bg-black/60" onClick={() => setModalAntenaAberto(false)} />
-          <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[80vh]">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <div className="flex items-center justify-between p-5 border-b border-zinc-800/80">
-              <div>
-                <h2 className="text-sm font-bold text-purple-400 uppercase tracking-widest">A Antena (MODAL VISIBLE!)</h2>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Selecione o ritual para acoplar</p>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto p-2 custom-scrollbar flex flex-col gap-1">
-              {rituaisHook?.rituaisAprendidos?.length === 0 && <p className="p-4 text-center text-xs text-zinc-500">Nenhum ritual aprendido.</p>}
-              {rituaisHook?.rituaisAprendidos?.map((r: any) => {
-                const ritualBase = rituaisHook?.rituais?.find((rit: any) => rit.Codigo_Ritual === r.codigo_ritual);
-                const nomeRitual = r.customNome || ritualBase?.Nome_Ritual || 'Ritual Desconhecido';
-                return (
-                <button
-                  key={r.origem}
-                  onClick={() => {
-                     if (antenaTargetArmaId) armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + nomeRitual);
-                     setModalAntenaAberto(false);
-                  }}
-                  className="text-left px-3 py-2 rounded hover:bg-zinc-800/50 text-xs text-zinc-300 transition-colors border border-transparent hover:border-purple-900/50"
-                >
-                  {nomeRitual}
-                </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <ModalAntena
+          onFechar={() => setModalAntenaAberto(false)}
+          onSelect={(nome, elemento) => {
+             if (antenaTargetArmaId) {
+                const armaInv = armasHook?.armasInventario.find(a => a.id === antenaTargetArmaId);
+                if (armaInv?.municoesAcopladas) {
+                   armaInv.municoesAcopladas.forEach(m => armasHook?.desacoplarMunicao(antenaTargetArmaId, m));
+                }
+                armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + elemento + '_' + nome);
+             }
+             setModalAntenaAberto(false);
+          }}
+        />
       )}
 
       {modalGranadasAberto && (

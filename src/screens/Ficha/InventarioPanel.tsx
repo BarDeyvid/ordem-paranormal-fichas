@@ -32,6 +32,7 @@ import { restrictToWindowEdges, restrictToVerticalAxis, restrictToParentElement 
 import type { Modifier } from '@dnd-kit/core';
 import { ModalMunicoes } from './ModalMunicoes';
 import { ModalGranadas } from './ModalGranadas';
+import { ModalAntena } from './ModalAntena';
 import { ModalEditarArma } from '../../components/ModalEditarArma';
 import { SortableItemAmaldicoado } from '../../components/SortableItemAmaldicoado';
 
@@ -350,6 +351,17 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
     </div>
   );
 }
+
+const getCorElementoMunicao = (elemento?: string) => {
+  if (!elemento) return 'text-zinc-300';
+  const e = elemento.trim().toLowerCase();
+  if (e === 'sangue') return 'text-red-500 font-bold';
+  if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded font-bold';
+  if (e === 'conhecimento') return 'text-yellow-500 font-bold';
+  if (e === 'energia') return 'text-purple-500 font-bold';
+  if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded font-bold';
+  return 'text-zinc-300';
+};
 
 export function InventarioPanel() {
   const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
@@ -1312,37 +1324,19 @@ export function InventarioPanel() {
 
       
       {modalAntenaAberto && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 backdrop-blur-sm bg-black/60" onClick={() => setModalAntenaAberto(false)} />
-          <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] shadow-[0_0_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5 flex flex-col max-h-[80vh]">
-            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-            <div className="flex items-center justify-between p-5 border-b border-zinc-800/80">
-              <div>
-                <h2 className="text-sm font-bold text-purple-400 uppercase tracking-widest">A Antena (MODAL VISIBLE!)</h2>
-                <p className="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">Selecione o ritual para acoplar</p>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto p-2 custom-scrollbar flex flex-col gap-1">
-              {rituaisHook?.rituaisAprendidos?.length === 0 && <p className="p-4 text-center text-xs text-zinc-500">Nenhum ritual aprendido.</p>}
-              {rituaisHook?.rituaisAprendidos?.map((r: any) => {
-                const ritualBase = rituaisHook?.rituais?.find((rit: any) => rit.Codigo_Ritual === r.codigo_ritual);
-                const nomeRitual = r.customNome || ritualBase?.Nome_Ritual || 'Ritual Desconhecido';
-                return (
-                <button
-                  key={r.origem}
-                  onClick={() => {
-                     if (antenaTargetArmaId) armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + nomeRitual);
-                     setModalAntenaAberto(false);
-                  }}
-                  className="text-left px-3 py-2 rounded hover:bg-zinc-800/50 text-xs text-zinc-300 transition-colors border border-transparent hover:border-purple-900/50"
-                >
-                  {nomeRitual}
-                </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <ModalAntena
+          onFechar={() => setModalAntenaAberto(false)}
+          onSelect={(nome, elemento) => {
+             if (antenaTargetArmaId) {
+                const armaInv = armasHook?.armasInventario.find(a => a.id === antenaTargetArmaId);
+                if (armaInv?.municoesAcopladas) {
+                   armaInv.municoesAcopladas.forEach(m => armasHook?.desacoplarMunicao(antenaTargetArmaId, m));
+                }
+                armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + elemento + '_' + nome);
+             }
+             setModalAntenaAberto(false);
+          }}
+        />
       )}
 
       {/* Modal Granadas */}
@@ -1421,6 +1415,13 @@ function SortableArmaItem({
     const maldicoesAtuais = (Array.isArray(item.maldicoes) ? item.maldicoes : []).map(id => maldicoesHook?.maldicoes.find(m => m.Codigo_Mald === id)).filter(Boolean) as any[];
 
   const municoesAcopladasList = (item.municoesAcopladas || []).map(mid => {
+      if (typeof mid === 'string' && mid.startsWith('RITUAL_')) {
+        const match = mid.match(/^RITUAL_([^_]+)_(.*)$/);
+        if (match) {
+           return { id: mid, municao: { Nome_Item: "Ritual: " + match[2] }, isRitual: true, elemento: match[1] };
+        }
+        return { id: mid, municao: { Nome_Item: "Ritual: " + mid.substring(7) } };
+      }
     let m = municoesHook?.municoesInventario.find(m => m.id === mid);
     if (m) return m;
     let i = itensHook?.itensInventario.find(i => i.id === mid);
@@ -1839,7 +1840,7 @@ function SortableArmaItem({
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Munições:</span>
             {municoesAcopladasList.map(minv => (
               <div key={minv.id} className="flex items-center gap-1 bg-green-950/40 border border-green-900/50 rounded-full pl-2 pr-1 py-0.5 group">
-                <span className="text-[11px] font-bold text-green-400 truncate max-w-[150px]">{minv.municao.Nome_Item}</span>
+                <span className={`text-[11px] font-bold ${minv.isRitual ? getCorElementoMunicao(minv.elemento) : 'text-green-400'} truncate max-w-[150px]`}>{minv.municao.Nome_Item}</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
