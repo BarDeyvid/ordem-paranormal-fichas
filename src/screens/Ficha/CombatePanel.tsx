@@ -448,7 +448,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
         <div className="mt-3 pt-3 border-t border-zinc-800/50 flex flex-col gap-2 relative z-10 text-xs">
           
           {/* MUNIÇÃO ACOPLADA */}
-          {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma && !arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti')) && (
+          {(arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo' && arma.Tipo_Arma && !(arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti') || arma.Nome_Item?.toLowerCase().includes('fuzil alheio'))) && (
             <div className="flex items-center gap-x-2 gap-y-1 mb-1 flex-wrap">
               <span className="text-zinc-300">
                 <span className="font-bold text-green-400">Munição:</span>{' '}
