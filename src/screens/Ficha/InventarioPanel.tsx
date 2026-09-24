@@ -1324,18 +1324,22 @@ export function InventarioPanel() {
             </div>
             <div className="flex-1 overflow-y-auto p-2 custom-scrollbar flex flex-col gap-1">
               {rituaisHook?.rituaisAprendidos?.length === 0 && <p className="p-4 text-center text-xs text-zinc-500">Nenhum ritual aprendido.</p>}
-              {rituaisHook?.rituaisAprendidos?.map((r: any) => (
+              {rituaisHook?.rituaisAprendidos?.map((r: any) => {
+                const ritualBase = rituaisHook?.rituais?.find((rit: any) => rit.Codigo_Ritual === r.codigo_ritual);
+                const nomeRitual = r.customNome || ritualBase?.Nome_Ritual || 'Ritual Desconhecido';
+                return (
                 <button
                   key={r.origem}
                   onClick={() => {
-                     if (antenaTargetArmaId) armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + (r.customNome || r.ritual.Nome_Ritual));
+                     if (antenaTargetArmaId) armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + nomeRitual);
                      setModalAntenaAberto(false);
                   }}
                   className="text-left px-3 py-2 rounded hover:bg-zinc-800/50 text-xs text-zinc-300 transition-colors border border-transparent hover:border-purple-900/50"
                 >
-                  {r.customNome || r.ritual.Nome_Ritual}
+                  {nomeRitual}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
