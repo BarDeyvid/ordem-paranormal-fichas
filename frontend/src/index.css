@@ -76,3 +76,65 @@ button {
 .custom-scrollbar {
   scrollbar-gutter: stable;
 }
+
+/* ============================================================
+   ESTILOS DE IMPRESSÃO (A4 OFICIAL)
+   ============================================================ */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 6mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    background-image: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Esconde todos os elementos de tela interativos */
+  .no-print,
+  nav,
+  header,
+  aside,
+  button,
+  .matrix-bg,
+  #dice-tray-container,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  /* Mostra somente o container de impressão */
+  .print-only {
+    display: block !important;
+  }
+
+  .page-a4 {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 284mm !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+}
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+

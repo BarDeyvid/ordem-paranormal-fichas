@@ -4,11 +4,13 @@ import { exportarFicha, importarFicha } from '../utils/saveLoad';
 import { salvarFichaContexto } from '../services/fichasService';
 import { ModalBattlematConnect } from './ModalBattlematConnect';
 import { getBridgeConfig } from '../services/battlematBridge';
+import { ModalPrintPreview } from './PrintA4/ModalPrintPreview';
 
 export const SaveLoadButtons: React.FC = () => {
   const rpg = useRPG();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalPrintOpen, setModalPrintOpen] = useState(false);
   const [bridgeConfig, setBridgeConfig] = useState(getBridgeConfig());
   const [salvando, setSalvando] = useState(false);
   const [salvoFeedback, setSalvoFeedback] = useState(false);
@@ -93,6 +95,16 @@ export const SaveLoadButtons: React.FC = () => {
         <span>⬆️ Importar</span>
       </button>
 
+      <button
+        type="button"
+        onClick={() => setModalPrintOpen(true)}
+        className="flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-200 transition border border-zinc-700/80 shadow-sm"
+        title="Visualizar Impressão ou Exportar em PDF (Layout Oficial A4)"
+      >
+        <span>🖨️</span>
+        <span>PDF / Imprimir</span>
+      </button>
+
       {/* Botão de Conexão com a Mesa Digital */}
       <button
         onClick={() => setModalOpen(true)}
@@ -112,6 +124,11 @@ export const SaveLoadButtons: React.FC = () => {
       <ModalBattlematConnect
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
+      />
+
+      <ModalPrintPreview
+        isOpen={modalPrintOpen}
+        onClose={() => setModalPrintOpen(false)}
       />
 
       <input

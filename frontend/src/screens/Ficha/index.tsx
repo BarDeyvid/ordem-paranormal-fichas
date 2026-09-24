@@ -12,6 +12,8 @@ import { BonusCondicionaisPanel } from './BonusCondicionaisPanel';
 import { MatrixBackground } from './MatrixBackground';
 import { DiceTray } from '../../components/DiceRoller/DiceTray';
 import { ModalCondicoes } from '../../components/ModalCondicoes';
+import { FichaA4Page1 } from '../../components/PrintA4/FichaA4Page1';
+import { FichaA4Page2 } from '../../components/PrintA4/FichaA4Page2';
 
 export const FichaScreen: React.FC = () => {
   const {
@@ -38,51 +40,60 @@ export const FichaScreen: React.FC = () => {
   const afinidade = afinidadeAtiva ? afinidadeEscolhida : null;
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col">
-      <MatrixBackground afinidade={afinidade} />
-      <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col p-4 md:p-6">
-      <div className="flex w-full justify-between gap-6 xl:gap-10">
-        
-        {/* BLOCO ESQUERDO: Header + (Atributos e Perícias) */}
-        <div className="flex flex-[2_2_66%] flex-col gap-6">
-          <CharacterHeader />
-          
+    <>
+      {/* ══════ INTERFACE DE TELA NORMAL ══════ */}
+      <div className="relative w-full min-h-screen flex flex-col no-print">
+        <MatrixBackground afinidade={afinidade} />
+        <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col p-4 md:p-6">
           <div className="flex w-full justify-between gap-6 xl:gap-10">
-            {/* COLUNA ESQUERDA: Atributos + Status + Defesa + Proteções */}
-            <div className="flex flex-1 flex-col gap-5 pb-10">
-              <AtributosFicha />
-              <StatusPanel />
-              <DefesaPanel />
-              <ProtecoesPanel />
-              </div>
+            
+            {/* BLOCO ESQUERDO: Header + (Atributos e Perícias) */}
+            <div className="flex flex-[2_2_66%] flex-col gap-6">
+              <CharacterHeader />
+              
+              <div className="flex w-full justify-between gap-6 xl:gap-10">
+                {/* COLUNA ESQUERDA: Atributos + Status + Defesa + Proteções */}
+                <div className="flex flex-1 flex-col gap-5 pb-10">
+                  <AtributosFicha />
+                  <StatusPanel />
+                  <DefesaPanel />
+                  <ProtecoesPanel />
+                </div>
 
-            {/* COLUNA MEIO: Perícias */}
-            <div className="flex flex-1 flex-col pb-10">
-              <PericiasTable />
+                {/* COLUNA MEIO: Perícias */}
+                <div className="flex flex-1 flex-col pb-10">
+                  <PericiasTable />
+                </div>
+              </div>
+            </div>
+
+            {/* COLUNA DIREITA: Abas (Combate, Habilidades, Rituais...) */}
+            <div className="relative min-w-[320px] flex-[1_1_34%]">
+              <div className="absolute inset-0 pb-10 pt-[22px]">
+                <AbasPanel />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* COLUNA DIREITA: Abas (Combate, Habilidades, Rituais...) */}
-        <div className="relative min-w-[320px] flex-[1_1_34%]">
-          <div className="absolute inset-0 pb-10 pt-[22px]">
-            <AbasPanel />
-          </div>
+          <button
+            onClick={handleRefazer}
+            className="mt-12 w-full rounded-md border border-zinc-800 bg-zinc-900 p-3.5 font-bold uppercase tracking-wider text-zinc-400 transition hover:border-green-900 hover:text-green-500"
+          >
+            Refazer Personagem
+          </button>
+
+          {(nexModalAberto !== null || nexPoderEditando !== null) && <ModalPoderes />}
+          <DiceTray />
+          <ModalCondicoes />
         </div>
       </div>
 
-      <button
-        onClick={handleRefazer}
-        className="mt-12 w-full rounded-md border border-zinc-800 bg-zinc-900 p-3.5 font-bold uppercase tracking-wider text-zinc-400 transition hover:border-green-900 hover:text-green-500"
-      >
-        Refazer Personagem
-      </button>
-
-      {(nexModalAberto !== null || nexPoderEditando !== null) && <ModalPoderes />}
-      <DiceTray />
-      <ModalCondicoes />
+      {/* ══════ FOLHA DE IMPRESSÃO A4 (EXIBIDA APENAS NA IMPRESSÃO / PDF) ══════ */}
+      <div className="print-only">
+        <FichaA4Page1 />
+        <FichaA4Page2 />
       </div>
-    </div>
+    </>
   );
 };
 

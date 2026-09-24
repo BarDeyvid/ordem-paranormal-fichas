@@ -57,7 +57,7 @@ Este documento organiza as próximas grandes funcionalidades e marcos arquitetur
 
 ---
 
-### 📄 Fase 4: Exportação para PDF / Impressão no Layout Oficial A4
+### 📄 Fase 4: Exportação para PDF / Impressão no Layout Oficial A4 *(Concluída)*
 > **Objetivo:** Permitir impressão física e exportação em PDF de alta qualidade para sessões presenciais.
 
 - **Folha de Estilo de Impressão (`@media print`):**
