@@ -38,7 +38,18 @@ import { SortableItemAmaldicoado } from '../../components/SortableItemAmaldicoad
 import { formatarTexto } from '../../utils/formatters';
 import { calcularCategoriaFinal } from '../../utils/rpgRules';
 
-  const getCorElementoTexto = (elemento: string) => {
+  
+const getCorElementoBarra = (elemento: string) => {
+  const e = elemento.toLowerCase();
+  if (e.includes('sangue')) return 'bg-red-900/50';
+  if (e.includes('morte')) return 'bg-zinc-700';
+  if (e.includes('energia')) return 'bg-purple-900/50';
+  if (e.includes('conhec')) return 'bg-yellow-900/50';
+  if (e.includes('medo')) return 'bg-white/50';
+  return 'bg-zinc-800';
+};
+
+    const getCorElementoTexto = (elemento: string) => {
     const e = elemento.toLowerCase();
     if (e.includes('sangue')) return 'text-red-500';
     if (e.includes('morte')) return 'text-zinc-400 font-bold';
@@ -1088,66 +1099,88 @@ export function InventarioPanel() {
             )}
 
             {(categoriaFiltro === 'Amaldiçoados' || categoriaFiltro === 'Geral') && ((itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 || armasAmaldicoadasExibidas.length > 0) && (
-                <>
-                  {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && armasAmaldicoadasExibidas.length > 0 && (
-                    <div className="flex items-center gap-2 mb-2 mt-4">
-                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Armas Amaldiçoadas</span>
-                        <div className="h-px bg-zinc-800 flex-1"></div>
+                  <>
+                  {['Sangue', 'Morte', 'Conhecimento', 'Energia', 'Medo', 'Outros'].map(elemento => {
+                    const armasNesteElemento = armasAmaldicoadasExibidas.filter(a => {
+                      const e = (a.arma.Elemento_Arma || '').toLowerCase();
+                      if (elemento === 'Outros') return !e || !['sangue', 'morte', 'conhecimento', 'energia', 'medo'].some(el => e.includes(el));
+                      return e.includes(elemento.toLowerCase());
+                    });
+                    
+                    const itensNesteElemento = (itensAmaldicoadosHook?.itensAmaldicoadosInventario || []).filter(i => {
+                      const e = (i.item.Elemento_Ama || '').toLowerCase();
+                      const matchBusca = buscaItem.trim() === '' || i.item.Nome_Ama.toLowerCase().includes(buscaItem.toLowerCase());
+                      if (!matchBusca) return false;
+                      if (elemento === 'Outros') return !e || !['sangue', 'morte', 'conhecimento', 'energia', 'medo'].some(el => e.includes(el));
+                      return e.includes(elemento.toLowerCase());
+                    });
+
+                    if (armasNesteElemento.length === 0 && itensNesteElemento.length === 0) return null;
+
+                    return (
+                      <div key={elemento} className="mb-4">
+                        <div className="flex items-center gap-2 mb-2 mt-4">
+                          <span className={`text-[10px] font-bold uppercase tracking-widest ${getCorElementoTexto(elemento)}`}>{elemento}</span>
+                          <div className={`h-px flex-1 ${getCorElementoBarra(elemento)}`}></div>
+                        </div>
+                        
+                        {armasNesteElemento.length > 0 && (
+                          <div className="mb-2">
+                            <SortableContext items={armasNesteElemento.map(a => a.id)} strategy={verticalListSortingStrategy}>
+                              {armasNesteElemento.map((item: ArmaInventario) => (
+                                <SortableArmaItem
+                                  key={item.id}
+                                  item={item}
+                                  isExpanded={!!expandidos[item.id]}
+                                  toggleExpandir={toggleExpandir}
+                                  stringDT={calcularDT(item.arma.dt_item, item.arma.Categoria_Item?.toLowerCase().includes('explosivos') || item.arma.Nome_Item?.toLowerCase().includes('explosivo'))}
+                                  removerArma={armasHook?.removerArma || (() => {})}
+                                  onEditar={() => setArmaEditandoId(item.id)}
+                                  onAddMunicao={() => {
+                                    if (item.arma.Nome_Item === 'A Antena') {
+                                      alert("Por favor, selecione um ritual (em breve modal de seleção)");
+                                    } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+                                      setGranadaTargetArmaId(item.id);
+                                      setModalGranadasAberto(true);
+                                    } else {
+                                      setMunicaoTargetArmaId(item.id);
+                                      setMunicaoFiltroNome(item.arma.Nome_Item);
+                                      setMunicaoFiltroCategoria(item.arma.Categoria_Item);
+                                      setModalMunicoesAberto(true);
+                                    }
+                                  }}
+                                />
+                              ))}
+                            </SortableContext>
+                          </div>
+                        )}
+
+                        {itensNesteElemento.length > 0 && (
+                          <div className="mb-2">
+                            <SortableContext items={itensNesteElemento.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                              {itensNesteElemento.map(item => (
+                                <SortableItemAmaldicoado
+                                  key={item.id}
+                                  item={item}
+                                  isExpanded={!!expandidos[item.id]}
+                                  toggleExpandir={toggleExpandir}
+                                  removerItem={itensAmaldicoadosHook?.removerItem || (() => {})}
+                                  onEditar={() => setEditingItemAmaldicoado(item)}
+                                  stringDT={null}
+                                  toggleEquipado={(id) => toggleVestimentaGeral(id, true)}
+                                />
+                              ))}
+                            </SortableContext>
+                          </div>
+                        )}
                       </div>
+                    );
+                  })}
+                  {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && armasAmaldicoadasExibidas.length === 0 && (
+                    <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
                   )}
-                  <SortableContext items={armasAmaldicoadasExibidas.map(a => a.id)} strategy={verticalListSortingStrategy}>
-                    {armasAmaldicoadasExibidas.map((item: ArmaInventario) => (
-                      <SortableArmaItem
-                        key={item.id}
-                        item={item}
-                        isExpanded={!!expandidos[item.id]}
-                        toggleExpandir={toggleExpandir}
-                        stringDT={calcularDT(item.arma.dt_item, item.arma.Categoria_Item?.toLowerCase().includes('explosivos') || item.arma.Nome_Item?.toLowerCase().includes('explosivo'))}
-                        removerArma={armasHook?.removerArma || (() => {})}
-                          onEditar={() => setArmaEditandoId(item.id)}
-                          onAddMunicao={() => {
-                            if (item.arma.Nome_Item === 'A Antena') {
-                              alert("Por favor, selecione um ritual (em breve modal de seleção)");
-                            } else if (item.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || item.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
-                              setGranadaTargetArmaId(item.id);
-                              setModalGranadasAberto(true);
-                            } else {
-                              setMunicaoTargetArmaId(item.id);
-                              setMunicaoFiltroNome(item.arma.Nome_Item);
-                              setMunicaoFiltroCategoria(item.arma.Categoria_Item);
-                              setModalMunicoesAberto(true);
-                            }
-                          }}
-                        />
-                    ))}
-                  </SortableContext>
-                  {(categoriaFiltro === 'Geral' || categoriaFiltro === 'Amaldiçoados') && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) > 0 && (
-                    <div className="flex items-center gap-2 mb-2 mt-4">
-                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Itens Amaldiçoados</span>
-                        <div className="h-px bg-zinc-800 flex-1"></div>
-                      </div>
-                  )}
-                  <SortableContext items={(itensAmaldicoadosHook?.itensAmaldicoadosInventario || []).map(i => i.id)} strategy={verticalListSortingStrategy}>
-                  {(itensAmaldicoadosHook?.itensAmaldicoadosInventario || [])
-                    .filter(item => buscaItem.trim() === '' || item.item.Nome_Ama.toLowerCase().includes(buscaItem.toLowerCase()))
-                    .map(item => (
-                    <SortableItemAmaldicoado
-                      key={item.id}
-                      item={item}
-                      isExpanded={!!expandidos[item.id]}
-                      toggleExpandir={toggleExpandir}
-                      removerItem={itensAmaldicoadosHook?.removerItem || (() => {})}
-                      onEditar={() => setEditingItemAmaldicoado(item)}
-                      stringDT={null}
-                      toggleEquipado={(id) => toggleVestimentaGeral(id, true)}
-                    />
-                  ))}
-                </SortableContext>
-                {categoriaFiltro === 'Amaldiçoados' && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && armasAmaldicoadasExibidas.length === 0 && (
-                  <p className="text-center text-zinc-600 text-sm py-4">Nenhum item ou arma amaldiçoada no inventário.</p>
+                  </>
                 )}
-                </>
-              )}
 
             <DragOverlay>
               {activeDragItem?.fullItem ? (
