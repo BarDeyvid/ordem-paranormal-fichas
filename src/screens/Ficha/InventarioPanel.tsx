@@ -248,7 +248,7 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
         </div>
       </div>
       
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
         <div className="border-t border-zinc-800 px-3 py-3 text-xs bg-zinc-950/80 flex flex-col gap-2 relative z-10" onClick={e => e.stopPropagation()}>
           <div className="flex flex-col gap-1 mt-1">
             <span><span className="text-green-400 font-bold">Categoria:</span> {calcularCategoriaFinal(item.item.Categoria_Item, item.modificacoes, modificacoesHook.modificacoes, false, item.maldicoes, maldicoesHook?.maldicoes)}</span>
@@ -1722,7 +1722,7 @@ function SortableArmaItem({
         </div>
       </div>
       
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
 
         <div className="border-t border-zinc-800 px-3 py-3 text-xs flex flex-col gap-2 bg-zinc-950/80">
           <div>
@@ -1993,7 +1993,7 @@ function SortableMunicaoItem({ id, item, isExpanded, toggleExpandir, removerItem
         </div>
       </div>
 
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
 
         <div className="border-t border-zinc-800 px-3 py-3 text-xs flex flex-col gap-2 bg-zinc-950/80">
           <div className="flex flex-col gap-1 text-xs text-zinc-300">
@@ -2224,7 +2224,7 @@ function SortableProtecaoItem({
         </div>
       </div>
 
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
 
         <div className="border-t border-zinc-800 px-3 py-3 text-xs flex flex-col gap-2 bg-zinc-950/80">
           <div className="flex flex-col gap-1 text-xs text-zinc-300">

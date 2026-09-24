@@ -170,7 +170,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
         </div>
       </div>
       
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
         <div className="border-t border-zinc-800 px-3 py-3 text-xs bg-zinc-950/80 flex flex-col gap-2 relative z-10" onClick={e => e.stopPropagation()}>
           <div className="flex flex-col gap-1 mt-1">
             <span><span className="text-green-400 font-bold">Categoria:</span> {item.item.Categoria_Ama}</span>
