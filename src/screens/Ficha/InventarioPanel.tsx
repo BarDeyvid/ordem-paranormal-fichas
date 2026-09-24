@@ -352,15 +352,25 @@ function SortableItemGeral({ item, isExpanded, toggleExpandir, removerItem, stri
   );
 }
 
-const getCorElementoMunicao = (elemento?: string) => {
-  if (!elemento) return 'text-zinc-300';
-  const e = elemento.trim().toLowerCase();
-  if (e === 'sangue') return 'text-red-500 font-bold';
-  if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded font-bold';
-  if (e === 'conhecimento') return 'text-yellow-500 font-bold';
-  if (e === 'energia') return 'text-purple-500 font-bold';
-  if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded font-bold';
-  return 'text-zinc-300';
+const getBadgeClasses = (minv: any) => {
+  if (!minv.isRitual) return 'bg-green-950/40 border-green-900/50';
+  const e = (minv.elemento || '').trim().toLowerCase();
+  if (e === 'sangue') return 'border-red-900 bg-red-950/40';
+  if (e === 'morte') return 'border-zinc-700 bg-black/60';
+  if (e === 'conhecimento') return 'border-yellow-900 bg-yellow-950/40';
+  if (e === 'energia') return 'border-purple-900 bg-purple-950/40';
+  if (e === 'medo') return 'border-zinc-500 bg-zinc-200/90';
+  return 'bg-green-950/40 border-green-900/50';
+};
+const getBadgeTextClasses = (minv: any) => {
+  if (!minv.isRitual) return 'text-green-400';
+  const e = (minv.elemento || '').trim().toLowerCase();
+  if (e === 'sangue') return 'text-red-500';
+  if (e === 'morte') return 'text-zinc-100';
+  if (e === 'conhecimento') return 'text-yellow-500';
+  if (e === 'energia') return 'text-purple-500';
+  if (e === 'medo') return 'text-zinc-950';
+  return 'text-green-400';
 };
 
 export function InventarioPanel() {
@@ -1839,8 +1849,8 @@ function SortableArmaItem({
           <div className="flex flex-wrap items-center gap-2 px-3 pt-3 pb-1 border-t border-zinc-800/50 bg-zinc-900/30">
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{municoesAcopladasList[0]?.isRitual ? 'Ritual:' : 'Munições:'}</span>
             {municoesAcopladasList.map(minv => (
-              <div key={minv.id} className="flex items-center gap-1 bg-green-950/40 border border-green-900/50 rounded-full pl-2 pr-1 py-0.5 group">
-                <span className={`text-[11px] font-bold ${minv.isRitual ? getCorElementoMunicao(minv.elemento) : 'text-green-400'} truncate max-w-[150px]`}>{minv.municao.Nome_Item}</span>
+              <div key={minv.id} className={`flex items-center gap-1 border rounded-full pl-2 pr-1 py-0.5 group ${getBadgeClasses(minv)}`}>
+                <span className={`text-[11px] ${getBadgeTextClasses(minv)} truncate max-w-[150px]`}>{minv.municao.Nome_Item}</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();

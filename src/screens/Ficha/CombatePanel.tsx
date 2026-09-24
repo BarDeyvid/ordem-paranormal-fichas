@@ -599,11 +599,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 const getCorElementoMunicao = (elemento?: string) => {
   if (!elemento) return 'text-zinc-300';
   const e = elemento.trim().toLowerCase();
-  if (e === 'sangue') return 'text-red-500 font-bold';
-  if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded font-bold';
-  if (e === 'conhecimento') return 'text-yellow-500 font-bold';
-  if (e === 'energia') return 'text-purple-500 font-bold';
-  if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded font-bold';
+  if (e === 'sangue') return 'text-red-500';
+  if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded';
+  if (e === 'conhecimento') return 'text-yellow-500';
+  if (e === 'energia') return 'text-purple-500';
+  if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded';
   return 'text-zinc-300';
 };
 
