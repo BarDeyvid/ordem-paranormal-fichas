@@ -247,16 +247,12 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
       tipoBase = 'Impacto';
     }
   let rawDano = arma.Dano_Arma || '';
-  if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
-    rawDano = '-';
-  }
+  
 
   if (isLancadorGranadas && granadaAcoplada) {
     const p = granadaAcoplada.Dano_Item?.split(',') || [];
     rawDano = p[0]?.trim() || '-';
-      if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
-        rawDano = '-';
-      }
+      
     if (p.length > 1) tipoBase = p[1].trim();
   }
 

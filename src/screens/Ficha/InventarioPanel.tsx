@@ -1400,10 +1400,9 @@ function SortableArmaItem({
   }
 
   const calcularEstatisticasFinaisArma = () => {
-    let dano = arma.Dano_Arma || '';
-      if (dano.toLowerCase().includes('veja') || dano.toLowerCase().includes('texto')) {
-        dano = '-';
-      }
+      let dano = arma.Dano_Arma || '';
+      if (arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti')) dano = 'Veja Texto';
+      
     let espacos = calcularEspacosFinais(arma['Espaços_Item'], item.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas?.has(43));
     let automatica = !!arma['Automatica?'];
     let critico = Number(arma.Critico_Arma || 20);
@@ -1415,9 +1414,7 @@ function SortableArmaItem({
     if (isLancadorGranadas && granadaAcoplada) {
       const p = granadaAcoplada.Dano_Item?.split(',') || [];
       dano = p[0]?.trim() || '-';
-      if (dano.toLowerCase().includes('veja') || dano.toLowerCase().includes('texto')) {
-        dano = '-';
-      }
+      
       
       const dtItem = granadaAcoplada.Dt_Item;
       if (dtItem) {
