@@ -59,7 +59,7 @@ function calcularDanoMedio(danoStr: string, multCritico: number): { normal: numb
   return { normal, critico };
 }
 
-function parseDanoString(danoStr: string, tipoDanoBase: string) {
+function parseDanoString(danoStr: string, tipoDanoBase: string, tipoSecundario?: string) {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') return [];
   
   // Separa por + ou - mantendo o sinal. Ex: 1d8+1d6*[Sangue]+2
@@ -70,10 +70,18 @@ function parseDanoString(danoStr: string, tipoDanoBase: string) {
   const parsed: { label: string, valor: string, tipo: string }[] = [];
   const flatBonuses: Record<string, number> = {};
 
+  let diceCount = 0;
   matches.forEach((m, i) => {
     let val = m.replace(/\s/g, ''); // Limpa os espacos
     let tipo = tipoDanoBase;
     
+    if (val.toLowerCase().includes('d')) {
+      if (diceCount === 1 && tipoSecundario) {
+        tipo = tipoSecundario;
+      }
+      diceCount++;
+    }
+
     // Extrai tipo se houver [Tipo]
     const typeMatch = val.match(/\[(.*?)\]/);
     if (typeMatch) {
@@ -319,7 +327,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const danoSelecionado = danoOptions[currentDanoIdx];
 
   const danoStrFull = danoSelecionado ? danoSelecionado + extrasStr : extrasStr;
-  const parsedDano = parseDanoString(danoStrFull, tipoBase);
+  const parsedDano = parseDanoString(danoStrFull, tipoBase, tipoSecundario);
 
   const danoSecStr = arma.Dano_Secundario || '';
   if (danoSecStr && danoSecStr.trim() !== '-') {
