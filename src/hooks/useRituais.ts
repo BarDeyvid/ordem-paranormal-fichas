@@ -57,7 +57,7 @@ export function useRituais(): UseRituaisReturn & {
     const urls = simbolosRituais.get(codigo);
     if (!urls) return '';
     if (elemento && urls[elemento.toLowerCase()]) return urls[elemento.toLowerCase()];
-    return urls.default;
+    console.log('getSimboloUrl:', codigo, elemento, urls); return urls.default;
   };
 
   useEffect(() => {
