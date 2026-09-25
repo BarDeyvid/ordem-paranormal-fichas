@@ -208,7 +208,19 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
   };
 
   const removerArma = (id: string) => {
-    setArmasInventario(prev => prev.filter(item => item.id !== id));
+    setArmasInventario(prev => {
+      const itemToDelete = prev.find(item => item.id === id);
+      if (itemToDelete?.arma.Nome_Item?.includes('Dupla Obsessiva')) {
+        const isMaca = itemToDelete.arma.Nome_Item.includes('Ma');
+        const outroNome = isMaca ? 'Dupla Obsessiva (Florete)' : 'Dupla Obsessiva (Ma';
+        // Acha o par que tem a flag isDuplaObsessivaLinked
+        const outroItem = prev.find(item => item.arma?.Nome_Item?.includes(outroNome));
+        if (outroItem) {
+          return prev.filter(item => item.id !== id && item.id !== outroItem.id);
+        }
+      }
+      return prev.filter(item => item.id !== id);
+    });
   };
 
   const reordenarArmas = (oldIndex: number, newIndex: number) => {

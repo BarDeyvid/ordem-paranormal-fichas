@@ -32,13 +32,15 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
   const itensFiltrados = useMemo(() => {
     let baseItens = [
       ...(itens || []).map(i => ({ ...i, _tipo: 'item' })),
-      ...(armasAmaldicoadas || []).map(a => ({ 
+      ...(armasAmaldicoadas || [])
+        .filter(a => !a.Nome_Item.includes('Dupla Obsessiva (Florete)'))
+        .map(a => ({ 
         ...a, 
         _tipo: 'arma',
         Codigo_Item_Ama: 'arma_' + a.Codigo_Arma,
         Dano_Secundario: a['Dano-Arma_Sec'],
-        Nome_Ama: a.Nome_Item,
-        Desc_Ama: a.Descricao_Item,
+        Nome_Ama: a.Nome_Item.includes('Dupla Obsessiva (Ma') ? 'Dupla Obsessiva' : a.Nome_Item,
+        Desc_Ama: a.Nome_Item.includes('Dupla Obsessiva (Ma') ? 'Maça e florete. Essa dupla de armas enferrujadas parecem não conseguir ficar longe uma da outra, obcecadas por si mesmas e seu único propósito: proteger aqueles que amam com fervor.\nSe estiver empunhando as duas armas, pode gastar uma ação padrão para realizar dois ataques, um com cada arma. Além disso, se um aliado em alcance curto de você for alvo de um ataque, você pode gastar 2 PE como reação para se tornar o alvo do ataque. Se fizer isso e a fonte do ataque estiver em alcance corpo a corpo, você pode gastar 2 PE para atacar a fonte com a maça.' : a.Descricao_Item,
         Elemento_Ama: a.Elemento_Arma,
         Espacos_Ama: a['Espaços_Item'],
         Categoria_Ama: a.Categoria_Item
