@@ -199,41 +199,24 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
                 />
               </div>
             )}
-          </div>
-        
-        
-              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
-                <CustomSelect
-                  value={filtroFonte}
-                  onChange={setFiltroFonte}
-                  options={[
-                    { value: 'Todas', label: 'Todas' },
-                    { value: 'OPRPG', label: 'OPRPG' },
-                    { value: 'SaH', label: 'SaH' },
-                    { value: 'AS', label: 'AS' },
-                    { value: 'Homebrew', label: 'Homebrew' }
-                  ]}
-                  wrapperClassName="w-full"
-                />
-              </div>
-              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
-                <CustomSelect
-                  value={filtroFonte}
-                  onChange={setFiltroFonte}
-                  options={[
-                    { value: 'Todas', label: 'Todas' },
-                    { value: 'OPRPG', label: 'OPRPG' },
-                    { value: 'SaH', label: 'SaH' },
-                    { value: 'AS', label: 'AS' },
-                    { value: 'Homebrew', label: 'Homebrew' }
-                  ]}
-                  wrapperClassName="w-full"
-                />
-              </div>
+          
+            <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
+              <CustomSelect
+                value={filtroFonte}
+                onChange={setFiltroFonte}
+                options={[
+                  { value: 'Todas', label: 'Todas' },
+                  { value: 'OPRPG', label: 'OPRPG' },
+                  { value: 'SaH', label: 'SaH' },
+                  { value: 'AS', label: 'AS' },
+                  { value: 'Homebrew', label: 'Homebrew' }
+                ]}
+                wrapperClassName="w-full"
+              />
             </div>
-          </Collapse>
+          </div>
+        </Collapse>
 
         {/* List */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 custom-scrollbar">
