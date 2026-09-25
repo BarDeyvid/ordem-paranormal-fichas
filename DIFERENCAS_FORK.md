@@ -11,7 +11,7 @@ Este documento detalha de forma exaustiva todas as diferenças arquiteturais, es
 | **URL do Repositório** | `https://github.com/quackthalia/ordem-paranormal-fichas` | `https://github.com/BarDeyvid/ordem-paranormal-fichas` |
 | **Autor Original** | `@quackthalia` | `@BarDeyvid` |
 | **Ponto de Divergência (Base)** | Commit `fcb88e9` | Commit `fcb88e9` |
-| **Status de Sincronização** | Base original estável | **11 commits à frente** (0 commits atrás) |
+| **Status de Sincronização** | Base com 112 commits integrados | **Totalmente sincronizado com upstream** (113 commits à frente do origin) |
 | **Volume de Modificações** | — | **510 arquivos alterados**, **+40.086 inserções**, **-25.126 remoções** |
 | **Arquitetura** | Frontend SPA isolado (React + Vite) | **Full-Stack Desacoplado** (FastAPI + React Vite + Docker) |
 | **Design System / Componentes** | CSS Inline + Tailwind misto | **Storybook 8** + Componentes atômicos padronizados |
