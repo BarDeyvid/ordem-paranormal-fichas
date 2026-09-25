@@ -787,9 +787,24 @@ export const ModalPoderes: React.FC = () => {
           isOpen={true}
           onClose={() => setRitualModalAbertoPara(null)}
           onSelect={(ritualNome) => {
-            const nexEscolhido = nexModalAberto!;
-            const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
-              escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, ritualNome, undefined, isDedo ? 'Dedo Decepado' : undefined);
+              const nexEscolhido = nexModalAberto!;
+              const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+              
+              // Localiza o ritual para pegar o elemento dele
+              let elementoDoRitual = ritualNome;
+              if (contextoPrereq?.rituaisAprendidos && contextoPrereq?.rituais) {
+                const raMatch = contextoPrereq.rituaisAprendidos.find(ra => ra.customNome === ritualNome || (contextoPrereq.rituais.find(rt => rt.Codigo_Ritual === ra.codigo_ritual)?.Nome_Ritual === ritualNome));
+                if (raMatch) {
+                  const dbRitual = contextoPrereq.rituais.find(rt => rt.Codigo_Ritual === raMatch.codigo_ritual);
+                  if (dbRitual && dbRitual.Elemento_Ritual) {
+                    elementoDoRitual = dbRitual.Elemento_Ritual;
+                  }
+                }
+              }
+
+              const nomeCustomizado = `${ritualModalAbertoPara.poder.Nome} (${ritualNome})`;
+              
+              escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, elementoDoRitual, undefined, isDedo ? 'Dedo Decepado' : undefined, nomeCustomizado);
               if (isDedo) {
                 window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder: ritualModalAbertoPara.poder, elemento: ritualNome || ritualModalAbertoPara.poder.Elemento || 'Varia', poderId: nexEscolhido } }));
               }
