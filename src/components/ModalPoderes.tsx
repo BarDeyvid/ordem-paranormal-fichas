@@ -726,7 +726,7 @@ export const ModalPoderes: React.FC = () => {
                       const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
                         escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
                         if (isDedo) {
-                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia', poderId: nexEscolhido } }));
                         }
                       window.dispatchEvent(new CustomEvent('abrirModalRituais', { detail: { nex: nexEscolhido } }));
                       setNexModalAberto(null);
@@ -734,7 +734,7 @@ export const ModalPoderes: React.FC = () => {
                       const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
                         escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
                         if (isDedo) {
-                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia', poderId: nexEscolhido } }));
                         }
                       window.dispatchEvent(new CustomEvent('abrirModalOutraClasse', { detail: { nex: nexEscolhido } }));
                       setNexModalAberto(null);
@@ -742,7 +742,7 @@ export const ModalPoderes: React.FC = () => {
                       const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
                         escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
                         if (isDedo) {
-                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia', poderId: nexEscolhido } }));
                         }
                       window.dispatchEvent(new Event('abrirModalOutraOrigem'));
                       setNexModalAberto(null);
@@ -752,7 +752,7 @@ export const ModalPoderes: React.FC = () => {
                       const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
                         escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
                         if (isDedo) {
-                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia', poderId: nexEscolhido } }));
                         }
                       setNexModalAberto(null);
                     }
@@ -791,7 +791,7 @@ export const ModalPoderes: React.FC = () => {
             const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
               escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, ritualNome, undefined, isDedo ? 'Dedo Decepado' : undefined);
               if (isDedo) {
-                window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder: ritualModalAbertoPara.poder, elemento: ritualNome || ritualModalAbertoPara.poder.Elemento || 'Varia' } }));
+                window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder: ritualModalAbertoPara.poder, elemento: ritualNome || ritualModalAbertoPara.poder.Elemento || 'Varia', poderId: nexEscolhido } }));
               }
             setRitualModalAbertoPara(null);
             setNexModalAberto(null);

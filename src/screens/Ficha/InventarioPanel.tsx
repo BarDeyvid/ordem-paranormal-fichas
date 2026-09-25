@@ -386,20 +386,21 @@ const getBadgeCloseClasses = (minv: any) => {
 
 
 export function InventarioPanel() {
-  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
+  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook, poderesHook } = useRPG();
 
   useEffect(() => {
     const handler = (e: any) => {
-      const { poder, elemento } = e.detail;
-      const str = window.localStorage.getItem('dedoDecepadoAguardando');
-      if (str) {
-        try {
-          const item = JSON.parse(str);
-          itensAmaldicoadosHook.adicionarItem({ 
-            ...item, 
-            Nome_Ama: `Dedo Decepado (${(poder.Nome || poder.Nome_Poder).replace('<Elemento>', elemento || 'Varia')})`, 
-            Elemento_Ama: elemento || 'Varia' 
-          });
+      const { poder, elemento, poderId } = e.detail;
+        const str = window.localStorage.getItem('dedoDecepadoAguardando');
+        if (str) {
+          try {
+            const item = JSON.parse(str);
+            itensAmaldicoadosHook.adicionarItem({ 
+              ...item, 
+              Nome_Ama: `Dedo Decepado (${(poder.Nome || poder.Nome_Poder).replace('<Elemento>', elemento || 'Varia')})`, 
+              Elemento_Ama: elemento || 'Varia',
+              dedoDecepadoPoderId: poderId
+            });
         } catch (err) {}
         window.localStorage.removeItem('dedoDecepadoAguardando');
       }
@@ -1242,7 +1243,13 @@ export function InventarioPanel() {
                                   item={item}
                                   isExpanded={!!expandidos[item.id]}
                                   toggleExpandir={toggleExpandir}
-                                  removerItem={itensAmaldicoadosHook?.removerItem || (() => {})}
+                                  removerItem={(id) => {
+                                      const itemToRemove = itensAmaldicoadosHook?.itensAmaldicoados.find(i => i.id === id);
+                                      if (itemToRemove && itemToRemove.item.dedoDecepadoPoderId) {
+                                        poderesHook.removerPoder(itemToRemove.item.dedoDecepadoPoderId);
+                                      }
+                                      if (itensAmaldicoadosHook?.removerItem) itensAmaldicoadosHook.removerItem(id);
+                                    }}
                                   onEditar={() => setEditingItemAmaldicoado(item)}
                                   stringDT={null}
                                   toggleEquipado={(id) => toggleVestimentaGeral(id, true)}

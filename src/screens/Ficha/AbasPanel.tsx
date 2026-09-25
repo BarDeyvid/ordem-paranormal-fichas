@@ -594,7 +594,7 @@ export const AbasPanel: React.FC = () => {
         } else {
           categoria = 'utilidade';
         }
-        const tipoLabel = categoria === 'paranormais' ? `Transcender Extra` : `Extra`;
+        const tipoLabel = (escolhido.fonte === 'Dedo Decepado' || (typeof key === 'string' && key.startsWith('extra_dedo_decepado'))) ? 'DEDO DECEPADO' : (escolhido.fonte && !['Ordem Paranormal RPG', 'Sobrevivendo ao Horror'].includes(escolhido.fonte) ? escolhido.fonte : (categoria === 'paranormais' ? `Transcender Extra` : `Extra`));
         const afinidadeDoPoder = escolhido.afinidade || pp?.Afinidade;
         const nomeBaseCheck = escolhido.nome.toLowerCase().trim();
         const afinidadeAtiva = afinidadeDoPoder ? contagemPoderes[nomeBaseCheck] >= 2 : false;
@@ -1079,7 +1079,7 @@ export const AbasPanel: React.FC = () => {
                                     {hab.afinidadeAtiva && hab.afinidadeAdquiridaKey && (
                                       <div className="flex justify-end mb-2">
                                         <span className="text-[0.65rem] uppercase tracking-widest text-zinc-500 font-semibold bg-zinc-800/50 px-2 py-0.5 rounded">
-                                          {String(hab.afinidadeAdquiridaKey).startsWith('extra_') ? 'Transcender Extra' : (
+                                          {String(hab.afinidadeAdquiridaKey).startsWith('extra_dedo_decepado') ? 'DEDO DECEPADO' : (String(hab.afinidadeAdquiridaKey).startsWith('extra_') ? 'Transcender Extra' : (
                                             (parseInt(String(hab.afinidadeAdquiridaKey), 10) >= 1000) ? 
                                             `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10) - 1000}%` :
                                             `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10)}%`
