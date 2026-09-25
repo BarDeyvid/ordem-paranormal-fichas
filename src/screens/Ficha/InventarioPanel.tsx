@@ -397,7 +397,7 @@ export function InventarioPanel() {
           const item = JSON.parse(str);
           itensAmaldicoadosHook.adicionarItem({ 
             ...item, 
-            Nome_Ama: `Dedo Decepado (${poder.Nome || poder.Nome_Poder})`, 
+            Nome_Ama: `Dedo Decepado (${(poder.Nome || poder.Nome_Poder).replace('<Elemento>', elemento || 'Varia')})`, 
             Elemento_Ama: elemento || 'Varia' 
           });
         } catch (err) {}
