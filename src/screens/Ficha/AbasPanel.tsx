@@ -1520,7 +1520,7 @@ export const AbasPanel: React.FC = () => {
                         const corElemento = obterCorBadge(elementoEscolhido);
                         const corPrimaria = obterCorElementoPrimario(elementoEscolhido);
                         const corTextoElemento = obterCorTexto(elementoEscolhido);
-                        const simboloImg = rituaisHook.simbolosRituais?.get(ritual.Codigo_Ritual) || '';
+                        const simboloImg = rituaisHook.getSimboloUrl ? rituaisHook.getSimboloUrl(ritual.Codigo_Ritual, elementoEscolhido) : '';
 
                         // Valores dinâmicos baseados na versão
                         const peOriginal = ritual.customProps?.[versao]?.PE_Ritual || obterValorVersao(ritual.PE_Ritual, versao, ritual.Tem_Discente, ritual.Tem_Verdadeiro);
@@ -1913,7 +1913,7 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais EXTRAS para qualquer círculo */}
       {modalRituaisExtraAberto && (
         <ModalRituaisExtra
-          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
+          getSimboloUrl={rituaisHook.getSimboloUrl || (() => '')}
           rituais={rituaisHook.rituais || []}
           rituaisAprendidosIds={(rituaisHook.rituaisAprendidos || []).map((r: any) => r.codigo_ritual)}
           onClose={() => setModalRituaisExtraAberto(false)}
@@ -1936,7 +1936,6 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais para os slots */}
       {escolhendoRitualPlaceholder && (
         <ModalRituais
-          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
           rituais={rituaisHook.rituais || []}
           limiteCirculo={
             escolhendoRitualPlaceholder.nex 
