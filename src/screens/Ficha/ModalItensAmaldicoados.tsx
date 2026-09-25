@@ -75,7 +75,26 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
       }
       return true;
     });
-    result.sort((a, b) => (a.Nome_Ama || '').localeCompare(b.Nome_Ama || '', 'pt-BR'));
+    const elementOrder: Record<string, number> = {
+        'sangue': 1,
+        'morte': 2,
+        'conhecimento': 3,
+        'energia': 4,
+        'medo': 5,
+        'varia': 6,
+        'variável': 6
+      };
+      
+      result.sort((a, b) => {
+        const elemA = (a.Elemento_Ama || '').trim().toLowerCase();
+        const elemB = (b.Elemento_Ama || '').trim().toLowerCase();
+        
+        const orderA = elementOrder[elemA] || 99;
+        const orderB = elementOrder[elemB] || 99;
+        
+        if (orderA !== orderB) return orderA - orderB;
+        return (a.Nome_Ama || '').localeCompare(b.Nome_Ama || '', 'pt-BR');
+      });
     return result;
   }, [itens, armasAmaldicoadas, busca, abaElemento, filtroCategoria, filtroEspacos, filtroFonte]);
 
