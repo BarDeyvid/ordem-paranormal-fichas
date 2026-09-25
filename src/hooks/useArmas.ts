@@ -280,6 +280,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
 
   const cargaArmas = useMemo(() => {
     return armasInventario.reduce((acc, item) => {
+      if (item.arma.isDuplaObsessivaCompanion) return acc;
       let esp = item.arma['Espaços_Item'];
       if (typeof esp === 'string') {
         esp = esp.replace(',', '.').replace(/[^0-9.-]+/g, '');
@@ -292,6 +293,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
   const contagemPorCategoria = useMemo(() => {
     let counts = [0, 0, 0, 0];
     armasInventario.forEach(item => {
+      if (item.arma.isDuplaObsessivaCompanion) return;
       const cat = String(item.arma.Categoria_Item).trim();
       if (cat === 'I') counts[0]++;
       else if (cat === 'II') counts[1]++;

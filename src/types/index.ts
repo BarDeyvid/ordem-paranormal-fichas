@@ -186,6 +186,8 @@ export interface Arma {
   dt_item: string | null;
   'Automatica?': boolean | null;
   'Improvisada?'?: boolean | null;
+  isDuplaObsessivaCompanion?: boolean;
+  isDuplaObsessivaLinked?: boolean;
   Codigo_Grupo?: number | null;
   Fonte_Arma: string;
   Dano_Secundario?: string;
