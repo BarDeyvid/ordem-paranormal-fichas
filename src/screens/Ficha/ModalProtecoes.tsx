@@ -53,9 +53,11 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
       if (filtroFonte !== 'Todas') {
         const fonte = (protecao.Fonte_Protecao || '').trim().toLowerCase();
         if (filtroFonte === 'Homebrew') {
-           if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+          if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else if (filtroFonte === 'AS') {
+          if (fonte !== 'as' && fonte !== 'a.s.' && fonte !== 'a.s' && !fonte.includes('sobreviv') && !fonte.includes('arquivo') && !fonte.includes('aurora') && !fonte.includes('aniquila')) return false;
         } else {
-           if (fonte !== filtroFonte.toLowerCase()) return false;
+          if (fonte !== filtroFonte.toLowerCase()) return false;
         }
       }
     

@@ -110,9 +110,11 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
       if (filtroFonte !== 'Todas') {
         const fonte = (arma.Fonte_Arma || '').trim().toLowerCase();
         if (filtroFonte === 'Homebrew') {
-           if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+          if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else if (filtroFonte === 'AS') {
+          if (fonte !== 'as' && fonte !== 'a.s.' && fonte !== 'a.s' && !fonte.includes('sobreviv') && !fonte.includes('arquivo') && !fonte.includes('aurora') && !fonte.includes('aniquila')) return false;
         } else {
-           if (fonte !== filtroFonte.toLowerCase()) return false;
+          if (fonte !== filtroFonte.toLowerCase()) return false;
         }
       }
     if (filtroTipo !== 'Todos' && arma.Tipo_Arma !== filtroTipo) return false;
