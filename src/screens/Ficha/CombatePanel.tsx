@@ -341,8 +341,16 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
-  const danoHeader = parsedDano
-    .map((p, i) => {
+  parsedDano.sort((a, b) => {
+      const aDice = a.valor.toLowerCase().includes('d');
+      const bDice = b.valor.toLowerCase().includes('d');
+      if (aDice && !bDice) return -1;
+      if (!aDice && bDice) return 1;
+      return 0;
+    });
+
+    const danoHeader = parsedDano
+      .map((p, i) => {
       let v = p.valor;
       if (i > 0 && !v.startsWith('+') && !v.startsWith('-')) v = '+' + v;
       return v;
