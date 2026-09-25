@@ -93,7 +93,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
         </div>
         
         <div 
-          className="flex-1 flex cursor-pointer items-center justify-between gap-3 min-w-0"
+          className="flex-1 flex cursor-pointer items-start pt-0.5 justify-between gap-3 min-w-0"
           onClick={() => toggleExpandir(item.id)}
         >
           <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -121,7 +121,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
           </div>
         </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3 flex-shrink-0 mt-0.5">
           {item.item.Elemento_Ama ? (() => {
               const elStr = String(item.item.Elemento_Ama).toLowerCase();
               const corText = elStr.includes('medo') ? 'bg-zinc-200/80 text-zinc-950 px-1' :
