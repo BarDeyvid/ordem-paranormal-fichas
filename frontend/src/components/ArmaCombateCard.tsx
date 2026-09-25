@@ -61,7 +61,8 @@ export function calcularDanoMedio(
 
 export function parseDanoString(
   danoStr: string,
-  tipoDanoBase: string
+  tipoDanoBase: string,
+  tipoSecundario?: string
 ): { label: string; valor: string; tipo: string }[] {
   if (!danoStr || danoStr.trim() === '-' || danoStr.trim() === '') return [];
 
@@ -73,9 +74,17 @@ export function parseDanoString(
   const parsed: { label: string; valor: string; tipo: string }[] = [];
   const flatBonuses: Record<string, number> = {};
 
+  let diceCount = 0;
   matches.forEach((m, i) => {
     let val = m.replace(/\s/g, ''); // Limpa os espacos
     let tipo = tipoDanoBase;
+
+    if (val.toLowerCase().includes('d')) {
+      if (diceCount === 1 && tipoSecundario) {
+        tipo = tipoSecundario;
+      }
+      diceCount++;
+    }
 
     // Extrai tipo se houver [Tipo]
     const typeMatch = val.match(/\[(.*?)\]/);
@@ -140,9 +149,26 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     executarRolagemDano,
   } = useRPG();
   const [mostrarDanoMedio, setMostrarDanoMedio] = React.useState(false);
+  const [mostrarStatsGrupo, setMostrarStatsGrupo] = React.useState(false);
   const { arma, modificacoes, maldicoes } = armaInv;
+
+  const armaBase = armasHook?.armas?.find((a: any) => a.Codigo_Arma === arma.Codigo_Arma || a.Nome_Item === arma.Nome_Item);
+  const codigoGrupoFinal = arma.Codigo_Grupo ?? armaBase?.Codigo_Grupo;
+  const grupoArma = armasHook?.gruposArmas?.find((g: any) => String(g.Codigo_Grupo) === String(codigoGrupoFinal));
+  const numMaldicoes = Array.isArray(maldicoes) ? maldicoes.length : 0;
+  const finalRD = grupoArma?.RD_Grupo != null && grupoArma.RD_Grupo !== '' ? Number(grupoArma.RD_Grupo) + (numMaldicoes * 10) : null;
+  const finalPV = grupoArma?.PV_Grupo != null && grupoArma.PV_Grupo !== '' ? Number(grupoArma.PV_Grupo) + (numMaldicoes * 10) : null;
+  const temGrupoStats = finalRD != null || finalPV != null;
+
   const municoesAcopladasList = (armaInv.municoesAcopladas || [])
     .map(mid => {
+      if (mid.startsWith('RITUAL_')) {
+        const match = mid.match(/^RITUAL_([^_]+)_(.*)$/);
+        if (match) {
+          return { id: mid, municao: { Nome_Item: match[2] }, isRitual: true, elemento: match[1] };
+        }
+        return { id: mid, municao: { Nome_Item: mid.substring(7) }, isRitual: true };
+      }
       let m = municoesHook?.municoesInventario?.find((x: any) => x.id === mid);
       if (m) return m;
       let i = itensHook?.itensInventario?.find((x: any) => x.id === mid);
@@ -249,7 +275,10 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
   // Calcula bônus de atributo para o DANO
   let bonusDanoAtributo = 0;
   const isFogoDisparo = ['fogo', 'disparo'].some(t => arma.Tipo_Arma?.toLowerCase().includes(t));
-  if (!isFogoDisparo) {
+  const isArcoComposto = arma.Nome_Item?.trim().toLowerCase() === 'arco composto';
+  if (isArcoComposto) {
+    bonusDanoAtributo = (atributosFinais.FOR || 0);
+  } else if (!isFogoDisparo) {
     if (atributoDano === 'FOR') {
       bonusDanoAtributo = atributosFinais.FOR || 0;
     } else if (atributoDano === 'AGI' && isAgil) {
@@ -273,10 +302,36 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     if (itemInv) granadaAcoplada = itemInv.item;
   }
 
-  let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
-  if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
-    tipoBase = 'Impacto';
-  }
+  // Tipo de dano respeita | para armas multi-forma
+  let rawTipoDano = arma.Tipo_Dano_Arma || 'Físico';
+  const tipoDanoForms = rawTipoDano.includes('|') ? rawTipoDano.split('|').map(s => s.trim()) : null;
+
+  let tipoBase = rawTipoDano;
+  let tipoSecundario = rawTipoDano;
+
+  const resolverTipoDano = (idx: number) => {
+    let td = tipoDanoForms ? (tipoDanoForms[idx] || tipoDanoForms[0]) : rawTipoDano;
+    let tb = td;
+    let ts = td;
+    if (td.includes('/')) {
+      const parts = td.split('/');
+      tb = parts[0].trim();
+      ts = parts[1].trim();
+    } else if (arma.Elemento_Arma) {
+      ts = arma.Elemento_Arma.trim();
+    }
+    if (td.toLowerCase().replace(/\s/g, '') === 'perfuração/sangue') {
+      tb = 'Perfuração';
+      ts = 'Sangue';
+    }
+    if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
+      tb = 'Impacto';
+      ts = 'Impacto';
+    }
+    tipoBase = tb;
+    tipoSecundario = ts;
+  };
+
   let rawDano = arma.Dano_Arma || '';
   if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
     rawDano = '-';
@@ -288,7 +343,6 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     if (rawDano.toLowerCase().includes('veja') || rawDano.toLowerCase().includes('texto')) {
       rawDano = '-';
     }
-    if (p.length > 1) tipoBase = p[1].trim();
   }
 
   let dtGranada = '-';
@@ -341,20 +395,48 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     rawDano = rawDano.replace(/(\d+)d(\d+)/gi, (match, p1, p2) => `${Number(p1) + 1}d${p2}`);
   }
 
-  const danoOptions = rawDano.includes('/') ? rawDano.split('/').map(s => s.trim()) : [rawDano];
+  const danoOptions = rawDano.includes('|')
+    ? rawDano.split('|').map(s => s.trim())
+    : rawDano.includes('/')
+    ? rawDano.split('/').map(s => s.trim())
+    : [rawDano];
   const currentDanoIdx = danoIdx >= danoOptions.length ? 0 : danoIdx;
   const danoSelecionado = danoOptions[currentDanoIdx];
 
-  const danoStrFull = danoSelecionado ? danoSelecionado + extrasStr : extrasStr;
-  const parsedDano = parseDanoString(danoStrFull, tipoBase);
+  resolverTipoDano(currentDanoIdx);
 
-  const danoSecStr = arma.Dano_Secundario || '';
-  if (danoSecStr && danoSecStr.trim() !== '-') {
-    parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoBase });
+  if (isLancadorGranadas && granadaAcoplada) {
+    const p = granadaAcoplada.Dano_Item?.split(',') || [];
+    if (p.length > 1) {
+      const gTipo = p[1].trim();
+      tipoBase = gTipo;
+      tipoSecundario = gTipo;
+    }
   }
-  const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
+
+  const danoStrFull = danoSelecionado ? danoSelecionado + extrasStr : extrasStr;
+  const parsedDano = parseDanoString(danoStrFull, tipoBase, tipoSecundario);
+
+  const rawDanoSec = arma.Dano_Secundario || '';
+  let danoSecStr = rawDanoSec;
+  if (rawDanoSec.includes('|')) {
+    const secForms = rawDanoSec.split('|').map(s => s.trim());
+    danoSecStr = secForms[currentDanoIdx] || '';
+  }
+  if (danoSecStr && danoSecStr.trim() !== '' && danoSecStr.trim() !== '-') {
+    parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
+  }
+  const danoSecFull = danoSecStr && danoSecStr.trim() !== '' && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
+
+  parsedDano.sort((a, b) => {
+    const aDice = a.valor.toLowerCase().includes('d');
+    const bDice = b.valor.toLowerCase().includes('d');
+    if (aDice && !bDice) return -1;
+    if (!aDice && bDice) return 1;
+    return 0;
+  });
+
   const danoHeader = parsedDano
-    .filter(p => p.label !== 'Dano Secundário')
     .map((p, i) => {
       let v = p.valor;
       if (i > 0 && !v.startsWith('+') && !v.startsWith('-')) v = '+' + v;
@@ -362,11 +444,19 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     })
     .join('');
 
-  const danoMedioPrincipal = calcularDanoMedio(danoStrFull, multCrit);
+  const danoMedioPrincipal =
+    arma.Nome_Item === 'Arcabuz dos Moretti'
+      ? ({ normal: 'Veja Texto', critico: 'Veja Texto' } as any)
+      : calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
 
   let bonusAtaque = 0;
-  // Bônus de ataque vem apenas de modificações (como Certeira, Alongada, etc.)
+  if (
+    arma.Nome_Item?.trim().toLowerCase().includes('enraivecido') ||
+    arma.Nome_Item?.trim().toLowerCase().includes('arcabuz dos moretti')
+  ) {
+    bonusAtaque += 2;
+  }
   modsAtivas.forEach(m => {
     if (!m) return;
     const desc = m.Descricao_Modif?.toLowerCase() || '';
@@ -394,23 +484,58 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
     return 'text-zinc-400';
   };
 
+  const elementoArma = arma.Elemento_Arma?.trim().toLowerCase();
+  const getCorElementoBorda = (el?: string) => {
+    if (!el) return 'border-l-green-700 hover:border-l-green-600';
+    if (el === 'sangue') return 'border-l-red-600 hover:border-l-red-500';
+    if (el === 'morte') return 'border-l-zinc-500 hover:border-l-zinc-400';
+    if (el === 'conhecimento') return 'border-l-yellow-600 hover:border-l-yellow-500';
+    if (el === 'energia') return 'border-l-purple-600 hover:border-l-purple-500';
+    if (el === 'medo') return 'border-l-white hover:border-l-zinc-200';
+    return 'border-l-green-700 hover:border-l-green-600';
+  };
+
+  const getCorElementoMunicao = (elemento?: string) => {
+    if (!elemento) return 'text-zinc-300';
+    const e = elemento.trim().toLowerCase();
+    if (e === 'sangue') return 'text-red-500';
+    if (e === 'morte') return 'text-zinc-100 bg-black/60 px-1 rounded';
+    if (e === 'conhecimento') return 'text-yellow-500';
+    if (e === 'energia') return 'text-purple-500';
+    if (e === 'medo') return 'text-zinc-950 bg-zinc-200/90 px-1 rounded';
+    return 'text-zinc-300';
+  };
+
+  const isImprovisada = Boolean(arma['Improvisada?']);
+  const isApocaliptica = maldicoesAtivas.some((m: any) => m?.Nome_Mald?.trim().toLowerCase() === 'apocalíptica' || m?.Nome_Mald?.trim().toLowerCase() === 'apocaliptica');
+  const showImprovisadaBadge = isImprovisada || isApocaliptica;
+
+  const showMediaDano = regrasAutomaticasAtivas?.has('media_dano' as any);
+
   return (
-    <div className="bg-zinc-950/60 border border-zinc-800 border-l-4 border-l-green-700 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 hover:border-l-green-600 transition-all flex flex-col">
+    <div className={`bg-zinc-950/60 border border-zinc-800 border-l-4 rounded p-3 hover:bg-zinc-900/60 hover:border-zinc-700 transition-all flex flex-col ${getCorElementoBorda(elementoArma)}`}>
       {/* CABEÇALHO */}
-      <div
+      <div 
         className="flex items-start justify-between cursor-pointer select-none"
         onClick={toggleExpandir}
       >
         <div className="flex flex-col gap-1 w-full min-w-0 pr-3">
-          <div className="flex items-center gap-1 min-w-0">
+          <div className="flex items-center gap-1 min-w-0 flex-wrap">
             <span className="font-bold text-sm text-zinc-100 truncate">{arma.Nome_Item}</span>
-
+            
+            {showImprovisadaBadge && (
+              <span className="relative group/imp cursor-help">
+                <span className="text-sm text-orange-400">🔨</span>
+                <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/imp:opacity-100 group-hover/imp:visible transition-all duration-300 group-hover/imp:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
+                  Arma improvisada: Sofre -1d20 em testes de ataque com essa arma.
+                </span>
+              </span>
+            )}
             {arma['Agil?'] && (
               <span className="relative group/agil cursor-help">
                 <span className="text-sm text-yellow-400">⚡</span>
                 <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/agil:opacity-100 group-hover/agil:visible transition-all duration-300 group-hover/agil:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
-                  Permite que você aplique sua Agilidade em vez de sua Força em testes de ataque e
-                  rolagens de dano.
+                  Permite que você aplique sua Agilidade em vez de sua Força em testes de ataque e rolagens de dano.
                 </span>
               </span>
             )}
@@ -418,8 +543,7 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
               <span className="relative group/auto cursor-help">
                 <span className="text-sm text-blue-400">🔄</span>
                 <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/auto:opacity-100 group-hover/auto:visible transition-all duration-300 group-hover/auto:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
-                  Pode disparar rajadas. Quando dispara uma rajada, você sofre -1d20 no teste de
-                  ataque, mas causa 1 dado de dano adicional do mesmo tipo.
+                  Pode disparar rajadas. Quando dispara uma rajada, você sofre -1d20 no teste de ataque, mas causa 1 dado de dano adicional do mesmo tipo.
                 </span>
               </span>
             )}
@@ -427,21 +551,26 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
               <span className="relative group/prof cursor-help">
                 <span className="text-sm text-red-500">⚠️</span>
                 <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 invisible group-hover/prof:opacity-100 group-hover/prof:visible transition-all duration-300 group-hover/prof:delay-500 delay-0 w-52 p-2 bg-zinc-800 border border-zinc-700 text-xs text-zinc-300 rounded z-50 text-center shadow-lg pointer-events-none">
-                  Você não possui proficiência com esta arma, recebendo -2d20 em testes de ataque
-                  com ela.
+                  Você não possui proficiência com esta arma, recebendo -2d20 em testes de ataque com ela.
                 </span>
               </span>
             )}
 
             {danoOptions.length > 1 && (
-              <div
-                className="flex items-center flex-shrink-0"
-                onClick={e => e.stopPropagation()}
-              >
+              <div className="flex items-center flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                 <CustomSelect
                   value={danoSelecionado}
-                  onChange={val => setDanoIdx(danoOptions.indexOf(val as string))}
-                  options={danoOptions.map(o => ({ label: `(${o})`, value: o }))}
+                  onChange={(val) => setDanoIdx(danoOptions.indexOf(val as string))}
+                  options={danoOptions.map((o, i) => {
+                    const especial = arma.Especial_Arma || '';
+                    const formMatches = especial.match(/vers[ãa]o\s*\(([^)]+)\)/gi);
+                    let label = o;
+                    if (formMatches && formMatches[i]) {
+                      const nameMatch = formMatches[i].match(/\(([^)]+)\)/);
+                      if (nameMatch) label = nameMatch[1];
+                    }
+                    return { label: `(${label})`, value: o };
+                  })}
                   className="!p-0 !min-h-0 !border-transparent !bg-transparent text-sm text-zinc-400 font-bold hover:!text-white transition-colors"
                   hideIcon={true}
                   wrapperClassName="w-fit"
@@ -449,20 +578,25 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
               </div>
             )}
           </div>
+
           <span className="text-xs text-zinc-400">
-            <span className="font-bold text-green-400">Dano:</span>{' '}
-            {danoHeader.replace(/\[.*?\]/g, '') || '-'}
+            <span className="font-bold text-green-400">Dano:</span> {danoHeader.replace(/\[.*?\]/g, '') || '-'} 
             <span className="mx-2 text-zinc-700">|</span>
             {isLancadorGranadas ? (
-              <>
-                <span className="font-bold text-green-400">DT:</span> {dtGranada}
-              </>
+              <><span className="font-bold text-green-400">DT:</span> {dtGranada}</>
             ) : (
               <>
                 <span className="font-bold text-green-400">Crítico:</span> {critico}/x{multCrit}
+                {arma.dt_item && String(arma.dt_item).trim() !== '-' && (
+                  <>
+                    <span className="mx-2 text-zinc-700">|</span>
+                    <span className="font-bold text-green-400">DT:</span> {arma.dt_item}
+                  </>
+                )}
               </>
             )}
           </span>
+
           {(modsAtivas.length > 0 || maldicoesAtivas.length > 0) && (
             <div className="flex items-center mt-0.5 min-w-0">
               <span className="text-[11px] text-zinc-400 truncate italic">
@@ -485,37 +619,26 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
             </div>
           )}
         </div>
-        <span
-          className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${
-            estaExpandida ? 'rotate-180' : ''
-          }`}
-        >
-          ▼
-        </span>
+        <span className={`text-xs text-zinc-600 transition-transform mt-0.5 flex-shrink-0 ${estaExpandida ? 'rotate-180' : ''}`}>▼</span>
       </div>
 
-      {/* BOTÕES DE ROLAGEM RÁPIDA (1-CLIQUE) */}
-      <div 
-        className="flex items-center gap-1.5 mt-2.5 pt-2 border-t border-zinc-800/80"
-        onClick={e => e.stopPropagation()}
-      >
+      {/* ── BOTÕES DE ROLAGEM RÁPIDA (1-CLIQUE) ── */}
+      <div className="mt-2.5 pt-2 border-t border-zinc-800/80 flex items-center gap-1.5">
         <button
           type="button"
           onClick={() => {
-            const periciaObj = periciasHook?.pericias?.[pericia];
-            const periciaTreino = periciaObj?.treino || 0;
-            const periciaOutros = periciaObj?.outros || 0;
-            const bonusTotalAtaque = periciaTreino + periciaOutros + bonusAtaque;
-            const atributoAtaque = ((periciaObj?.atributo as any) || defaultAtributo);
+            const atributos = atributosFinais;
+            const qtdDados = isAgil ? (atributos.AGI || 0) : (atributos.FOR || 0);
             executarRolagemAtaque?.(
               arma.Nome_Item,
-              atributoAtaque,
-              bonusTotalAtaque,
+              pericia,
+              qtdDados,
+              bonusAtaque,
               critico,
-              pericia
+              hasProficiencia
             );
           }}
-          className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded bg-zinc-900/90 hover:bg-emerald-950/60 border border-zinc-700/60 hover:border-emerald-700/80 text-xs font-bold text-zinc-200 hover:text-emerald-400 shadow-sm transition"
+          className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 text-xs font-bold text-zinc-300 hover:text-white shadow-sm transition"
           title={`Rolar Teste de Ataque (${pericia}, Margem Crítica: ${critico})`}
         >
           <span className="text-xs">⚔️</span>
@@ -564,11 +687,11 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
       <Collapse isOpen={estaExpandida}>
         <div className="pt-3 mt-3 border-t border-zinc-800 text-xs flex flex-col gap-2">
           {/* Seletor de munição acoplada */}
-          {!arma.Tipo_Arma?.toLowerCase().includes('corpo') && (
+          {(((arma.Tipo_Arma?.toLowerCase() !== 'corpo a corpo' && arma.Tipo_Arma?.toLowerCase() !== 'corpo-a-corpo') || arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item?.trim().toLowerCase() === 'a antena\r') && arma.Tipo_Arma && !(arma.Nome_Item?.toLowerCase().includes('arcabuz dos moretti') || arma.Nome_Item?.toLowerCase().includes('fuzil alheio'))) && (
             <div className="flex items-center justify-between pb-2 border-b border-zinc-800/50">
               <div className="flex items-center gap-2">
                 <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px]">
-                  Munição em Uso:
+                  {municoesAcopladasList[0]?.isRitual ? 'Ritual:' : 'Munição em Uso:'}
                 </span>
                 {municoesAcopladasList.length > 0 ? (
                   <div className="flex items-center gap-1.5 flex-wrap">
@@ -586,9 +709,11 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
                             ? 'bg-green-950/60 border-green-800 text-green-400'
                             : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700'
                         }`}
-                        title={idx === 0 ? 'Munição em uso' : 'Clique para usar esta munição'}
+                        title={idx === 0 ? 'Em uso' : 'Clique para usar'}
                       >
-                        {m.municao.Nome_Item}
+                        <span className={m.isRitual ? getCorElementoMunicao(m.elemento) : ''}>
+                          {m.municao.Nome_Item}
+                        </span>
                         {m.qtd != null && <span className="ml-1 opacity-70">({m.qtd})</span>}
                       </button>
                     ))}
@@ -604,7 +729,7 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
                 }}
                 className="text-[10px] font-bold text-green-500 hover:text-green-400 uppercase tracking-wider"
               >
-                + Acoplar
+                {arma.Nome_Item?.trim().toLowerCase() === 'a antena' ? '+ Ritual' : '+ Acoplar'}
               </button>
             </div>
           )}
@@ -649,48 +774,71 @@ export const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({
             </div>
           </div>
 
-          {/* 4. MÉDIA DE DANO ESCONDIDA */}
-          <button
-            onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
-            className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
-          >
-            <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>
-              ▼
-            </span>
-            Média de Dano
-          </button>
+          {/* 3. ESTATÍSTICAS (RD e PV de Objeto) */}
+          {temGrupoStats && (
+            <>
+              <button
+                onClick={() => setMostrarStatsGrupo(!mostrarStatsGrupo)}
+                className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                <span className={`transition-transform ${mostrarStatsGrupo ? 'rotate-180' : ''}`}>▼</span>
+                Estatísticas
+              </button>
+              <Collapse isOpen={mostrarStatsGrupo}>
+                <div className="flex items-center gap-4 mt-1">
+                  {finalRD != null && <span className="text-zinc-300"><span className="font-bold text-green-400">RD:</span> {finalRD}</span>}
+                  {finalPV != null && <span className="text-zinc-300"><span className="font-bold text-green-400">PV:</span> {finalPV}</span>}
+                </div>
+              </Collapse>
+            </>
+          )}
 
-          <Collapse isOpen={mostrarDanoMedio}>
-            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
-              <span className="text-zinc-300">
-                <span className="font-bold text-green-400">Normal (x1/x2/x3):</span>{' '}
-                {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} /{' '}
-                {danoMedioPrincipal.normal * 3}
-              </span>
-              {!isLancadorGranadas && (
-                <span className="text-zinc-300">
-                  <span className="font-bold text-green-400">Média Crítica:</span>{' '}
-                  <span className="font-bold">{danoMedioPrincipal.critico}</span>
+          {/* 4. MÉDIA DE DANO ESCONDIDA (Condicional à regra opcional) */}
+          {(showMediaDano || mostrarDanoMedio) && (
+            <>
+              <button
+                onClick={() => setMostrarDanoMedio(!mostrarDanoMedio)}
+                className="mt-2 pt-2 border-t border-zinc-800/50 flex w-fit items-center gap-1 text-[0.65rem] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                <span className={`transition-transform ${mostrarDanoMedio ? 'rotate-180' : ''}`}>
+                  ▼
                 </span>
-              )}
+                Média de Dano
+              </button>
 
-              {danoMedioSecundario && (
-                <>
-                  <span className="text-zinc-300 mt-1">
-                    <span className="font-bold text-green-400">Sec. (x1/x2/x3):</span>{' '}
-                    {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} /{' '}
-                    {danoMedioSecundario.normal * 3}
+              <Collapse isOpen={mostrarDanoMedio}>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
+                  <span className="text-zinc-300">
+                    <span className="font-bold text-green-400">Normal (x1/x2/x3):</span>{' '}
+                    {danoMedioPrincipal.normal} / {danoMedioPrincipal.normal * 2} /{' '}
+                    {danoMedioPrincipal.normal * 3}
                   </span>
                   {!isLancadorGranadas && (
-                    <span className="text-zinc-300 mt-1">
-                      <span className="font-bold text-green-400">Sec. Crítica:</span>{' '}
-                      <span className="font-bold">{danoMedioSecundario.critico}</span>
+                    <span className="text-zinc-300">
+                      <span className="font-bold text-green-400">Média Crítica:</span>{' '}
+                      <span className="font-bold">{danoMedioPrincipal.critico}</span>
                     </span>
                   )}
-                </>
-              )}
-            </div>
-          </Collapse>
+
+                  {danoMedioSecundario && (
+                    <>
+                      <span className="text-zinc-300 mt-1">
+                        <span className="font-bold text-green-400">Sec. (x1/x2/x3):</span>{' '}
+                        {danoMedioSecundario.normal} / {danoMedioSecundario.normal * 2} /{' '}
+                        {danoMedioSecundario.normal * 3}
+                      </span>
+                      {!isLancadorGranadas && (
+                        <span className="text-zinc-300 mt-1">
+                          <span className="font-bold text-green-400">Sec. Crítica:</span>{' '}
+                          <span className="font-bold">{danoMedioSecundario.critico}</span>
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+              </Collapse>
+            </>
+          )}
         </div>
       </Collapse>
     </div>

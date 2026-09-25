@@ -243,8 +243,16 @@ export interface Arma {
   Capacidade_Municao: number | null;
   dt_item: string | null;
   'Automatica?': boolean | null;
+  'Improvisada?'?: boolean | null;
+  isDuplaObsessivaCompanion?: boolean;
+  isDuplaObsessivaLinked?: boolean;
+  Codigo_Grupo?: number | null;
   Fonte_Arma: string;
   Dano_Secundario?: string;
+  Elemento_Arma?: string | null;
+  Especial_Arma?: string | null;
+  isAmaldicoada?: boolean;
+  isDuplaObsessivaLinked?: boolean;
 }
 
 export interface ArmaInventario {
@@ -557,4 +565,10 @@ export interface Ameaca {
   habilidades: HabilidadeAmeaca[];
   descricao?: string;
   enigmaDeMedo?: string;
+}
+
+export interface GrupoArma {
+  Codigo_Grupo: number;
+  RD_Grupo?: number | string | null;
+  PV_Grupo?: number | string | null;
 }

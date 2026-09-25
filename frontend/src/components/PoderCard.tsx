@@ -142,11 +142,11 @@ export const PoderCard: React.FC<PoderCardProps> = ({
               {poder.afinidadeAtiva && poder.afinidadeAdquiridaKey && (
                 <div className="flex justify-end mb-2">
                   <span className="text-[0.65rem] uppercase tracking-widest text-zinc-500 font-semibold bg-zinc-800/50 px-2 py-0.5 rounded">
-                    {String(poder.afinidadeAdquiridaKey).startsWith('extra_') ? 'Transcender Extra' : (
+                    {String(poder.afinidadeAdquiridaKey).startsWith('extra_dedo_decepado') ? 'DEDO DECEPADO' : (String(poder.afinidadeAdquiridaKey).startsWith('extra_') ? 'Transcender Extra' : (
                       (parseInt(String(poder.afinidadeAdquiridaKey), 10) >= 1000) ? 
                       `Transcender ${parseInt(String(poder.afinidadeAdquiridaKey), 10) - 1000}%` :
                       `Transcender ${parseInt(String(poder.afinidadeAdquiridaKey), 10)}%`
-                    )}
+                    ))}
                   </span>
                 </div>
               )}

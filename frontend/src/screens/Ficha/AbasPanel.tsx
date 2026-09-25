@@ -86,7 +86,7 @@ export const AbasPanel: React.FC = () => {
     return () => { document.body.style.overflow = 'unset'; };
   }, [ritualEditandoOrigem]);
 
-  const { afinidadeEscolhida, afinidadeAtiva, nivel, regrasAutomaticasAtivas } = useRPG();
+  const { afinidadeEscolhida, afinidadeAtiva, nivel, regrasAutomaticasAtivas, armasHook } = useRPG();
   const effectiveNex = regras['nex_experiencia'] ? (nivel * 5) : nex;
 
   React.useEffect(() => {
@@ -473,7 +473,7 @@ export const AbasPanel: React.FC = () => {
         } else {
           categoria = 'utilidade';
         }
-        const tipoLabel = categoria === 'paranormais' ? `Transcender Extra` : `Extra`;
+        const tipoLabel = (escolhido.fonte === 'Dedo Decepado' || (typeof key === 'string' && key.startsWith('extra_dedo_decepado'))) ? 'DEDO DECEPADO' : (escolhido.fonte && !['Ordem Paranormal RPG', 'Sobrevivendo ao Horror'].includes(escolhido.fonte) ? escolhido.fonte : (categoria === 'paranormais' ? `Transcender Extra` : `Extra`));
         const afinidadeDoPoder = escolhido.afinidade || pp?.Afinidade;
         const nomeBaseCheck = escolhido.nome.toLowerCase().trim();
         const afinidadeAtiva = afinidadeDoPoder ? contagemPoderes[nomeBaseCheck] >= 2 : false;
@@ -1160,7 +1160,8 @@ export const AbasPanel: React.FC = () => {
                             return a.localeCompare(b);
                           }).map(elemento => {
                             const ritualsOfElement = ritualsByElement[elemento];
-                            const baseDT = 10 + (atributosFinais.PRE || 0) + calcularNivel(nex);
+                            const hasAntena = armasHook?.armasInventario?.some(a => a.arma.Nome_Item?.trim().toLowerCase() === 'a antena');
+                            const baseDT = 10 + (atributosFinais.PRE || 0) + calcularNivel(nex) + (hasAntena ? 3 : 0);
                             
                             return (
                               <div key={elemento} className="mt-2 mb-2 flex flex-col gap-2.5">
@@ -1272,6 +1273,11 @@ export const AbasPanel: React.FC = () => {
               titulo="NEX & Experiência"
               descricao="O nível de experiência substitui o NEX em Benefícios por NEX, como pré-requisitos de habilidades de classe (exceto poderes paranormais) e em efeitos de origens e habilidades baseados em NEX. 1 nível equivale a 5% de NEX."
             />
+              <RegraCheckbox
+                nome="media_dano"
+                titulo="Cálculo de Média de Dano"
+                descricao="Exibe uma seção retrátil nos blocos de ataque com a média matemática do dano causado pelas armas no combate."
+              />
             <RegraCheckbox
               nome="sem_sanidade"
               titulo="Jogando sem Sanidade"
@@ -1294,7 +1300,7 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais EXTRAS para qualquer círculo */}
       {modalRituaisExtraAberto && (
         <ModalRituaisExtra
-          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
+          getSimboloUrl={rituaisHook.getSimboloUrl || (() => '')}
           rituais={rituaisHook.rituais || []}
           rituaisAprendidosIds={(rituaisHook.rituaisAprendidos || []).map((r: any) => r.codigo_ritual)}
           onClose={() => setModalRituaisExtraAberto(false)}
@@ -1317,7 +1323,6 @@ export const AbasPanel: React.FC = () => {
       {/* Modal de seleção de rituais para os slots */}
       {escolhendoRitualPlaceholder && (
         <ModalRituais
-          simbolosRituais={rituaisHook.simbolosRituais || new Map()}
           rituais={rituaisHook.rituais || []}
           limiteCirculo={
             escolhendoRitualPlaceholder.nex 
@@ -1412,8 +1417,8 @@ export const AbasPanel: React.FC = () => {
                     <CustomSelect
                       value={ritualVersaoEditando}
                       onChange={(val) => setRitualVersaoEditando(val as any)}
-                      wrapperClassName="w-fit"
-                      className="rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700/50 focus:outline-none w-fit"
+                      wrapperClassName="w-40"
+                      className="rounded border border-zinc-800/80 bg-zinc-900/50 px-3 py-2 text-sm font-bold text-zinc-200 focus:border-green-700/50 focus:outline-none w-full"
                       options={[
                         { value: 'normal', label: 'Normal' },
                         ...(ritualBase.Tem_Discente ? [{ value: 'discente', label: 'Discente' }] : []),
@@ -1445,7 +1450,7 @@ export const AbasPanel: React.FC = () => {
                     if (prop.key === 'Alcance_Ritual') opts = ['Pessoal', 'Toque', 'Curto', 'Médio', 'Longo', 'Extremo', 'Ilimitado'];
                     if (prop.key === 'Resistencia_Ritual') opts = ['Nenhuma', 'Fortitude', 'Reflexos', 'Vontade', 'Fortitude reduz à metade', 'Reflexos reduz à metade', 'Vontade reduz à metade', 'Fortitude anula', 'Reflexos anula', 'Vontade anula'];
                     if (prop.key === 'Duracao_Ritual') opts = ['Instantânea', '1 rodada', 'Cena', 'Sustentada', 'Sustentada (1 rodada)', '1 dia'];
-                    if (prop.key === 'Alvo_Ritual') opts = ['1 ser', '1 objeto', 'Você', 'Área', 'Especial'];
+                    
                     
                     if (opts && currentValue && !opts.includes(currentValue)) {
                       opts = [currentValue, ...opts];

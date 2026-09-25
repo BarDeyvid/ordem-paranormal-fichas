@@ -41,17 +41,24 @@ export function useRituais(): UseRituaisReturn & {
   esquecerRitual: (origem: string) => void;
   editarRitual: (origem: string, customNome?: string, customDesc?: string, customProps?: import('../types').RitualAprendido['customProps']) => void;
   atualizarRituaisAprendidos: (novos: import('../types').RitualAprendido[]) => void;
-  simbolosRituais: Map<number, string>;
+  simbolosRituais: Map<number, Record<string, string>>;
+  getSimboloUrl: (codigo: number, elemento?: string) => string;
 } {
   const [rituais, setRituais] = useState<Ritual[]>([]);
-  const [simbolosRaw, setSimbolosRaw] = useState<{ codigo: number; url: string }[]>([]);
+  const [simbolosRaw, setSimbolosRaw] = useState<{ codigo: number; urls: Record<string, string> }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // 🔥 NOVO ESTADO: Rituais Aprendidos
   const [rituaisAprendidos, setRituaisAprendidos] = useState<import('../types').RitualAprendido[]>([]);
 
-  const simbolosRituais = new Map(simbolosRaw.map(s => [s.codigo, s.url]));
+  const simbolosRituais = new Map(simbolosRaw.map(s => [s.codigo, s.urls]));
+  const getSimboloUrl = (codigo: number, elemento?: string) => {
+    const urls = simbolosRituais.get(codigo);
+    if (!urls) return '';
+    if (elemento && urls[elemento.trim().toLowerCase()]) return urls[elemento.trim().toLowerCase()];
+    console.log('getSimboloUrl:', codigo, elemento, urls); return urls.default;
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -61,7 +68,7 @@ export function useRituais(): UseRituaisReturn & {
         setLoading(true);
         const [rituaisRes, simbolosRes] = await Promise.all([
           supabase.from('Rituais').select('*').order('Circulo_Ritual', { ascending: true }),
-          supabase.from('Símbolos Rituais').select('Codigo_Ritual, Link_Imagem')
+          supabase.from('Símbolos Rituais').select('Codigo_Ritual, Link_Imagem, Link_Imagem2, Link_Imagem3, Link_Imagem4')
         ]);
 
         if (rituaisRes.error) throw rituaisRes.error;
@@ -74,12 +81,23 @@ export function useRituais(): UseRituaisReturn & {
                     const simbolosTransformados = (simbolosRes.data || [])
             .filter(row => row.Link_Imagem)
             .map(row => {
-              // Converter links do Dropbox para links diretos (CDN) que evitam o redirecionamento (302) e carregam mais rápido
-              let rawUrl = row.Link_Imagem;
-              if (rawUrl.includes('dropbox.com')) {
-                rawUrl = rawUrl.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace(/[?&]dl=[01]/, '');
-              }
-              return { codigo: Number(row.Codigo_Ritual), url: rawUrl };
+              const processUrl = (url) => {
+                if (!url) return '';
+                if (url.includes('dropbox.com')) {
+                  return url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace(/[?&]dl=[01]/, '');
+                }
+                return url;
+              };
+              return { 
+                codigo: Number(row.Codigo_Ritual), 
+                urls: {
+                  default: processUrl(row.Link_Imagem),
+                  sangue: processUrl(row.Link_Imagem),
+                  morte: processUrl(row.Link_Imagem2 || row.Link_Imagem),
+                  conhecimento: processUrl(row.Link_Imagem3 || row.Link_Imagem),
+                  energia: processUrl(row.Link_Imagem4 || row.Link_Imagem)
+                } 
+              };
             });
           setSimbolosRaw(simbolosTransformados);
           
@@ -114,5 +132,5 @@ export function useRituais(): UseRituaisReturn & {
     }));
   };
 
-  return { rituais, loading, error, rituaisAprendidos, aprenderRitual, esquecerRitual, editarRitual, atualizarRituaisAprendidos: setRituaisAprendidos, simbolosRituais };
+  return { rituais, loading, error, rituaisAprendidos, aprenderRitual, esquecerRitual, editarRitual, atualizarRituaisAprendidos: setRituaisAprendidos, simbolosRituais, getSimboloUrl };
 }

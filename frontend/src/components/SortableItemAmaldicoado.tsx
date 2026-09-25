@@ -93,7 +93,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
         </div>
         
         <div 
-          className="flex-1 flex cursor-pointer items-center justify-between gap-3 min-w-0"
+          className="flex-1 flex cursor-pointer items-start pt-0.5 justify-between gap-3 min-w-0"
           onClick={() => toggleExpandir(item.id)}
         >
           <div className="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -121,7 +121,7 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
           </div>
         </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3 flex-shrink-0 mt-0.5">
           {item.item.Elemento_Ama ? (() => {
               const elStr = String(item.item.Elemento_Ama).toLowerCase();
               const corText = elStr.includes('medo') ? 'bg-zinc-200/80 text-zinc-950 px-1' :
@@ -166,11 +166,13 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               </button>
             );
           })()}
-          <div onClick={() => toggleExpandir(item.id)} className="w-5 text-center text-zinc-500 text-xs flex-shrink-0 cursor-pointer">{isExpanded ? '▲' : '▼'}</div>
+          <div onClick={() => toggleExpandir(item.id)} className="w-5 flex justify-center text-zinc-500 flex-shrink-0 cursor-pointer group-hover:text-zinc-300 transition-colors">
+            <svg className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+          </div>
         </div>
       </div>
       
-      <Collapse isOpen={isExpanded}>
+      <Collapse isOpen={isExpanded} className={isDragging ? 'hidden' : ''}>
         <div className="border-t border-zinc-800 px-3 py-3 text-xs bg-zinc-950/80 flex flex-col gap-2 relative z-10" onClick={e => e.stopPropagation()}>
           <div className="flex flex-col gap-1 mt-1">
             <span><span className="text-green-400 font-bold">Categoria:</span> {item.item.Categoria_Ama}</span>
@@ -265,8 +267,8 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                           </span>
                         );
                       })()}
-                      <span className="ml-auto text-zinc-500 text-xs">
-                        {ritualExpandido ? '▼' : '▶'}
+                      <span className="ml-auto text-zinc-500">
+                        <svg className={`w-4 h-4 transition-transform duration-200 ${ritualExpandido ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
                       </span>
                     </div>
                     

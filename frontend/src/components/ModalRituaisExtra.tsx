@@ -53,7 +53,7 @@ function formatarDescricao(texto: string): string {
 }
 
 interface ModalRituaisExtraProps {
-  simbolosRituais: Map<number, string>;
+  getSimboloUrl: (codigo: number, elemento?: string) => string;
   rituais: Ritual[];
   rituaisAprendidosIds: number[];
   onClose: () => void;
@@ -61,7 +61,7 @@ interface ModalRituaisExtraProps {
 }
 
 export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({ 
-  simbolosRituais,
+  getSimboloUrl,
   rituais,
   rituaisAprendidosIds,
   onClose,
@@ -203,8 +203,8 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
               const codigo = ritual.Codigo_Ritual;
               const expandido = expandidos.includes(codigo);
               const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
-                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
-              const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
+                const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
+                const simboloImg = getSimboloUrl(ritual.Codigo_Ritual, elementoSendoEscolhido);
               const corElemento = obterCorBadge(elementoSendoEscolhido);
               const corTextoElemento = obterCorTexto(elementoSendoEscolhido);
 
@@ -332,8 +332,8 @@ export const ModalRituaisExtra: React.FC<ModalRituaisExtraProps> = ({
                 const codigo = ritual.Codigo_Ritual;
               const expandido = expandidos.includes(codigo);
               const isVaria = ritual.Elemento_Ritual.toLowerCase() === 'lista' || ritual.Elemento_Ritual.toLowerCase() === 'varia';
-                const simboloImg = simbolosRituais?.get(ritual.Codigo_Ritual) || '';
-              const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
+                const elementoSendoEscolhido = isVaria ? (elementosVaria[codigo] || 'Sangue') : ritual.Elemento_Ritual;
+                const simboloImg = getSimboloUrl(ritual.Codigo_Ritual, elementoSendoEscolhido);
               const corElemento = obterCorBadge(elementoSendoEscolhido);
               const corTextoElemento = obterCorTexto(elementoSendoEscolhido);
 

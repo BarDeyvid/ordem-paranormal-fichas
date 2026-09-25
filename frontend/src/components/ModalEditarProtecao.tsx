@@ -181,7 +181,7 @@ export function ModalEditarProtecao({ protecao, onClose, onSave }: ModalEditarPr
                 Editar Proteção
               </h2>
               <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">
-                Configure os atributos, defesa e poder paranormal
+                Configure os atributos, defesa e modificações
               </p>
             </div>
           </div>

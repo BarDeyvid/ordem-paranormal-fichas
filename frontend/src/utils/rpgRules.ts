@@ -387,13 +387,15 @@ export function categoriaNumParaRoman(num: number): string {
   return 'IV';
 }
 
-export function calcularCategoriaFinal(categoriaBase: string | number | null | undefined, modificacoesIds?: number[], allModificacoes?: any[], isArmaID71?: boolean, maldicoesIds?: number[], allMaldicoes?: any[]): string {
+export function calcularCategoriaFinal(categoriaBase: string | number | null | undefined, modificacoesIds?: number[], allModificacoes?: any[], isArmaID71?: boolean | string, maldicoesIds?: number[], allMaldicoes?: any[]): string {
   const baseNum = categoriaRomanParaNum(categoriaBase);
   let modificador = modificacoesIds?.length || 0;
 
-  if (isArmaID71 && modificador > 0) {
-    modificador -= 1;
-  }
+  if (isArmaID71 === true && modificador > 0) {
+      modificador -= 1;
+    } else if (typeof isArmaID71 === 'string' && isArmaID71.toLowerCase().includes('fuzil alheio')) {
+      modificador = Math.max(0, modificador - 2);
+    }
 
   if (modificacoesIds && allModificacoes) {
     const temApocaliptica = modificacoesIds.some(id => {
@@ -401,8 +403,8 @@ export function calcularCategoriaFinal(categoriaBase: string | number | null | u
       return mod?.Nome_Modif.trim().toLowerCase() === 'apocalíptica';
     });
     if (temApocaliptica) {
-      modificador -= 1;
-    }
+        modificador -= 2;
+      }
   }
 
   let custoMaldicoes = 0;

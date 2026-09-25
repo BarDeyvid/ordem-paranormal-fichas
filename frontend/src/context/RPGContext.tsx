@@ -101,8 +101,8 @@ interface RPGContextType {
   setFiltroHabilidades: React.Dispatch<React.SetStateAction<string>>;
   habilidadesExpandidas: string[];
   setHabilidadesExpandidas: React.Dispatch<React.SetStateAction<string[]>>;
-  nexModalAberto: number | null;
-  setNexModalAberto: React.Dispatch<React.SetStateAction<number | null>>;
+  nexModalAberto: number | string | null;
+  setNexModalAberto: React.Dispatch<React.SetStateAction<number | string | null>>;
   poderesModalExpandidos: number[];
   setPoderesModalExpandidos: React.Dispatch<React.SetStateAction<number[]>>;
   nexPoderEditando: number | string | null;
@@ -211,7 +211,7 @@ export function RPGProvider({ children }: { children: React.ReactNode }) {
   const [regrasAtivas, setRegrasAtivas] = useState(true);
   const [filtroHabilidades, setFiltroHabilidades] = useState('');
   const [habilidadesExpandidas, setHabilidadesExpandidas] = useState<string[]>([]);
-  const [nexModalAberto, setNexModalAberto] = useState<number | null>(null);
+  const [nexModalAberto, setNexModalAberto] = useState<number | string | null>(null);
   const [poderesModalExpandidos, setPoderesModalExpandidos] = useState<number[]>([]);
   const [nexPoderEditando, setNexPoderEditando] = useState<number | string | null>(null);
   const [fichaIdAtual, setFichaIdAtual] = useState<string | null>(null);

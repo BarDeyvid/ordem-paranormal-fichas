@@ -323,15 +323,18 @@ export const ModalPoderOutraClasse: React.FC<{ isOpen: boolean; onClose: () => v
           onSelect={(ritualNome) => {
             const poder = poderesFiltrados.find(p => p.codigo_poder === escolhendoRitualId);
             if (poder) {
-              poderesHook.escolherPoderExtra(poder, ritualNome, undefined, 'extra_regra31');
+              const nomeCustomizado = `${poder.Nome} (${ritualNome})`;
+              poderesHook.escolherPoderExtra(poder, undefined, undefined, 'extra_regra31', undefined, nomeCustomizado);
             }
             setEscolhendoRitualId(null);
             onClose();
           }}
           rituaisNomes={(contextoPrereq?.rituaisAprendidos || []).map((ra: any) => {
-            const r = (contextoPrereq?.rituais || []).find((rt: any) => rt.Codigo_Ritual === ra.codigo_ritual);
-            return ra.customNome || (r ? r.Nome_Ritual : String(ra.codigo_ritual));
-          })}
+              const r = (contextoPrereq?.rituais || []).find((rt: any) => rt.Codigo_Ritual === ra.codigo_ritual);
+              return ra.customNome || (r ? r.Nome_Ritual : String(ra.codigo_ritual));
+            })}
+            rituaisAprendidos={contextoPrereq?.rituaisAprendidos || []}
+            rituaisDb={contextoPrereq?.rituais || []}
         />
       )}
     </div>

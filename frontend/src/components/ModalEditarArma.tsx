@@ -39,10 +39,11 @@ export function ModalEditarArma({
   const [nome, setNome] = useState(arma.Nome_Item || '');
   const [descricao, setDescricao] = useState(arma.Descricao_Item || '');
   const [dano, setDano] = useState(arma.Dano_Arma || '');
+  const [danoSecundario, setDanoSecundario] = useState(arma.Dano_Secundario || '');
   const [critico, setCritico] = useState(arma.Critico_Arma?.toString() || '');
   const [multiplicador, setMultiplicador] = useState(arma.Multiplicador_Arma?.toString() || '');
   const [alcance, setAlcance] = useState(arma.Alcance_Item || '');
-  const [danoSecundario, setDanoSecundario] = useState(arma.Dano_Secundario || '');
+
   const [categoria, setCategoria] = useState(arma.Categoria_Item || '');
   const [espacos, setEspacos] = useState(arma['Espaços_Item']?.toString() || '');
   const [dt, setDt] = useState(arma.dt_item || '');
@@ -50,7 +51,10 @@ export function ModalEditarArma({
   const [proficiencia, setProficiencia] = useState(arma.Proficiencia || 'Armas Simples');
   const [tipoArma, setTipoArma] = useState(arma.Tipo_Arma || 'Corpo a Corpo');
   const [empunhadura, setEmpunhadura] = useState(arma.Empunhadura_Arma || 'Uma Mão');
-  const [tipoDano, setTipoDano] = useState(arma.Tipo_Dano_Arma || 'Corte');
+  const parsedTipo = (arma.Tipo_Dano_Arma || 'Corte').split('/');
+  const [tipoDano, setTipoDano] = useState(parsedTipo[0].trim());
+  const [tipoDanoSec, setTipoDanoSec] = useState(parsedTipo.length > 1 ? parsedTipo[1].trim() : 'Nenhum');
+  const [improvisada, setImprovisada] = useState(!!arma['Improvisada?']);
 
   const { modificacoesHook, maldicoesHook } = useRPG();
 
@@ -80,7 +84,10 @@ export function ModalEditarArma({
   );
 
   const renderLabel = (baseLabel: string, baseValue: any, finalValue: any, isMultiplier = false) => {
-    const isModified = String(baseValue).toLowerCase() !== String(finalValue).toLowerCase();
+    let isModified = String(baseValue).trim().toLowerCase() !== String(finalValue).trim().toLowerCase();
+      if ((baseValue === '-' || !baseValue || String(baseValue).trim().toLowerCase() === 'corpo a corpo') && String(finalValue).trim().toLowerCase() === 'corpo a corpo') {
+        isModified = false;
+      }
     const displayFinal = isMultiplier ? `x${finalValue}` : finalValue;
     return (
       <div className="flex justify-between items-center mb-1.5 min-h-[22px]">
@@ -112,17 +119,19 @@ export function ModalEditarArma({
       Nome_Item: nome,
       Descricao_Item: editorDesc.current?.innerHTML || descricao,
       Dano_Arma: dano,
+      Dano_Secundario: danoSecundario,
       Critico_Arma: Number(critico) || 20,
       Multiplicador_Arma: Number(multiplicador) || 2,
       Alcance_Item: alcance,
-      Dano_Secundario: danoSecundario,
+
       Categoria_Item: categoria,
       'Espaços_Item': getEspacoNumber(espacos),
       dt_item: dt,
       Proficiencia: proficiencia,
       Tipo_Arma: tipoArma,
       Empunhadura_Arma: empunhadura,
-      Tipo_Dano_Arma: tipoDano
+      Tipo_Dano_Arma: (tipoDanoSec !== 'Nenhum' && danoSecundario.trim() !== '') ? `${tipoDano}/${tipoDanoSec}` : tipoDano,
+        'Improvisada?': improvisada
     }, modificacoes, maldicoes, maldicoesElementos);
     onClose();
   };
@@ -157,7 +166,7 @@ export function ModalEditarArma({
   
     const catNum = categoriaRomanParaNum(categoria);
     let modificador = modificacoes.length;
-    if (temApocaliptica) modificador -= 1;
+    if (temApocaliptica) modificador -= 2;
     let custoMaldicoes = maldicoes.length > 0 ? 2 + (maldicoes.length - 1) : 0;
     const catFinal = catNum + modificador + custoMaldicoes;
     const custoAtual = modificador + custoMaldicoes;
@@ -231,7 +240,7 @@ export function ModalEditarArma({
                 Editar Arma
               </h2>
               <p className="text-[11px] text-zinc-500 mt-1 uppercase tracking-widest font-semibold">
-                Configure os atributos, dano e poder paranormal
+                Configure os atributos, dano e modificações
               </p>
             </div>
           </div>
@@ -282,9 +291,8 @@ export function ModalEditarArma({
                     { value: "Corpo a Corpo", label: "Corpo a Corpo" },
                     { value: "Arma de Disparo", label: "Arma de Disparo" },
                     { value: "Arma de Fogo", label: "Arma de Fogo" },
-                    { value: "Arma de Arremesso", label: "Arma de Arremesso" },
-                    { value: "Explosivos", label: "Explosivos" }
-                  ]}
+                    { value: "Arma de Arremesso", label: "Arma de Arremesso" }
+                    ]}
                   wrapperClassName="w-full"
                   className={selectClass}
                 />
@@ -307,129 +315,112 @@ export function ModalEditarArma({
               </div>
 
               <div>
-                <InputLabel label="Tipo de Dano" />
-                <CustomSelect
-                  value={tipoDano}
-                  onChange={val => setTipoDano(val)}
-                  options={[
-                    { value: "Corte", label: "Corte" },
-                    { value: "Perfuração", label: "Perfuração" },
-                    { value: "Impacto", label: "Impacto" },
-                    { value: "Balístico", label: "Balístico" },
-                    { value: "Fogo", label: "Fogo" },
-                    { value: "Frio", label: "Frio" },
-                    { value: "Químico", label: "Químico" },
-                    { value: "Eletricidade", label: "Eletricidade" },
-                    { value: "Morte", label: "Morte" },
-                    { value: "Sangue", label: "Sangue" },
-                    { value: "Energia", label: "Energia" },
-                    { value: "Conhecimento", label: "Conhecimento" },
-                    { value: "Medo", label: "Medo" }
-                  ]}
-                  wrapperClassName="w-full"
-                  className={selectClass}
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* SECTION: Combate */}
-          <section>
-            <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Estatísticas de Combate</h3>
-              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              <div className="col-span-2 md:col-span-1">
-                {renderLabel('Dano', dano, statsFinais.danoFinal)}
-                <InputOtimizado
-                    value={dano}
-                    onChange={setDano}
-                    placeholder="Ex: 1d8"
-                    className={inputClass}
-                  />
-              </div>
-
-              <div className="col-span-2 md:col-span-1">
-                <InputLabel label="Dado Bônus" />
-                <InputOtimizado
-                  value={danoSecundario}
-                  onChange={setDanoSecundario}
-                  placeholder="Ex: +2d6"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                {renderLabel('Crítico (Margem)', critico, statsFinais.criticoFinal)}
-                  <InputOtimizado
-                    value={critico}
-                    onChange={setCritico}
-                    placeholder="Ex: 19"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                {renderLabel('Multiplicador', multiplicador, statsFinais.multCritFinal, true)}
-                <InputOtimizado
-                  value={multiplicador}
-                  onChange={setMultiplicador}
-                  placeholder="Ex: 2"
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="col-span-2">
-                {renderLabel('Alcance', alcance, statsFinais.alcanceFinal)}
-                <CustomSelect
-                    value={alcance}
-                    onChange={setAlcance}
-                    options={[
-                      'Curto',
-                      'Médio',
-                      'Longo',
-                      'Extremo',
-                      'Ilimitado',
-                      'Pessoal',
-                      'Toque',
-                      'Corpo a Corpo'
+                <div className="flex gap-2">
+                    <div className="flex-1">
+                      <InputLabel label="Tipo" />
+                      <CustomSelect
+                        value={tipoDano}
+                        onChange={val => setTipoDano(val)}
+                        options={[
+                      { value: "Corte", label: "Corte" },
+                      { value: "Perfuração", label: "Perfuração" },
+                      { value: "Impacto", label: "Impacto" },
+                      { value: "Balístico", label: "Balístico" },
+                      { value: "Fogo", label: "Fogo" },
+                      { value: "Frio", label: "Frio" },
+                      { value: "Químico", label: "Químico" },
+                      { value: "Eletricidade", label: "Eletricidade" },
+                      { value: "Morte", label: "Morte" },
+                      { value: "Sangue", label: "Sangue" },
+                      { value: "Energia", label: "Energia" },
+                      { value: "Conhecimento", label: "Conhecimento" },
+                      { value: "Medo", label: "Medo" }
                     ]}
-                    className={inputClass}
-                  />
+                      />
+                    </div>
+                    {danoSecundario.trim() !== '' && (
+                      <div className="flex-1">
+                        <InputLabel label="Tipo Secundário" />
+                        <CustomSelect
+                          value={tipoDanoSec}
+                        onChange={val => setTipoDanoSec(val)}
+                        options={[ { value: 'Nenhum', label: 'Nenhum' }, ...[
+                      { value: "Corte", label: "Corte" },
+                      { value: "Perfuração", label: "Perfuração" },
+                      { value: "Impacto", label: "Impacto" },
+                      { value: "Balístico", label: "Balístico" },
+                      { value: "Fogo", label: "Fogo" },
+                      { value: "Frio", label: "Frio" },
+                      { value: "Químico", label: "Químico" },
+                      { value: "Eletricidade", label: "Eletricidade" },
+                      { value: "Morte", label: "Morte" },
+                      { value: "Sangue", label: "Sangue" },
+                      { value: "Energia", label: "Energia" },
+                      { value: "Conhecimento", label: "Conhecimento" },
+                      { value: "Medo", label: "Medo" }
+                      ] ]}
+                        />
+                      </div>
+                    )}
+                  </div>
               </div>
-            </div>
-          </section>
 
-          {/* SECTION: Inventário */}
-          <section>
-            <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Inventário</h3>
-              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
-            </div>
+              
+                <div>
+                  {renderLabel('Dano', dano, statsFinais.dano)}
+                  <InputOtimizado value={dano} onChange={setDano} className={inputClass} placeholder="Ex: 1d6" />
+                </div>
+                
+                {danoSecundario.trim() !== '' && (
+                  <div>
+                    {renderLabel('Dano Secundário', danoSecundario, statsFinais.danoSecundario || danoSecundario)}
+                    <InputOtimizado value={danoSecundario} onChange={(val) => {
+                      setDanoSecundario(val);
+                      if (val.trim() === '') setTipoDanoSec('Nenhum');
+                    }} className={inputClass} placeholder="Ex: 1d12" />
+                  </div>
+                )}
+                {danoSecundario.trim() === '' && (
+                  <div>
+                    <InputLabel label="Dano Secundário" />
+                    <InputOtimizado value={danoSecundario} onChange={(val) => {
+                      setDanoSecundario(val);
+                      if (val.trim() !== '' && tipoDanoSec === 'Nenhum') {
+                        setTipoDanoSec(tipoDano);
+                      }
+                    }} className={inputClass} placeholder="Ex: 1d12" />
+                  </div>
+                )}
 
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <InputLabel label="Categoria" />
+                <div>
+                  {renderLabel('Crítico', critico || '20', statsFinais.critico)}
+                  <InputOtimizado value={critico} onChange={setCritico} type="number" className={inputClass} />
+                </div>
+
+                <div>
+                  {renderLabel('Multiplicador', multiplicador || '2', statsFinais.multiplicador, true)}
+                  <InputOtimizado value={multiplicador} onChange={setMultiplicador} type="number" className={inputClass} />
+                </div>
+
+                <div>
+                  {renderLabel('Alcance', alcance || '-', statsFinais.alcance)}
                   <CustomSelect
-                    value={categoriaNumParaRoman(catFinal)}
-                    onChange={(val) => {
-                      const finalDesejado = categoriaRomanParaNum(val);
-                      setCategoria(categoriaNumParaRoman(Math.max(0, finalDesejado - custoAtual)));
-                    }}
+                    value={alcance}
+                    onChange={val => setAlcance(val)}
                     options={[
-                      { value: '0', label: '0' },
-                      { value: 'I', label: 'I' },
-                      { value: 'II', label: 'II' },
-                      { value: 'III', label: 'III' },
-                      { value: 'IV', label: 'IV' }
+                      { value: "Corpo a Corpo", label: "Corpo a Corpo" },
+                      { value: "Curto", label: "Curto" },
+                      { value: "Médio", label: "Médio" },
+                      { value: "Longo", label: "Longo" },
+                      { value: "Extremo", label: "Extremo" }
                     ]}
+                    wrapperClassName="w-full"
+                    className={selectClass}
                   />
-              </div>
+                </div>
 
-              <div>
-                <InputLabel label="Espaços" />
+                <div>
+                  <InputLabel label="Espaços" />
                   <InputOtimizado
                     value={String(espacosFinal)}
                     onChange={val => {

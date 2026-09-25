@@ -11,8 +11,10 @@ interface ModalItensAmaldicoadosProps {
 
 export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoadosProps) {
 
-  const { itensAmaldicoadosHook } = useRPG();
-  const { itens, adicionarItem, loading } = itensAmaldicoadosHook;
+  const { itensAmaldicoadosHook, armasHook } = useRPG();
+  const { itens, armasAmaldicoadas, adicionarItem, loading } = itensAmaldicoadosHook;
+  const { setNexModalAberto } = useRPG();
+  
 
   React.useEffect(() => {
     if (aberto) {
@@ -22,53 +24,86 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
       setBusca('');
       setAbaElemento(null);
       setExpandidos({});
+      setMostrarFiltrosAvancados(false);
+      setFiltroCategoria('Todas');
+      setFiltroEspacos('Todos');
+      setFiltroFonte('Todas');
     }
   }, [aberto]);
   
   const [busca, setBusca] = useState('');
   const [abaElemento, setAbaElemento] = useState<string | null>(null);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
+  const [mostrarFiltrosAvancados, setMostrarFiltrosAvancados] = useState(false);
+  const [filtroCategoria, setFiltroCategoria] = useState<string>('Todas');
+  const [filtroEspacos, setFiltroEspacos] = useState<string>('Todos');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
 
   const itensFiltrados = useMemo(() => {
-    return itens.filter(item => {
-      const matchBusca = item.Nome_Ama.toLowerCase().includes(busca.toLowerCase());
-      
-      let matchElemento = true;
+    let baseItens = [
+      ...(itens || []).map(i => ({ ...i, _tipo: 'item' })),
+      ...(armasAmaldicoadas || [])
+        .filter(a => !a.Nome_Item.includes('Dupla Obsessiva (Florete)'))
+        .map(a => ({ 
+        ...a, 
+        _tipo: 'arma',
+        Codigo_Item_Ama: 'arma_' + a.Codigo_Arma,
+        Dano_Secundario: a['Dano-Arma_Sec'],
+        Nome_Ama: a.Nome_Item.includes('Dupla Obsessiva (Ma') ? 'Dupla Obsessiva' : a.Nome_Item,
+        Desc_Ama: a.Nome_Item.includes('Dupla Obsessiva (Ma') ? 'Maça e florete. Essa dupla de armas enferrujadas parecem não conseguir ficar longe uma da outra, obcecadas por si mesmas e seu único propósito: proteger aqueles que amam com fervor.\nSe estiver empunhando as duas armas, pode gastar uma ação padrão para realizar dois ataques, um com cada arma. Além disso, se um aliado em alcance curto de você for alvo de um ataque, você pode gastar 2 PE como reação para se tornar o alvo do ataque. Se fizer isso e a fonte do ataque estiver em alcance corpo a corpo, você pode gastar 2 PE para atacar a fonte com a maça.' : a.Descricao_Item,
+        Elemento_Ama: a.Elemento_Arma,
+        Espacos_Ama: a['Espaços_Item'],
+        Categoria_Ama: a.Categoria_Item,
+        Fonte_Ama: a.Fonte_Arma || ''
+      }))
+    ];
+    let result = baseItens.filter(item => {
       if (abaElemento) {
-        const itemEl = item.Elemento_Ama?.toLowerCase() || '';
-        matchElemento = itemEl.includes(abaElemento.toLowerCase());
+        if (!item.Elemento_Ama || !item.Elemento_Ama.toLowerCase().includes(abaElemento.toLowerCase())) return false;
       }
-
-      return matchBusca && matchElemento;
-    }).sort((a, b) => {
-      const elementOrder: Record<string, number> = {
+      if (busca) {
+        if (!item.Nome_Ama.toLowerCase().includes(busca.toLowerCase())) return false;
+      }
+      if (filtroCategoria !== 'Todas') {
+        if (String(item.Categoria_Ama || '').trim().toUpperCase() !== filtroCategoria) return false;
+      }
+      if (filtroEspacos !== 'Todos') {
+        if (String(item.Espacos_Ama || '').trim() !== filtroEspacos) return false;
+      }
+      if (filtroFonte !== 'Todas') {
+        const fonte = (item.Fonte_Ama || '').trim().toLowerCase();
+        if (filtroFonte === 'Homebrew') {
+          if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else if (filtroFonte === 'AS') {
+          if (fonte !== 'as' && fonte !== 'a.s.' && fonte !== 'a.s' && !fonte.includes('sobreviv') && !fonte.includes('arquivo') && !fonte.includes('aurora') && !fonte.includes('aniquila')) return false;
+        } else {
+          if (fonte !== filtroFonte.toLowerCase()) return false;
+        }
+      }
+      return true;
+    });
+    const elementOrder: Record<string, number> = {
         'sangue': 1,
         'morte': 2,
         'conhecimento': 3,
         'energia': 4,
         'medo': 5,
         'varia': 6,
-        'vária': 6,
-        'variável': 6,
-        'variavel': 6
+        'variável': 6
       };
       
-      const getRank = (el: string | null | undefined) => {
-        if (!el) return 99;
-        const lower = el.toLowerCase();
-        for (const key in elementOrder) {
-          if (lower.includes(key)) return elementOrder[key];
-        }
-        return 99;
-      };
-
-      const rankA = getRank(a.Elemento_Ama);
-      const rankB = getRank(b.Elemento_Ama);
-      
-      if (rankA !== rankB) return rankA - rankB;
-      return a.Nome_Ama.localeCompare(b.Nome_Ama);
-    });
-  }, [itens, busca, abaElemento]);
+      result.sort((a, b) => {
+        const elemA = (a.Elemento_Ama || '').trim().toLowerCase();
+        const elemB = (b.Elemento_Ama || '').trim().toLowerCase();
+        
+        const orderA = elementOrder[elemA] || 99;
+        const orderB = elementOrder[elemB] || 99;
+        
+        if (orderA !== orderB) return orderA - orderB;
+        return (a.Nome_Ama || '').localeCompare(b.Nome_Ama || '', 'pt-BR');
+      });
+    return result;
+  }, [itens, armasAmaldicoadas, busca, abaElemento, filtroCategoria, filtroEspacos, filtroFonte]);
 
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));
@@ -104,12 +139,74 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
               onChange={(e) => setBusca(e.target.value)}
               placeholder="Buscar item amaldiçoado..."
               className="flex-1 rounded border border-zinc-700 bg-zinc-950 px-3 py-1.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-green-700"
-            />
+              />
+              <button 
+                onClick={() => setMostrarFiltrosAvancados(!mostrarFiltrosAvancados)}
+                className={`rounded border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
+                  mostrarFiltrosAvancados || filtroCategoria !== 'Todas' || filtroEspacos !== 'Todos' || filtroFonte !== 'Todas'
+                    ? 'border-green-800 bg-green-900/40 text-green-300'
+                    : 'border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
+                }`}
+              >
+                Filtros
+              </button>
             </div>
           </div>
 
+          {/* Filtros Avançados */}
+          <Collapse isOpen={mostrarFiltrosAvancados} className="z-50">
+            <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-950 px-4 py-3">
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Categoria</label>
+                  <CustomSelect
+                    value={filtroCategoria}
+                    onChange={setFiltroCategoria}
+                    options={[
+                      { value: 'Todas', label: 'Todas' },
+                      { value: 'I', label: 'I' },
+                      { value: 'II', label: 'II' },
+                      { value: 'III', label: 'III' },
+                      { value: 'IV', label: 'IV' }
+                    ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Espaços</label>
+                <CustomSelect
+                  value={filtroEspacos}
+                  onChange={setFiltroEspacos}
+                  options={[
+                    { value: 'Todos', label: 'Todos' },
+                    { value: '0', label: '0' },
+                    { value: '1', label: '1' },
+                    { value: '2', label: '2' },
+                    { value: '3', label: '3' },
+                    { value: '4', label: '4' }
+                  ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
+                  <CustomSelect
+                    value={filtroFonte}
+                    onChange={setFiltroFonte}
+                    options={[
+                      { value: 'Todas', label: 'Todas' },
+                      { value: 'OPRPG', label: 'OPRPG' },
+                      { value: 'SaH', label: 'SaH' },
+                      { value: 'AS', label: 'AS' },
+                      { value: 'Homebrew', label: 'Homebrew' }
+                    ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
+            </div>
+          </Collapse>
+
           {/* Sub Aba Elementos */}
-          <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 bg-zinc-950 px-4 py-3">
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Elementos:</span>
             <button
               onClick={() => setAbaElemento(null)}
@@ -170,7 +267,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                   return (
                     <div 
                       key={item.Codigo_Item_Ama}
-                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}
+                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`} onClick={() => toggleExpandir(item.Codigo_Item_Ama)}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2  " >
                         <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
@@ -214,7 +311,26 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            adicionarItem(item);
+                            if (item._tipo === 'arma') {
+    armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined });
+    if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
+      const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
+      if (florete) armasHook?.adicionarArma({ ...florete, Dano_Secundario: florete['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true, isDuplaObsessivaCompanion: true });
+    }
+    if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
+      const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
+      if (maca) armasHook?.adicionarArma({ ...maca, Dano_Secundario: maca['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true, isDuplaObsessivaCompanion: true });
+    }
+    // TEMP DEBUG: Use alert to visually confirm action to user
+    console.log('Adicionou arma amaldicoada', item.Nome_Item);
+  } else {
+    if (item.Nome_Ama === 'Dedo Decepado') {
+        window.localStorage.setItem('dedoDecepadoAguardando', JSON.stringify(item));
+        setNexModalAberto(`extra_dedo_decepado_${Date.now()}`);
+      } else {
+        adicionarItem(item);
+      }
+  }
                             fechar();
                           }}
                           className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"
@@ -232,7 +348,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                   return (
                     <div 
                       key={item.Codigo_Item_Ama}
-                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`}
+                      className={`bg-zinc-900/40 border border-zinc-800/80 rounded p-2 hover:border-green-500/50 hover:bg-zinc-900/80 group flex flex-col  overflow-hidden transition-all duration-300 ease-in-out cursor-pointer`} onClick={() => toggleExpandir(item.Codigo_Item_Ama)}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2  " >
                         <h3 className="font-bold text-zinc-200 group-hover:text-green-400 transition select-none flex-1 mt-0.5 truncate">
@@ -276,7 +392,26 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            adicionarItem(item);
+                            if (item._tipo === 'arma') {
+    armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined }); alert('Arma Amaldiçoada enviada para o inventário com sucesso: ' + item.Nome_Item);
+    if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
+      const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
+      if (florete) armasHook?.adicionarArma({ ...florete, Dano_Secundario: florete['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true, isDuplaObsessivaCompanion: true });
+    }
+    if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
+      const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
+      if (maca) armasHook?.adicionarArma({ ...maca, Dano_Secundario: maca['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true, isDuplaObsessivaCompanion: true });
+    }
+    // TEMP DEBUG: Use alert to visually confirm action to user
+    console.log('Adicionou arma amaldicoada', item.Nome_Item);
+  } else {
+    if (item.Nome_Ama === 'Dedo Decepado') {
+        window.localStorage.setItem('dedoDecepadoAguardando', JSON.stringify(item));
+        setNexModalAberto(`extra_dedo_decepado_${Date.now()}`);
+      } else {
+        adicionarItem(item);
+      }
+  }
                             fechar();
                           }}
                           className="ml-auto shrink-0 px-3 py-1 bg-green-700 hover:bg-green-600 text-white rounded font-bold text-[10px] uppercase tracking-wider transition-colors active:scale-95"

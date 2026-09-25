@@ -5,6 +5,7 @@ import { calcularCategoriaFinal } from '../utils/rpgRules';
 
 export function useItensAmaldicoados() {
   const [itens, setItens] = useState<ItemAmaldicoado[]>([]);
+  const [armasAmaldicoadas, setArmasAmaldicoadas] = useState<any[]>([]);
   const [itensAmaldicoadosInventario, setItensAmaldicoadosInventario] = useState<ItemAmaldicoadoInventario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -13,12 +14,18 @@ export function useItensAmaldicoados() {
     let cancelled = false;
     async function carregar() {
       setError(null);
-      const { data, error } = await supabase.from('Itens Amaldiçoados').select('*');
+      const [resItens, resArmas] = await Promise.all([
+        supabase.from('Itens Amaldiçoados').select('*'),
+        supabase.from('Armas Amaldiçoadas').select('*')
+      ]);
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
-      } else if (data) {
-        setItens(data as ItemAmaldicoado[]);
+      if (resItens.error) {
+        setError(resItens.error.message);
+      } else if (resItens.data) {
+        setItens(resItens.data as ItemAmaldicoado[]);
+      }
+      if (resArmas.data) {
+        setArmasAmaldicoadas(resArmas.data);
       }
       setLoading(false);
     }
@@ -80,6 +87,8 @@ export function useItensAmaldicoados() {
 
   return { 
     itens, 
+    armasAmaldicoadas,
+
     itensAmaldicoadosInventario,
     setItensAmaldicoadosInventario,
     adicionarItem, 

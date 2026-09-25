@@ -40,6 +40,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
 
   const { armasHook, proficienciasTotais, status, atributosFinais, regrasAutomaticasAtivas } = useRPG();
   const [busca, setBusca] = useState('');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
   const [filtro, setFiltro] = useState<string>('Todas'); // Proficiência
   const [mostrarFiltrosAvançados, setMostrarFiltrosAvançados] = useState(false);
   const [filtroTipo, setFiltroTipo] = useState<string>('Todos');
@@ -106,6 +107,16 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
     if (busca && !arma.Nome_Item.toLowerCase().includes(busca.toLowerCase())) return false;
     
     // 3. Filtros Avançados
+      if (filtroFonte !== 'Todas') {
+        const fonte = (arma.Fonte_Arma || '').trim().toLowerCase();
+        if (filtroFonte === 'Homebrew') {
+          if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else if (filtroFonte === 'AS') {
+          if (fonte !== 'as' && fonte !== 'a.s.' && fonte !== 'a.s' && !fonte.includes('sobreviv') && !fonte.includes('arquivo') && !fonte.includes('aurora') && !fonte.includes('aniquila')) return false;
+        } else {
+          if (fonte !== filtroFonte.toLowerCase()) return false;
+        }
+      }
     if (filtroTipo !== 'Todos' && arma.Tipo_Arma !== filtroTipo) return false;
     if (filtroEmpunhadura !== 'Todas' && arma.Empunhadura_Arma !== filtroEmpunhadura) return false;
     
@@ -153,8 +164,8 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
             />
             <button 
               onClick={() => setMostrarFiltrosAvançados(!mostrarFiltrosAvançados)}
-              className={`rounded border px-3 py-1.5 text-sm font-bold uppercase tracking-wider transition ${
-                mostrarFiltrosAvançados || filtroTipo !== 'Todos' || filtroEmpunhadura !== 'Todas' || filtroAlcance !== 'Todos'
+              className={`rounded border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
+                mostrarFiltrosAvançados || filtroTipo !== 'Todos' || filtroEmpunhadura !== 'Todas' || filtroAlcance !== 'Todos' || filtroFonte !== 'Todas'
                   ? 'border-green-800 bg-green-900/40 text-green-300'
                   : 'border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
               }`}
@@ -167,7 +178,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
         {/* Filtros Avançados */}
         <Collapse isOpen={mostrarFiltrosAvançados} className="z-50">
 
-          <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-950 px-4 py-3">
               <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px] ">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Uso</label>
                 <CustomSelect
@@ -225,8 +236,23 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
                 wrapperClassName="w-full"
               />
             </div>
+          
+            <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
+              <CustomSelect
+                value={filtroFonte}
+                onChange={setFiltroFonte}
+                options={[
+                  { value: 'Todas', label: 'Todas' },
+                  { value: 'OPRPG', label: 'OPRPG' },
+                  { value: 'SaH', label: 'SaH' },
+                  { value: 'AS', label: 'AS' },
+                  { value: 'Homebrew', label: 'Homebrew' }
+                ]}
+                wrapperClassName="w-full"
+              />
+            </div>
           </div>
-        
         </Collapse>
 
         {/* Lista de armas */}

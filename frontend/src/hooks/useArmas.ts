@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../services/supabase';
-import type { Arma, ArmaInventario } from '../types';
+import type { Arma, ArmaInventario, GrupoArma } from '../types';
 
 export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> = new Set()) {
   const [armas, setArmas] = useState<Arma[]>([]);
+  const [gruposArmas, setGruposArmas] = useState<GrupoArma[]>([]);
   const [armasInventario, setArmasInventario] = useState<ArmaInventario[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +14,13 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
     async function carregar() {
       setLoading(true);
       setError(null);
-      const { data, error } = await supabase.from('Armas').select('*');
+      const [armasRes, gruposRes] = await Promise.all([
+        supabase.from('Armas').select('*'),
+        supabase.from('Grupos Armas').select('*')
+      ]);
+      const data = armasRes.data;
+      const error = armasRes.error;
+      if (gruposRes.data) setGruposArmas(gruposRes.data as GrupoArma[]);
       if (cancelled) return;
       if (error) {
         setError(error.message);
@@ -29,17 +36,44 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
   useEffect(() => {
     setArmasInventario(prev => {
       let changed = false;
-      let next = [...prev];
+        let next = [...prev];
+
+        next = next.map(a => {
+          if (a.arma.Nome_Item?.toLowerCase().includes('fuzil alheio')) {
+            const m = Array.isArray(a.modificacoes) ? [...a.modificacoes] : [];
+            let changedA = false;
+            if (!m.includes(10)) { m.push(10); changedA = true; }
+            if (!m.includes(11)) { m.push(11); changedA = true; }
+            if (changedA) { changed = true; return { ...a, modificacoes: m }; }
+          }
+          if (a.arma.Nome_Item?.trim().toLowerCase() === 'a antena' && !a.arma['Improvisada?']) {
+            changed = true;
+            return { ...a, arma: { ...a.arma, 'Improvisada?': true } };
+          }
+          return a;
+        });
 
       // 1. Ataque Desarmado
       let danoDesarmado = '1d3';
       let tipoDanoDesarmado = 'Impacto (Não letal)';
       let agilDesarmado = false;
+      let nomeDesarmado = 'Ataque Desarmado';
+      let elementoDesarmado = '';
+      
+      const temPunhos = next.some(a => a.arma.Nome_Item?.trim().toLowerCase().includes('enraivecido'));
 
       if (regrasAutomaticasAtivas.has(84)) { // Artista Marcial
         danoDesarmado = nex >= 70 ? '1d10' : nex >= 35 ? '1d8' : '1d6';
         tipoDanoDesarmado = 'Impacto';
         agilDesarmado = true;
+      }
+
+      if (temPunhos) {
+        nomeDesarmado = 'Punhos Enraivecidos';
+        elementoDesarmado = 'Sangue';
+        tipoDanoDesarmado = 'Sangue';
+        danoDesarmado = '1d8';
+        agilDesarmado = false; // Artista Marcial é completamente anulado
       }
 
       const desarmadoIndex = next.findIndex(a => a.id === 'ataque-desarmado-virtual');
@@ -50,7 +84,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
           id: 'ataque-desarmado-virtual',
           arma: {
             Codigo_Arma: -2,
-            Nome_Item: 'Ataque Desarmado',
+            Nome_Item: nomeDesarmado,
             Descricao_Item: 'Um soco, chute ou outro golpe com o próprio corpo.',
             Proficiencia: 'Armas Simples',
             Tipo_Arma: 'Corpo a Corpo',
@@ -66,8 +100,9 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
             Capacidade_Municao: null,
             dt_item: null,
             'Automatica?': false,
-            Fonte_Arma: 'Sistema'
-          },
+            Fonte_Arma: 'Sistema',
+            Elemento_Arma: elementoDesarmado || undefined
+          } as any,
           modificacoes: [],
           municoesAcopladas: []
         });
@@ -75,31 +110,35 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
       } else {
         const desarmado = next[desarmadoIndex];
         if (
+          desarmado.arma.Nome_Item !== nomeDesarmado ||
           desarmado.arma.Dano_Arma !== danoDesarmado ||
           desarmado.arma.Tipo_Dano_Arma !== tipoDanoDesarmado ||
-          desarmado.arma['Agil?'] !== agilDesarmado
+          desarmado.arma['Agil?'] !== agilDesarmado ||
+          desarmado.arma.Elemento_Arma !== elementoDesarmado
         ) {
           next[desarmadoIndex] = {
             ...desarmado,
             arma: {
-              ...desarmado.arma,
-              Dano_Arma: danoDesarmado,
-              Tipo_Dano_Arma: tipoDanoDesarmado,
-              'Agil?': agilDesarmado
-            }
+                ...desarmado.arma,
+                Nome_Item: nomeDesarmado,
+                Dano_Arma: danoDesarmado,
+                Tipo_Dano_Arma: tipoDanoDesarmado,
+                'Agil?': agilDesarmado,
+                Elemento_Arma: elementoDesarmado || undefined
+              } as any
           };
           changed = true;
         }
       }
 
       // 2. Coronhada
-      const armasDeFogo = next.filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual' && a.arma.Tipo_Arma?.toLowerCase().includes('fogo'));
+      const armasDeFogo = next.filter(a => a.id !== 'coronhada-virtual' && a.id !== 'ataque-desarmado-virtual' && (a.arma.Tipo_Arma?.toLowerCase() || '').includes('fogo'));
       const coronhadaIndex = next.findIndex(a => a.id === 'coronhada-virtual');
       const hasCoronhada = coronhadaIndex !== -1;
 
       if (armasDeFogo.length > 0) {
-        const temDuasMaos = armasDeFogo.some(a => a.arma.Empunhadura_Arma?.toLowerCase().includes('duas'));
-        const temUmaMao = armasDeFogo.some(a => !a.arma.Empunhadura_Arma?.toLowerCase().includes('duas'));
+        const temDuasMaos = armasDeFogo.some(a => (a.arma.Empunhadura_Arma?.toLowerCase() || '').includes('duas'));
+        const temUmaMao = armasDeFogo.some(a => !(a.arma.Empunhadura_Arma?.toLowerCase() || '').includes('duas'));
         
         let danoCoronhada = '1d4';
         let empunhadura = 'Uma Mão';
@@ -160,11 +199,28 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
 
   const adicionarArma = (arma: Arma) => {
     const newId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
-    setArmasInventario(prev => [...prev, { id: newId, arma }]);
+    let mods = [] as number[];
+    if (arma.Nome_Item === 'Fuzil Alheio') mods = [10, 11]; // Mira Laser, Mira Telescópica
+    if (arma.Nome_Item?.trim().toLowerCase() === 'a antena' || arma.Nome_Item === 'A Antena\r') {
+      arma = { ...arma, 'Improvisada?': true };
+    }
+    setArmasInventario(prev => [...prev, { id: newId, arma, modificacoes: mods }]);
   };
 
   const removerArma = (id: string) => {
-    setArmasInventario(prev => prev.filter(item => item.id !== id));
+    setArmasInventario(prev => {
+      const itemToDelete = prev.find(item => item.id === id);
+      if (itemToDelete?.arma.Nome_Item?.includes('Dupla Obsessiva')) {
+        const isMaca = itemToDelete.arma.Nome_Item.includes('Ma');
+        const outroNome = isMaca ? 'Dupla Obsessiva (Florete)' : 'Dupla Obsessiva (Ma';
+        // Acha o par que tem a flag isDuplaObsessivaLinked
+        const outroItem = prev.find(item => item.arma?.Nome_Item?.includes(outroNome));
+        if (outroItem) {
+          return prev.filter(item => item.id !== id && item.id !== outroItem.id);
+        }
+      }
+      return prev.filter(item => item.id !== id);
+    });
   };
 
   const reordenarArmas = (oldIndex: number, newIndex: number) => {
@@ -224,6 +280,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
 
   const cargaArmas = useMemo(() => {
     return armasInventario.reduce((acc, item) => {
+      if (item.arma.isDuplaObsessivaCompanion) return acc;
       let esp = item.arma['Espaços_Item'];
       if (typeof esp === 'string') {
         esp = esp.replace(',', '.').replace(/[^0-9.-]+/g, '');
@@ -236,6 +293,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
   const contagemPorCategoria = useMemo(() => {
     let counts = [0, 0, 0, 0];
     armasInventario.forEach(item => {
+      if (item.arma.isDuplaObsessivaCompanion) return;
       const cat = String(item.arma.Categoria_Item).trim();
       if (cat === 'I') counts[0]++;
       else if (cat === 'II') counts[1]++;
@@ -245,7 +303,7 @@ export function useArmas(nex: number = 0, regrasAutomaticasAtivas: Set<number> =
     return counts;
   }, [armasInventario]);
 
-  return { armas, armasInventario,    adicionarArma,
+  return { armas, armasInventario, gruposArmas,    adicionarArma,
     removerArma,
     reordenarArmas,
     acoplarMunicao,

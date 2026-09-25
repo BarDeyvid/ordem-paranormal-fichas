@@ -3,6 +3,7 @@ import { useRPG } from '../../context/RPGContext';
 import type { ArmaInventario } from '../../types';
 import { ModalMunicoes } from './ModalMunicoes';
 import { ModalGranadas } from './ModalGranadas';
+import { ModalAntena } from './ModalAntena';
 import { ArmaCombateCard } from '../../components/ArmaCombateCard';
 
 export const CombatePanel: React.FC = () => {
@@ -11,6 +12,8 @@ export const CombatePanel: React.FC = () => {
   const [municaoFiltroNome, setMunicaoFiltroNome] = React.useState<string | undefined>(undefined);
   const [municaoFiltroCategoria, setMunicaoFiltroCategoria] = React.useState<string | undefined>(undefined);
   const [modalGranadasAberto, setModalGranadasAberto] = React.useState(false);
+  const [modalAntenaAberto, setModalAntenaAberto] = React.useState(false);
+  const [antenaTargetArmaId, setAntenaTargetArmaId] = React.useState<string | undefined>(undefined);
   const [granadaTargetArmaId, setGranadaTargetArmaId] = React.useState<string | undefined>(undefined);
   const [expandidos, setExpandidos] = React.useState<Record<string, boolean>>({});
 
@@ -19,6 +22,12 @@ export const CombatePanel: React.FC = () => {
   };
   const { armasHook, modificacoesHook, maldicoesHook, itensHook, regrasAutomaticasAtivas, municoesHook } = useRPG();
   let armas = [...(armasHook?.armasInventario || [])];
+
+  // Sort Duplas Obsessivas together, hide Punhos Enraivecidos
+  armas = armas.filter(a => !(a.arma.Nome_Item?.trim().toLowerCase().includes('enraivecido')) || a.id === 'ataque-desarmado-virtual').sort((a, b) => {
+    if (a.arma.Nome_Item?.includes('Dupla Obsessiva') && b.arma.Nome_Item?.includes('Dupla Obsessiva')) return a.arma.Nome_Item.localeCompare(b.arma.Nome_Item);
+    return 0;
+  });
 
   const soqueira = itensHook?.itensInventario.find(i => i.item.Nome_Item.toLowerCase().includes('soqueira'));
   if (soqueira) {
@@ -70,7 +79,10 @@ export const CombatePanel: React.FC = () => {
             municoesHook={municoesHook}
             itensHook={itensHook}
             onAddMunicao={() => {
-              if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
+              if (armaInv.arma.Nome_Item?.trim().toLowerCase() === 'a antena' || armaInv.arma.Nome_Item?.trim().toLowerCase() === 'a antena\r') {
+                setAntenaTargetArmaId(armaInv.id);
+                setModalAntenaAberto(true);
+              } else if (armaInv.arma.Nome_Item?.toLowerCase().includes('lançador de granadas') || armaInv.arma.Nome_Item?.toLowerCase().includes('lancador de granadas')) {
                 setGranadaTargetArmaId(armaInv.id);
                 setModalGranadasAberto(true);
               } else {
@@ -101,6 +113,21 @@ export const CombatePanel: React.FC = () => {
               armasHook?.acoplarMunicao(municaoTargetArmaId, idGerado);
             }
             setModalMunicoesAberto(false);
+          }}
+        />
+      )}
+      {modalAntenaAberto && (
+        <ModalAntena
+          onFechar={() => setModalAntenaAberto(false)}
+          onSelect={(nome, elemento) => {
+            if (antenaTargetArmaId) {
+              const armaInv = armasHook?.armasInventario.find((a: any) => a.id === antenaTargetArmaId);
+              if (armaInv?.municoesAcopladas) {
+                armaInv.municoesAcopladas.forEach((m: string) => armasHook?.desacoplarMunicao(antenaTargetArmaId, m));
+              }
+              armasHook?.acoplarMunicao(antenaTargetArmaId, 'RITUAL_' + elemento + '_' + nome);
+            }
+            setModalAntenaAberto(false);
           }}
         />
       )}

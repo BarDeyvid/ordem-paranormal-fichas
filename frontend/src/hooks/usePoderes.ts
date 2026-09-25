@@ -11,8 +11,8 @@ interface UsePoderesReturn {
   poderClasse: Poder | null;
   loading: boolean;
   error: string | null;
-  escolherPoder: (nex: number, poder: Poder | PoderParanormal, categoria?: 'utilidade' | 'combate' | 'gerais') => void;
-  escolherPoderExtra: (poder: Poder | PoderParanormal) => void;
+  escolherPoder: (nex: number | string, poder: Poder | PoderParanormal, categoria?: 'utilidade' | 'combate' | 'gerais' | 'trilha', elemento?: string, pericia?: string, fonteCustom?: string, nomeCustomizado?: string) => void;
+  escolherPoderExtra: (poder: Poder | PoderParanormal, elementoEscolhido?: string, periciaEscolhida?: string, customId?: string, fonteCustom?: string, nomeCustomizado?: string) => void;
   removerPoder: (nex: number | string) => void;
   editarPoder: (nex: number | string, nome: string, descricao: string, afinidade?: string) => void;
 }
@@ -161,27 +161,29 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
   }, [classe]);
 
   const escolherPoder = useCallback((
-    nex: number,
+    nex: number | string,
     poder: Poder | PoderParanormal,
     categoria?: 'utilidade' | 'combate' | 'gerais' | 'trilha',
     elementoEscolhido?: string,
-    periciaEscolhida?: string
+    periciaEscolhida?: string,
+    fonteCustom?: string,
+    nomeCustomizado?: string
   ) => {
     const pp = poder as PoderParanormal;
     const isParanormal = 'Elemento' in pp || 'Afinidade' in pp;
     const catFinal: 'utilidade' | 'combate' | 'gerais' | 'paranormais' | 'trilha' = 
       isParanormal ? 'paranormais' : (categoria || 'utilidade');
 
-    let nomeFinal = poder.Nome;
-    if (elementoEscolhido) {
-      if (nomeFinal.includes('<Elemento>')) {
-        nomeFinal = nomeFinal.replace('<Elemento>', elementoEscolhido);
-      } else {
-        nomeFinal = `${nomeFinal} (${elementoEscolhido})`;
+    let nomeFinal = nomeCustomizado || poder.Nome;
+      if (!nomeCustomizado && elementoEscolhido) {
+        if (nomeFinal.includes('<Elemento>')) {
+          nomeFinal = nomeFinal.replace('<Elemento>', elementoEscolhido);
+        } else {
+          nomeFinal = `${nomeFinal} (${elementoEscolhido})`;
+        }
       }
-    }
-    
-    if (periciaEscolhida) {
+      
+      if (!nomeCustomizado && periciaEscolhida) {
       if (nomeFinal.includes('<Perícia>')) {
         nomeFinal = nomeFinal.replace('<Perícia>', periciaEscolhida);
       } else {
@@ -200,7 +202,7 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
           nome: nomeFinal,
           descricao: poder.Descricao,
           preRequisitos: poder.PreRequisitos,
-          fonte: (poder as Poder).Fonte || (poder as any).fonte || pp.Fonte || '',
+          fonte: fonteCustom || (poder as Poder).Fonte || (poder as any).fonte || pp.Fonte || '',
           afinidade: pp.Afinidade || '',
           elemento: elementoEscolhido || pp.Elemento || undefined,
           categoria: catFinal,
@@ -213,7 +215,7 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
     });
   }, []);
 
-  const escolherPoderExtra = useCallback((poder: Poder | PoderParanormal, elementoEscolhido?: string, periciaEscolhida?: string, customId?: string) => {
+  const escolherPoderExtra = useCallback((poder: Poder | PoderParanormal, elementoEscolhido?: string, periciaEscolhida?: string, customId?: string, fonteCustom?: string, nomeCustomizado?: string) => {
     const pp = poder as PoderParanormal;
     const isParanormal = 'Elemento' in pp || 'Afinidade' in pp;
     const isTrilha = (poder as Poder).Tipo?.toLowerCase() === 'trilha';
@@ -222,16 +224,16 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
 
     const uniqueId = customId || `extra_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
     
-    let nomeFinal = poder.Nome;
-    if (elementoEscolhido) {
-      if (nomeFinal.includes('<Elemento>')) {
-        nomeFinal = nomeFinal.replace('<Elemento>', elementoEscolhido);
-      } else {
-        nomeFinal = `${nomeFinal} (${elementoEscolhido})`;
+    let nomeFinal = nomeCustomizado || poder.Nome;
+      if (!nomeCustomizado && elementoEscolhido) {
+        if (nomeFinal.includes('<Elemento>')) {
+          nomeFinal = nomeFinal.replace('<Elemento>', elementoEscolhido);
+        } else {
+          nomeFinal = `${nomeFinal} (${elementoEscolhido})`;
+        }
       }
-    }
-
-    if (periciaEscolhida) {
+      
+      if (!nomeCustomizado && periciaEscolhida) {
       if (nomeFinal.includes('<Perícia>')) {
         nomeFinal = nomeFinal.replace('<Perícia>', periciaEscolhida);
       } else {
@@ -250,7 +252,7 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
           nome: nomeFinal,
           descricao: poder.Descricao,
           preRequisitos: poder.PreRequisitos,
-          fonte: (poder as Poder).Fonte || (poder as any).fonte || pp.Fonte || '',
+          fonte: fonteCustom || (poder as Poder).Fonte || (poder as any).fonte || pp.Fonte || '',
           afinidade: pp.Afinidade || '',
           elemento: elementoEscolhido || pp.Elemento || undefined,
           categoria: catFinal,
