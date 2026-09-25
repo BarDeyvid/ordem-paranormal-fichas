@@ -204,11 +204,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined });
     if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
       const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
-      if (florete) armasHook?.adicionarArma({ ...florete, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+      if (florete) armasHook?.adicionarArma({ ...florete, Dano_Secundario: florete['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
     }
     if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
       const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
-      if (maca) armasHook?.adicionarArma({ ...maca, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+      if (maca) armasHook?.adicionarArma({ ...maca, Dano_Secundario: maca['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
     }
     // TEMP DEBUG: Use alert to visually confirm action to user
     console.log('Adicionou arma amaldicoada', item.Nome_Item);
@@ -280,11 +280,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     armasHook?.adicionarArma({ ...item, isAmaldicoada: true, isDuplaObsessivaLinked: item.Nome_Item?.includes('Dupla Obsessiva') ? true : undefined }); alert('Arma Amaldiçoada enviada para o inventário com sucesso: ' + item.Nome_Item);
     if (item.Nome_Item === 'Dupla Obsessiva (Maça)') {
       const florete = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Florete)');
-      if (florete) armasHook?.adicionarArma({ ...florete, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+      if (florete) armasHook?.adicionarArma({ ...florete, Dano_Secundario: florete['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
     }
     if (item.Nome_Item === 'Dupla Obsessiva (Florete)') {
       const maca = armasAmaldicoadas?.find(a => a.Nome_Item === 'Dupla Obsessiva (Maça)');
-      if (maca) armasHook?.adicionarArma({ ...maca, _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
+      if (maca) armasHook?.adicionarArma({ ...maca, Dano_Secundario: maca['Dano-Arma_Sec'], _tipo: 'arma', isAmaldicoada: true, isDuplaObsessivaLinked: true });
     }
     // TEMP DEBUG: Use alert to visually confirm action to user
     console.log('Adicionou arma amaldicoada', item.Nome_Item);
