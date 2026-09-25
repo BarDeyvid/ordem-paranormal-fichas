@@ -40,6 +40,7 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
 
   const { armasHook, proficienciasTotais, status, atributosFinais, regrasAutomaticasAtivas } = useRPG();
   const [busca, setBusca] = useState('');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
   const [filtro, setFiltro] = useState<string>('Todas'); // Proficiência
   const [mostrarFiltrosAvançados, setMostrarFiltrosAvançados] = useState(false);
   const [filtroTipo, setFiltroTipo] = useState<string>('Todos');

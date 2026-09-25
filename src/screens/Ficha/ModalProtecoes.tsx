@@ -29,6 +29,7 @@ export function ModalProtecoes({ aberto, onFechar }: ModalProtecoesProps) {
 
   const { protecoesHook, proficienciasTotais, regrasAutomaticasAtivas } = useRPG();
   const [busca, setBusca] = useState('');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
   const [filtro, setFiltro] = useState<string>('Todas');
   
   const [mostrarFiltrosAvançados, setMostrarFiltrosAvançados] = useState(false);

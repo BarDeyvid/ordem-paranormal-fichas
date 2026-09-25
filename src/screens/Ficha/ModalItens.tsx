@@ -33,6 +33,7 @@ export function ModalItens({ aberto, onFechar, grupoAba }: ModalItensProps) {
 
   const { itensHook, status, atributosFinais, periciasHook, regrasAutomaticasAtivas } = useRPG();
   const [busca, setBusca] = useState('');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
   const [expandidos, setExpandidos] = useState<number[]>([]);
   const [escolhendoPericia, setEscolhendoPericia] = useState<number | null>(null);
   const [escolhendoElemento, setEscolhendoElemento] = useState<number | null>(null);
