@@ -57,7 +57,7 @@ export function CustomSelect({ value, onChange, options, className = '', wrapper
 
       {/* Dropdown com animação */}
       <div 
-        className={`absolute z-[100] mt-1 ${hideIcon ? 'w-full min-w-max left-1/2 -translate-x-1/2' : 'w-full'} overflow-hidden rounded-md border border-zinc-700 bg-zinc-950 shadow-xl shadow-black transition-all duration-200 origin-top ${
+        className={`absolute z-[100] mt-1 ${hideIcon ? 'w-full min-w-max left-1/2 -translate-x-1/2' : 'w-full'} overflow-hidden rounded-md border border-zinc-700 bg-zinc-900 shadow-xl shadow-black transition-all duration-200 origin-top ${
           isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
         }`}
       >
@@ -75,10 +75,10 @@ export function CustomSelect({ value, onChange, options, className = '', wrapper
               }}
               className={`relative py-2 px-3 transition-colors ${
                 opt.disabled
-                  ? 'cursor-not-allowed bg-zinc-900 text-zinc-500'
-                  : 'cursor-pointer select-none hover:bg-zinc-700 hover:text-green-400'
+                  ? 'opacity-60 cursor-not-allowed bg-zinc-900/50 text-zinc-500'
+                  : 'cursor-pointer select-none hover:bg-green-600/20 hover:text-green-400'
               } ${
-                value === opt.value ? 'bg-zinc-900 font-bold text-green-400 border-l-2 border-green-500' : ''
+                value === opt.value ? 'bg-green-900/30 font-bold text-green-400' : ''
               }`}
             >
               <div className="flex flex-col">
