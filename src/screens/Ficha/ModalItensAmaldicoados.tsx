@@ -36,6 +36,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
         ...a, 
         _tipo: 'arma',
         Codigo_Item_Ama: 'arma_' + a.Codigo_Arma,
+        Dano_Secundario: a['Dano-Arma_Sec'],
         Nome_Ama: a.Nome_Item,
         Desc_Ama: a.Descricao_Item,
         Elemento_Ama: a.Elemento_Arma,

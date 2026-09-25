@@ -268,6 +268,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   } else if (arma.Elemento_Arma) {
     tipoSecundario = arma.Elemento_Arma.trim();
   }
+  
+  if (arma.Tipo_Dano_Arma?.toLowerCase().replace(/\s/g, '') === 'perfuração/sangue') {
+      tipoBase = 'Perfuração';
+      tipoSecundario = 'Sangue';
+  }
 
   if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
     tipoBase = 'Impacto';
@@ -336,14 +341,7 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
-  const danoHeader = parsedDano
-    .filter(p => p.label !== 'Dano Secundário')
-    .map((p, i) => {
-      let v = p.valor;
-      if (i > 0 && !v.startsWith('+') && !v.startsWith('-')) v = '+' + v;
-      return v;
-    })
-    .join('');
+  const danoHeader = JSON.stringify({ td: arma.Tipo_Dano_Arma, ts: tipoSecundario });
 
   const danoMedioPrincipal = arma.Nome_Item === 'Arcabuz dos Moretti' ? { normal: 'Veja Texto', critico: 'Veja Texto' } as any : calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
