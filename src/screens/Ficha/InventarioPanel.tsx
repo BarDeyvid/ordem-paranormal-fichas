@@ -1019,7 +1019,7 @@ export function InventarioPanel() {
                 <p className="text-center text-zinc-600 text-sm py-4">Nenhuma arma no inventário.</p>
               )}
               
-              {categoriaFiltro === 'Geral' && armasNormaisExibidas.length === 0 && municoesSoltas.length === 0 && protecoesGeral.length === 0 && itensGeral.length === 0 && (
+              {categoriaFiltro === 'Geral' && armasNormaisExibidas.length === 0 && municoesSoltas.length === 0 && protecoesGeral.length === 0 && itensGeral.length === 0 && armasAmaldicoadasExibidas.length === 0 && (itensAmaldicoadosHook?.itensAmaldicoadosInventario?.length || 0) === 0 && (
                 <p className="text-center text-zinc-600 text-sm py-4">Inventário vazio.</p>
               )}
 
