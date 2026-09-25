@@ -22,12 +22,20 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
       setBusca('');
       setAbaElemento(null);
       setExpandidos({});
+      setMostrarFiltrosAvancados(false);
+      setFiltroCategoria('Todas');
+      setFiltroEspacos('Todos');
+      setFiltroFonte('Todas');
     }
   }, [aberto]);
   
   const [busca, setBusca] = useState('');
   const [abaElemento, setAbaElemento] = useState<string | null>(null);
   const [expandidos, setExpandidos] = useState<Record<string, boolean>>({});
+  const [mostrarFiltrosAvancados, setMostrarFiltrosAvancados] = useState(false);
+  const [filtroCategoria, setFiltroCategoria] = useState<string>('Todas');
+  const [filtroEspacos, setFiltroEspacos] = useState<string>('Todos');
+  const [filtroFonte, setFiltroFonte] = useState<string>('Todas');
 
   const itensFiltrados = useMemo(() => {
     let baseItens = [
@@ -43,7 +51,8 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
         Desc_Ama: a.Nome_Item.includes('Dupla Obsessiva (Ma') ? 'Maça e florete. Essa dupla de armas enferrujadas parecem não conseguir ficar longe uma da outra, obcecadas por si mesmas e seu único propósito: proteger aqueles que amam com fervor.\nSe estiver empunhando as duas armas, pode gastar uma ação padrão para realizar dois ataques, um com cada arma. Além disso, se um aliado em alcance curto de você for alvo de um ataque, você pode gastar 2 PE como reação para se tornar o alvo do ataque. Se fizer isso e a fonte do ataque estiver em alcance corpo a corpo, você pode gastar 2 PE para atacar a fonte com a maça.' : a.Descricao_Item,
         Elemento_Ama: a.Elemento_Arma,
         Espacos_Ama: a['Espaços_Item'],
-        Categoria_Ama: a.Categoria_Item
+        Categoria_Ama: a.Categoria_Item,
+        Fonte_Ama: a.Fonte_Arma || ''
       }))
     ];
     let result = baseItens.filter(item => {
@@ -53,10 +62,22 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
       if (busca) {
         if (!item.Nome_Ama.toLowerCase().includes(busca.toLowerCase())) return false;
       }
+      if (filtroCategoria !== 'Todas') {
+        if (String(item.Categoria_Ama || '').trim().toUpperCase() !== filtroCategoria) return false;
+      }
+      if (filtroEspacos !== 'Todos') {
+        if (String(item.Espacos_Ama || '').trim() !== filtroEspacos) return false;
+      }
+      if (filtroFonte !== 'Todas') {
+        const fonte = (item.Fonte_Ama || '').trim().toLowerCase();
+        if (filtroFonte === 'Oficial' && (fonte === 'homebrew' || fonte === 'hb')) return false;
+        if (filtroFonte === 'Homebrew' && fonte !== 'homebrew' && fonte !== 'hb') return false;
+      }
       return true;
     });
+    result.sort((a, b) => (a.Nome_Ama || '').localeCompare(b.Nome_Ama || '', 'pt-BR'));
     return result;
-  }, [itens, armasAmaldicoadas, busca, abaElemento]);
+  }, [itens, armasAmaldicoadas, busca, abaElemento, filtroCategoria, filtroEspacos, filtroFonte]);
 
   const toggleExpandir = (id: string) => {
     setExpandidos(prev => ({ ...prev, [id]: !prev[id] }));

@@ -1808,8 +1808,27 @@ function SortableArmaItem({
           </div>
           
           <div className="flex flex-col gap-1 mt-3 pt-3 border-t border-zinc-800/50">
+
+          
             <p className="text-zinc-400 text-xs leading-relaxed whitespace-pre-wrap">{formatarTexto(arma.Descricao_Item)}</p>
+
+          
           </div>
+
+          
+          {arma.Fonte_Arma && (
+
+          
+            <div className="mt-2 pt-2 border-t border-zinc-800/50">
+
+          
+              <span className="text-[10px] uppercase tracking-wider text-zinc-600">Fonte: {arma.Fonte_Arma}</span>
+
+          
+            </div>
+
+          
+          )}
           
           <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-zinc-800/50">
             {id !== 'coronhada-virtual' && (
