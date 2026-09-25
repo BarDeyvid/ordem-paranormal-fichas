@@ -341,7 +341,13 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
   }
   const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
-  const danoHeader = JSON.stringify({ td: arma.Tipo_Dano_Arma, ts: tipoSecundario });
+  const danoHeader = parsedDano
+    .map((p, i) => {
+      let v = p.valor;
+      if (i > 0 && !v.startsWith('+') && !v.startsWith('-')) v = '+' + v;
+      return v;
+    })
+    .join('');
 
   const danoMedioPrincipal = arma.Nome_Item === 'Arcabuz dos Moretti' ? { normal: 'Veja Texto', critico: 'Veja Texto' } as any : calcularDanoMedio(danoStrFull, multCrit);
   const danoMedioSecundario = danoSecFull ? calcularDanoMedio(danoSecFull, multCrit) : null;
