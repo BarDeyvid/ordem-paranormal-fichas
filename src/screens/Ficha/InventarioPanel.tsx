@@ -386,7 +386,8 @@ const getBadgeCloseClasses = (minv: any) => {
 
 
 export function InventarioPanel() {
-  const { itensAmaldicoadosHook } = useRPG();
+  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
+
   useEffect(() => {
     const handler = (e: any) => {
       const { poder, elemento } = e.detail;
@@ -406,7 +407,6 @@ export function InventarioPanel() {
     window.addEventListener('dedoDecepadoSelecionado', handler);
     return () => window.removeEventListener('dedoDecepadoSelecionado', handler);
   }, [itensAmaldicoadosHook]);
-  const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
   const {
     prestigio, setPrestigio,
     patente, setPatenteManual,
