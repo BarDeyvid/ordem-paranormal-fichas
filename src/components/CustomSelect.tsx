@@ -57,7 +57,7 @@ export function CustomSelect({ value, onChange, options, className = '', wrapper
 
       {/* Dropdown com animação */}
       <div 
-        className={`absolute z-[100] mt-1 ${hideIcon ? 'w-full min-w-max left-1/2 -translate-x-1/2' : 'w-full'} overflow-hidden rounded-md border border-zinc-700/80 bg-zinc-900/95 backdrop-blur-xl shadow-xl shadow-black/50 transition-all duration-200 origin-top ${
+        className={`absolute z-[100] mt-1 ${hideIcon ? 'w-full min-w-max left-1/2 -translate-x-1/2' : 'w-full'} overflow-hidden rounded-md border border-zinc-700/80 bg-zinc-950 shadow-xl shadow-black/50 transition-all duration-200 origin-top ${
           isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
         }`}
       >
