@@ -11,7 +11,7 @@ interface UsePoderesReturn {
   poderClasse: Poder | null;
   loading: boolean;
   error: string | null;
-  escolherPoder: (nex: number | string, poder: Poder | PoderParanormal, categoria?: 'utilidade' | 'combate' | 'gerais' | 'trilha', elemento?: string, pericia?: string, customFonte?: string) => void;
+  escolherPoder: (nex: number | string, poder: Poder | PoderParanormal, categoria?: 'utilidade' | 'combate' | 'gerais' | 'trilha', elemento?: string, pericia?: string, fonteCustom?: string) => void;
   escolherPoderExtra: (poder: Poder | PoderParanormal, elementoEscolhido?: string, periciaEscolhida?: string, customId?: string, fonteCustom?: string) => void;
   removerPoder: (nex: number | string) => void;
   editarPoder: (nex: number | string, nome: string, descricao: string, afinidade?: string) => void;
@@ -166,7 +166,7 @@ export function usePoderes(classe: ClasseRPG): UsePoderesReturn {
       categoria?: 'utilidade' | 'combate' | 'gerais' | 'trilha',
       elementoEscolhido?: string,
       periciaEscolhida?: string,
-      customFonte?: string
+      fonteCustom?: string
     ) => {
     const pp = poder as PoderParanormal;
     const isParanormal = 'Elemento' in pp || 'Afinidade' in pp;
