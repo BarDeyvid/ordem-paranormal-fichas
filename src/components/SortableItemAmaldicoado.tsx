@@ -166,7 +166,9 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
               </button>
             );
           })()}
-          <div onClick={() => toggleExpandir(item.id)} className="w-5 text-center text-zinc-500 text-xs flex-shrink-0 cursor-pointer">{isExpanded ? '▲' : '▼'}</div>
+          <div onClick={() => toggleExpandir(item.id)} className="w-5 flex justify-center text-zinc-500 flex-shrink-0 cursor-pointer group-hover:text-zinc-300 transition-colors">
+            <svg className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+          </div>
         </div>
       </div>
       
@@ -265,8 +267,8 @@ export function SortableItemAmaldicoado({ item, isExpanded, toggleExpandir, remo
                           </span>
                         );
                       })()}
-                      <span className="ml-auto text-zinc-500 text-xs">
-                        {ritualExpandido ? '▼' : '▶'}
+                      <span className="ml-auto text-zinc-500">
+                        <svg className={`w-4 h-4 transition-transform duration-200 ${ritualExpandido ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
                       </span>
                     </div>
                     
