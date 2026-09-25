@@ -434,7 +434,10 @@ export function InventarioPanel() {
   
   const cargaAtual = useMemo(() => {
     let total = 0;
-    armasHook?.armasInventario.forEach(i => total += calcularEspacosFinais(i.arma['Espaços_Item'], i.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas.has(43)));
+    armasHook?.armasInventario.forEach(i => {
+      if (i.arma.isDuplaObsessivaCompanion) return;
+      total += calcularEspacosFinais(i.arma['Espaços_Item'], i.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas.has(43));
+    });
     municoesHook?.municoesInventario.forEach(i => total += calcularEspacosFinais(i.municao['Espaços_Item'], i.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas.has(43)));
     protecoesHook?.protecoesInventario.forEach(i => total += calcularEspacosFinais(i.protecao.Espacos_Protecao, i.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas.has(43)));
     itensHook?.itensInventario.forEach(i => total += calcularEspacosFinais(i.item.Espacos_Itens, i.modificacoes, modificacoesHook.modificacoes, regrasAutomaticasAtivas.has(43)));
@@ -456,6 +459,7 @@ export function InventarioPanel() {
     const maldsAll = maldicoesHook?.maldicoes || [];
 
     armasHook?.armasInventario?.forEach(a => {
+      if (a.arma.isDuplaObsessivaCompanion) return;
       const cat = calcularCategoriaFinal(a.arma.Categoria_Item, a.modificacoes, modsAll, a.arma.Codigo_Arma === 71 ? true : a.arma.Nome_Item, a.maldicoes, maldsAll);
       const idx = getCatIndex(cat);
       if (idx !== -1) noInventario[idx]++;
