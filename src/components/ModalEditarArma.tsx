@@ -130,7 +130,7 @@ export function ModalEditarArma({
       Proficiencia: proficiencia,
       Tipo_Arma: tipoArma,
       Empunhadura_Arma: empunhadura,
-      Tipo_Dano_Arma: tipoDanoSec !== 'Nenhum' ? `${tipoDano}/${tipoDanoSec}` : tipoDano,
+      Tipo_Dano_Arma: (tipoDanoSec !== 'Nenhum' && danoSecundario.trim() !== '') ? `${tipoDano}/${tipoDanoSec}` : tipoDano,
         'Improvisada?': improvisada
     }, modificacoes, maldicoes, maldicoesElementos);
     onClose();
@@ -338,10 +338,11 @@ export function ModalEditarArma({
                     ]}
                       />
                     </div>
-                    <div className="flex-1">
-                      <InputLabel label="Tipo Secundário" />
-                      <CustomSelect
-                        value={tipoDanoSec}
+                    {danoSecundario.trim() !== '' && (
+                      <div className="flex-1">
+                        <InputLabel label="Tipo Secundário" />
+                        <CustomSelect
+                          value={tipoDanoSec}
                         onChange={val => setTipoDanoSec(val)}
                         options={[ { value: 'Nenhum', label: 'Nenhum' }, ...[
                       { value: "Corte", label: "Corte" },
@@ -357,14 +358,69 @@ export function ModalEditarArma({
                       { value: "Energia", label: "Energia" },
                       { value: "Conhecimento", label: "Conhecimento" },
                       { value: "Medo", label: "Medo" }
-                    ] ]}
-                      />
-                    </div>
+                      ] ]}
+                        />
+                      </div>
+                    )}
                   </div>
               </div>
 
-              <div>
-                <InputLabel label="Espaços" />
+              
+                <div>
+                  {renderLabel('Dano', dano, statsFinais.dano)}
+                  <InputOtimizado value={dano} onChange={setDano} className={inputClass} placeholder="Ex: 1d6" />
+                </div>
+                
+                {danoSecundario.trim() !== '' && (
+                  <div>
+                    {renderLabel('Dano Secundário', danoSecundario, statsFinais.danoSecundario || danoSecundario)}
+                    <InputOtimizado value={danoSecundario} onChange={(val) => {
+                      setDanoSecundario(val);
+                      if (val.trim() === '') setTipoDanoSec('Nenhum');
+                    }} className={inputClass} placeholder="Ex: 1d12" />
+                  </div>
+                )}
+                {danoSecundario.trim() === '' && (
+                  <div>
+                    <InputLabel label="Dano Secundário" />
+                    <InputOtimizado value={danoSecundario} onChange={(val) => {
+                      setDanoSecundario(val);
+                      if (val.trim() !== '' && tipoDanoSec === 'Nenhum') {
+                        setTipoDanoSec(tipoDano);
+                      }
+                    }} className={inputClass} placeholder="Ex: 1d12" />
+                  </div>
+                )}
+
+                <div>
+                  {renderLabel('Crítico', critico || '20', statsFinais.critico)}
+                  <InputOtimizado value={critico} onChange={setCritico} type="number" className={inputClass} />
+                </div>
+
+                <div>
+                  {renderLabel('Multiplicador', multiplicador || '2', statsFinais.multiplicador, true)}
+                  <InputOtimizado value={multiplicador} onChange={setMultiplicador} type="number" className={inputClass} />
+                </div>
+
+                <div>
+                  {renderLabel('Alcance', alcance || '-', statsFinais.alcance)}
+                  <CustomSelect
+                    value={alcance}
+                    onChange={val => setAlcance(val)}
+                    options={[
+                      { value: "Corpo a Corpo", label: "Corpo a Corpo" },
+                      { value: "Curto", label: "Curto" },
+                      { value: "Médio", label: "Médio" },
+                      { value: "Longo", label: "Longo" },
+                      { value: "Extremo", label: "Extremo" }
+                    ]}
+                    wrapperClassName="w-full"
+                    className={selectClass}
+                  />
+                </div>
+
+                <div>
+                  <InputLabel label="Espaços" />
                   <InputOtimizado
                     value={String(espacosFinal)}
                     onChange={val => {
