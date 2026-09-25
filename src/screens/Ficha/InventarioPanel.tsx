@@ -1006,7 +1006,7 @@ export function InventarioPanel() {
             {(categoriaFiltro === 'Armas' || categoriaFiltro === 'Geral') && (
               <>
               {categoriaFiltro === 'Geral' && armasNormaisExibidas.length > 0 && (
-                <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Armas</h3>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1 mt-2 border-b border-zinc-800/50 pb-1 ml-1">Armas</h3>
               )}
               
               <SortableContext 
@@ -1049,7 +1049,7 @@ export function InventarioPanel() {
 
               {categoriaFiltro === 'Geral' && municoesSoltas.length > 0 && (
                 <>
-                  <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Munições Soltas</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1 mt-2 border-b border-zinc-800/50 pb-1 ml-1">Munições Soltas</h3>
                   <SortableContext items={municoesSoltas.map(m => m.id)} strategy={verticalListSortingStrategy}>
                     {municoesSoltas.map(item => (
                       <SortableMunicaoItem 
@@ -1093,7 +1093,7 @@ export function InventarioPanel() {
             {(categoriaFiltro === 'Proteções' || categoriaFiltro === 'Geral') && (
               <>
                 {categoriaFiltro === 'Geral' && protecoesGeral.length > 0 && (
-                  <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">Proteções</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1 mt-2 border-b border-zinc-800/50 pb-1 ml-1">Proteções</h3>
                 )}
                 <SortableContext items={protecoesGeral.map(p => p.id)} strategy={verticalListSortingStrategy}>
                   {protecoesGeral.map(item => (
@@ -1122,7 +1122,7 @@ export function InventarioPanel() {
                     if (itensDoGrupo.length === 0) return null;
                     return (
                       <div key={grupo} className="flex flex-col gap-2">
-                        <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-1 mt-2 border-b border-zinc-800 pb-1">{grupo}</h3>
+                        <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1 mt-2 border-b border-zinc-800/50 pb-1 ml-1">{grupo}</h3>
                         <SortableContext items={itensDoGrupo.map(i => i.id)} strategy={verticalListSortingStrategy}>
                           {itensDoGrupo.map(item => (
                             <SortableItemGeral 
