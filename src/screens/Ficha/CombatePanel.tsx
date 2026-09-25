@@ -463,7 +463,17 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
                 <CustomSelect
                   value={danoSelecionado}
                   onChange={(val) => setDanoIdx(danoOptions.indexOf(val as string))}
-                  options={danoOptions.map(o => ({ label: `(${o})`, value: o }))}
+                  options={danoOptions.map((o, i) => {
+                      // Extrai nomes de formas do Especial_Arma (ex: "versão (Desamparado) e a versão (Conectado)")
+                      const especial = arma.Especial_Arma || '';
+                      const formMatches = especial.match(/vers[ãa]o\s*\(([^)]+)\)/gi);
+                      let label = o;
+                      if (formMatches && formMatches[i]) {
+                        const nameMatch = formMatches[i].match(/\(([^)]+)\)/);
+                        if (nameMatch) label = nameMatch[1];
+                      }
+                      return { label: `(${label})`, value: o };
+                    })}
                   className="!p-0 !min-h-0 !border-transparent !bg-transparent text-sm text-zinc-400 font-bold hover:!text-white transition-colors"
                   hideIcon={true}
                   wrapperClassName="w-fit"
