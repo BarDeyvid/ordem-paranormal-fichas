@@ -106,6 +106,14 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
     if (busca && !arma.Nome_Item.toLowerCase().includes(busca.toLowerCase())) return false;
     
     // 3. Filtros Avançados
+      if (filtroFonte !== 'Todas') {
+        const fonte = (arma.Fonte_Arma || '').trim().toLowerCase();
+        if (filtroFonte === 'Homebrew') {
+           if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else {
+           if (fonte !== filtroFonte.toLowerCase()) return false;
+        }
+      }
     if (filtroTipo !== 'Todos' && arma.Tipo_Arma !== filtroTipo) return false;
     if (filtroEmpunhadura !== 'Todas' && arma.Empunhadura_Arma !== filtroEmpunhadura) return false;
     
@@ -153,8 +161,8 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
             />
             <button 
               onClick={() => setMostrarFiltrosAvançados(!mostrarFiltrosAvançados)}
-              className={`rounded border px-3 py-1.5 text-sm font-bold uppercase tracking-wider transition ${
-                mostrarFiltrosAvançados || filtroTipo !== 'Todos' || filtroEmpunhadura !== 'Todas' || filtroAlcance !== 'Todos'
+              className={`rounded border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
+                mostrarFiltrosAvançados || filtroTipo !== 'Todos' || filtroEmpunhadura !== 'Todas' || filtroAlcance !== 'Todos' || filtroFonte !== 'Todas'
                   ? 'border-green-800 bg-green-900/40 text-green-300'
                   : 'border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
               }`}
@@ -227,7 +235,39 @@ export function ModalArmas({ aberto, onFechar }: ModalArmasProps) {
             </div>
           </div>
         
-        </Collapse>
+        
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
+                <CustomSelect
+                  value={filtroFonte}
+                  onChange={setFiltroFonte}
+                  options={[
+                    { value: 'Todas', label: 'Todas' },
+                    { value: 'OPRPG', label: 'OPRPG' },
+                    { value: 'SaH', label: 'SaH' },
+                    { value: 'AS', label: 'AS' },
+                    { value: 'Homebrew', label: 'Homebrew' }
+                  ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
+                <CustomSelect
+                  value={filtroFonte}
+                  onChange={setFiltroFonte}
+                  options={[
+                    { value: 'Todas', label: 'Todas' },
+                    { value: 'OPRPG', label: 'OPRPG' },
+                    { value: 'SaH', label: 'SaH' },
+                    { value: 'AS', label: 'AS' },
+                    { value: 'Homebrew', label: 'Homebrew' }
+                  ]}
+                  wrapperClassName="w-full"
+                />
+              </div>
+            </div>
+          </Collapse>
 
         {/* Lista de armas */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 custom-scrollbar">

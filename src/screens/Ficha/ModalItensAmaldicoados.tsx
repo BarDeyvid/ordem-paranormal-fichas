@@ -72,8 +72,11 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
       }
       if (filtroFonte !== 'Todas') {
         const fonte = (item.Fonte_Ama || '').trim().toLowerCase();
-        if (filtroFonte === 'Oficial' && (fonte === 'homebrew' || fonte === 'hb')) return false;
-        if (filtroFonte === 'Homebrew' && fonte !== 'homebrew' && fonte !== 'hb') return false;
+        if (filtroFonte === 'Homebrew') {
+           if (fonte !== 'homebrew' && fonte !== 'hb') return false;
+        } else {
+           if (fonte !== filtroFonte.toLowerCase()) return false;
+        }
       }
       return true;
     });
@@ -137,7 +140,7 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
               />
               <button 
                 onClick={() => setMostrarFiltrosAvancados(!mostrarFiltrosAvancados)}
-                className={`rounded border px-3 py-1.5 text-sm font-bold uppercase tracking-wider transition ${
+                className={`rounded border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
                   mostrarFiltrosAvancados || filtroCategoria !== 'Todas' || filtroEspacos !== 'Todos' || filtroFonte !== 'Todas'
                     ? 'border-green-800 bg-green-900/40 text-green-300'
                     : 'border-zinc-700 bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'
@@ -153,16 +156,16 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
             <div className="flex flex-wrap items-center gap-3 border-b border-zinc-800 bg-zinc-900/90 px-4 py-3">
               <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Categoria</label>
-                <CustomSelect
-                  value={filtroCategoria}
-                  onChange={setFiltroCategoria}
-                  options={[
-                    { value: 'Todas', label: 'Todas' },
-                    { value: 'I', label: 'I' },
-                    { value: 'II', label: 'II' },
-                    { value: 'III', label: 'III' },
-                    { value: 'IV', label: 'IV' }
-                  ]}
+                  <CustomSelect
+                    value={filtroCategoria}
+                    onChange={setFiltroCategoria}
+                    options={[
+                      { value: 'Todas', label: 'Todas' },
+                      { value: 'I', label: 'I' },
+                      { value: 'II', label: 'II' },
+                      { value: 'III', label: 'III' },
+                      { value: 'IV', label: 'IV' }
+                    ]}
                   wrapperClassName="w-full"
                 />
               </div>
@@ -184,14 +187,16 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
               </div>
               <div className="flex flex-col gap-1 w-full sm:w-auto flex-1 min-w-[120px]">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Fonte</label>
-                <CustomSelect
-                  value={filtroFonte}
-                  onChange={setFiltroFonte}
-                  options={[
-                    { value: 'Todas', label: 'Todas' },
-                    { value: 'Oficial', label: 'Oficial' },
-                    { value: 'Homebrew', label: 'Homebrew' }
-                  ]}
+                  <CustomSelect
+                    value={filtroFonte}
+                    onChange={setFiltroFonte}
+                    options={[
+                      { value: 'Todas', label: 'Todas' },
+                      { value: 'OPRPG', label: 'OPRPG' },
+                      { value: 'SaH', label: 'SaH' },
+                      { value: 'AS', label: 'AS' },
+                      { value: 'Homebrew', label: 'Homebrew' }
+                    ]}
                   wrapperClassName="w-full"
                 />
               </div>
