@@ -1083,7 +1083,7 @@ export const AbasPanel: React.FC = () => {
                                             (parseInt(String(hab.afinidadeAdquiridaKey), 10) >= 1000) ? 
                                             `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10) - 1000}%` :
                                             `Transcender ${parseInt(String(hab.afinidadeAdquiridaKey), 10)}%`
-                                          )}
+                                          ))}
                                         </span>
                                       </div>
                                     )}
