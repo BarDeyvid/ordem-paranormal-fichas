@@ -258,25 +258,39 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
     if (itemInv) granadaAcoplada = itemInv.item;
   }
 
-  let tipoBase = arma.Tipo_Dano_Arma || 'Físico';
-  let tipoSecundario = tipoBase;
+  // ── Tipo de Dano: respeita o separador | para armas multi-forma (ex: Gancho do Bisão) ──
+  // O currentDanoIdx é calculado abaixo, mas precisamos de uma referência antecipada
+  // para resolver o tipo de dano. Usamos o danoIdx diretamente aqui.
+  let rawTipoDano = arma.Tipo_Dano_Arma || 'Físico';
+  // Se o tipo de dano tem |, vamos resolver depois que currentDanoIdx existir.
+  // Por agora, guardamos as formas separadas.
+  const _tipoDanoForms = rawTipoDano.includes('|') ? rawTipoDano.split('|').map(s => s.trim()) : null;
 
-  if (arma.Tipo_Dano_Arma && arma.Tipo_Dano_Arma.includes('/')) {
-    const parts = arma.Tipo_Dano_Arma.split('/');
-    tipoBase = parts[0].trim();
-    tipoSecundario = parts[1].trim();
-  } else if (arma.Elemento_Arma) {
-    tipoSecundario = arma.Elemento_Arma.trim();
-  }
-  
-  if (arma.Tipo_Dano_Arma?.toLowerCase().replace(/\s/g, '') === 'perfuração/sangue') {
-      tipoBase = 'Perfuração';
-      tipoSecundario = 'Sangue';
-  }
+  let tipoBase = rawTipoDano;
+  let tipoSecundario = rawTipoDano;
 
-  if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
-    tipoBase = 'Impacto';
-    tipoSecundario = 'Impacto';
+  // Será recalculado após currentDanoIdx ser definido
+  function _resolverTipoDano(idx: number) {
+    let td = _tipoDanoForms ? (_tipoDanoForms[idx] || _tipoDanoForms[0]) : rawTipoDano;
+    let tb = td;
+    let ts = td;
+    if (td.includes('/')) {
+      const parts = td.split('/');
+      tb = parts[0].trim();
+      ts = parts[1].trim();
+    } else if (arma.Elemento_Arma) {
+      ts = arma.Elemento_Arma.trim();
+    }
+    if (td.toLowerCase().replace(/\s/g, '') === 'perfuração/sangue') {
+      tb = 'Perfuração';
+      ts = 'Sangue';
+    }
+    if (activeAmmo && activeAmmo.municao?.Codigo_Municao === 63) {
+      tb = 'Impacto';
+      ts = 'Impacto';
+    }
+    tipoBase = tb;
+    tipoSecundario = ts;
   }
 
   let rawDano = arma.Dano_Arma || '';
@@ -284,12 +298,6 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   if (isLancadorGranadas && granadaAcoplada) {
     const p = granadaAcoplada.Dano_Item?.split(',') || [];
     rawDano = p[0]?.trim() || '-';
-      
-    if (p.length > 1) {
-      const gTipo = p[1].trim();
-      tipoBase = gTipo;
-      tipoSecundario = gTipo;
-    }
   }
 
   let dtGranada = '-';
@@ -333,14 +341,33 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
   const currentDanoIdx = danoIdx >= danoOptions.length ? 0 : danoIdx;
   const danoSelecionado = danoOptions[currentDanoIdx];
 
+  // Resolve o tipo de dano baseado na forma selecionada (respeita |)
+  _resolverTipoDano(currentDanoIdx);
+
+  // Se é lançador de granadas, sobrescreve o tipo
+  if (isLancadorGranadas && granadaAcoplada) {
+    const p = granadaAcoplada.Dano_Item?.split(',') || [];
+    if (p.length > 1) {
+      const gTipo = p[1].trim();
+      tipoBase = gTipo;
+      tipoSecundario = gTipo;
+    }
+  }
+
   const danoStrFull = danoSelecionado ? danoSelecionado + extrasStr : extrasStr;
   const parsedDano = parseDanoString(danoStrFull, tipoBase, tipoSecundario);
 
-  const danoSecStr = arma.Dano_Secundario || '';
-  if (danoSecStr && danoSecStr.trim() !== '-') {
+  // ── Dano Secundário: respeita o separador | para armas multi-forma ──
+  const rawDanoSec = arma.Dano_Secundario || '';
+  let danoSecStr = rawDanoSec;
+  if (rawDanoSec.includes('|')) {
+    const secForms = rawDanoSec.split('|').map(s => s.trim());
+    danoSecStr = secForms[currentDanoIdx] || '';
+  }
+  if (danoSecStr && danoSecStr.trim() !== '' && danoSecStr.trim() !== '-') {
     parsedDano.push({ label: 'Dano Secundário', valor: danoSecStr, tipo: tipoSecundario });
   }
-  const danoSecFull = danoSecStr && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
+  const danoSecFull = danoSecStr && danoSecStr.trim() !== '' && danoSecStr !== '-' ? danoSecStr + extrasStr : '';
   parsedDano.sort((a, b) => {
       const aDice = a.valor.toLowerCase().includes('d');
       const bDice = b.valor.toLowerCase().includes('d');
