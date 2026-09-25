@@ -386,6 +386,26 @@ const getBadgeCloseClasses = (minv: any) => {
 
 
 export function InventarioPanel() {
+  const { itensAmaldicoadosHook } = useRPG();
+  useEffect(() => {
+    const handler = (e: any) => {
+      const { poder, elemento } = e.detail;
+      const str = window.localStorage.getItem('dedoDecepadoAguardando');
+      if (str) {
+        try {
+          const item = JSON.parse(str);
+          itensAmaldicoadosHook.adicionarItem({ 
+            ...item, 
+            Nome_Ama: `Dedo Decepado (${poder.Nome || poder.Nome_Poder})`, 
+            Elemento_Ama: elemento || 'Varia' 
+          });
+        } catch (err) {}
+        window.localStorage.removeItem('dedoDecepadoAguardando');
+      }
+    };
+    window.addEventListener('dedoDecepadoSelecionado', handler);
+    return () => window.removeEventListener('dedoDecepadoSelecionado', handler);
+  }, [itensAmaldicoadosHook]);
   const { maldicoesHook, inventarioHook, atributosFinais, regrasAutomaticasAtivas, armasHook, municoesHook, protecoesHook, itensHook, itensAmaldicoadosHook, toggleVestimentaGeral, status, modificacoesHook, proficienciasTotais, rituaisHook } = useRPG();
   const {
     prestigio, setPrestigio,

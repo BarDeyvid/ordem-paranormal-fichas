@@ -445,7 +445,7 @@ export const ModalPoderes: React.FC = () => {
   const ehCombate = nexModalAberto !== null && PATAMARES_COMBATE.includes(nexModalAberto);
 
   const abasDisponiveis = useMemo((): [AbaModalPoderes, string][] => {
-    if ((nexModalAberto !== null && typeof nexModalAberto === 'number' && nexModalAberto > 1000) || nexModalAberto === 'extra_regra1') {
+    if ((nexModalAberto !== null && typeof nexModalAberto === 'number' && nexModalAberto > 1000) || nexModalAberto === 'extra_regra1' || (typeof nexModalAberto === 'string' && nexModalAberto.startsWith('extra_dedo_decepado'))) {
       return [['paranormais', 'Poderes Paranormais']];
     }
 
@@ -723,21 +723,37 @@ export const ModalPoderes: React.FC = () => {
                     const nomePericia = periciaId ? contextoPrereq.nomesPericias[periciaId] : undefined;
 
                     if (poder.Nome.toLowerCase() === 'aprender ritual') {
-                      escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia);
+                      const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+                        escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
+                        if (isDedo) {
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                        }
                       window.dispatchEvent(new CustomEvent('abrirModalRituais', { detail: { nex: nexEscolhido } }));
                       setNexModalAberto(null);
                     } else if (poder.Nome.toLowerCase() === 'especialista diletante' || poder.Codigo_Regra === 31 || (poder as any).codigo_regra === 31) {
-                      escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia);
+                      const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+                        escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
+                        if (isDedo) {
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                        }
                       window.dispatchEvent(new CustomEvent('abrirModalOutraClasse', { detail: { nex: nexEscolhido } }));
                       setNexModalAberto(null);
                     } else if (poder.Nome.toLowerCase().includes('flashback') || poder.Codigo_Regra === 32 || (poder as any).codigo_regra === 32) {
-                      escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia);
+                      const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+                        escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
+                        if (isDedo) {
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                        }
                       window.dispatchEvent(new Event('abrirModalOutraOrigem'));
                       setNexModalAberto(null);
                     } else if (poder.Codigo_Regra === 35) {
                       setRitualModalAbertoPara({ poder, categoria });
                     } else {
-                      escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia);
+                      const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+                        escolherPoder(nexEscolhido, poder, categoria, elem, nomePericia, isDedo ? 'Dedo Decepado' : undefined);
+                        if (isDedo) {
+                          window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder, elemento: elem || poder.Elemento || 'Varia' } }));
+                        }
                       setNexModalAberto(null);
                     }
                   }}
@@ -772,7 +788,11 @@ export const ModalPoderes: React.FC = () => {
           onClose={() => setRitualModalAbertoPara(null)}
           onSelect={(ritualNome) => {
             const nexEscolhido = nexModalAberto!;
-            escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, ritualNome, undefined);
+            const isDedo = typeof nexEscolhido === 'string' && nexEscolhido.startsWith('extra_dedo_decepado');
+              escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, ritualNome, undefined, isDedo ? 'Dedo Decepado' : undefined);
+              if (isDedo) {
+                window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder: ritualModalAbertoPara.poder, elemento: ritualNome || ritualModalAbertoPara.poder.Elemento || 'Varia' } }));
+              }
             setRitualModalAbertoPara(null);
             setNexModalAberto(null);
           }}

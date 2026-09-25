@@ -13,6 +13,8 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
 
   const { itensAmaldicoadosHook, armasHook } = useRPG();
   const { itens, armasAmaldicoadas, adicionarItem, loading } = itensAmaldicoadosHook;
+  const { setNexModalAberto } = useRPG();
+  
 
   React.useEffect(() => {
     if (aberto) {
@@ -315,7 +317,12 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     // TEMP DEBUG: Use alert to visually confirm action to user
     console.log('Adicionou arma amaldicoada', item.Nome_Item);
   } else {
-    adicionarItem(item);
+    if (item.Nome_Ama === 'Dedo Decepado') {
+        window.localStorage.setItem('dedoDecepadoAguardando', JSON.stringify(item));
+        setNexModalAberto(`extra_dedo_decepado_${Date.now()}`);
+      } else {
+        adicionarItem(item);
+      }
   }
                             fechar();
                           }}
@@ -391,7 +398,12 @@ export function ModalItensAmaldicoados({ aberto, fechar }: ModalItensAmaldicoado
     // TEMP DEBUG: Use alert to visually confirm action to user
     console.log('Adicionou arma amaldicoada', item.Nome_Item);
   } else {
-    adicionarItem(item);
+    if (item.Nome_Ama === 'Dedo Decepado') {
+        window.localStorage.setItem('dedoDecepadoAguardando', JSON.stringify(item));
+        setNexModalAberto(`extra_dedo_decepado_${Date.now()}`);
+      } else {
+        adicionarItem(item);
+      }
   }
                             fechar();
                           }}
