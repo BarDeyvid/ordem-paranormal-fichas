@@ -536,7 +536,11 @@ const ArmaCombateCard: React.FC<ArmaCombateCardProps> = ({ armaInv, estaExpandid
 
           
           {/* 1. DANO EXPLICADO NO TOPO */}
-          {parsedDano.length > 0 && (
+          {/* DEBUG BLOCK */}
+            <div className="text-[9px] text-red-500 font-mono break-all leading-tight my-1 p-1 border border-red-500/30 rounded bg-red-950/20">
+              DEBUG: TB='{tipoBase}' | TS='{tipoSecundario}' | TipoArma='{arma.Tipo_Dano_Arma}' | Ele='{arma.Elemento_Arma}' | DA='{arma.Dano_Arma}' | DS='{arma.Dano_Secundario}' | Extras='{extrasStr}'
+            </div>
+            {parsedDano.length > 0 && (
             <div className="flex flex-wrap gap-x-4 gap-y-1 mb-1">
               {parsedDano.map((pd, index) => (
                 <span key={index} className="text-zinc-300">

@@ -51,7 +51,9 @@ export function ModalEditarArma({
   const [proficiencia, setProficiencia] = useState(arma.Proficiencia || 'Armas Simples');
   const [tipoArma, setTipoArma] = useState(arma.Tipo_Arma || 'Corpo a Corpo');
   const [empunhadura, setEmpunhadura] = useState(arma.Empunhadura_Arma || 'Uma Mão');
-  const [tipoDano, setTipoDano] = useState(arma.Tipo_Dano_Arma || 'Corte');
+  const parsedTipo = (arma.Tipo_Dano_Arma || 'Corte').split('/');
+  const [tipoDano, setTipoDano] = useState(parsedTipo[0].trim());
+  const [tipoDanoSec, setTipoDanoSec] = useState(parsedTipo.length > 1 ? parsedTipo[1].trim() : 'Nenhum');
   const [improvisada, setImprovisada] = useState(!!arma['Improvisada?']);
 
   const { modificacoesHook, maldicoesHook } = useRPG();
@@ -128,7 +130,7 @@ export function ModalEditarArma({
       Proficiencia: proficiencia,
       Tipo_Arma: tipoArma,
       Empunhadura_Arma: empunhadura,
-      Tipo_Dano_Arma: tipoDano,
+      Tipo_Dano_Arma: tipoDanoSec !== 'Nenhum' ? `${tipoDano}/${tipoDanoSec}` : tipoDano,
         'Improvisada?': improvisada
     }, modificacoes, maldicoes, maldicoesElementos);
     onClose();
@@ -313,131 +315,52 @@ export function ModalEditarArma({
               </div>
 
               <div>
-                <InputLabel label="Tipo de Dano" />
-                <CustomSelect
-                  value={tipoDano}
-                  onChange={val => setTipoDano(val)}
-                  options={[
-                    { value: "Corte", label: "Corte" },
-                    { value: "Perfuração", label: "Perfuração" },
-                    { value: "Impacto", label: "Impacto" },
-                    { value: "Balístico", label: "Balístico" },
-                    { value: "Fogo", label: "Fogo" },
-                    { value: "Frio", label: "Frio" },
-                    { value: "Químico", label: "Químico" },
-                    { value: "Eletricidade", label: "Eletricidade" },
-                    { value: "Morte", label: "Morte" },
-                    { value: "Sangue", label: "Sangue" },
-                    { value: "Energia", label: "Energia" },
-                    { value: "Conhecimento", label: "Conhecimento" },
-                    { value: "Medo", label: "Medo" }
-                  ]}
-                  wrapperClassName="w-full"
-                  className={selectClass}
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* SECTION: Combate */}
-          <section>
-            <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Estatísticas de Combate</h3>
-              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-              <div className="col-span-2 md:col-span-1">
-                {renderLabel('Dano', dano, statsFinais.danoFinal)}
-                <InputOtimizado
-                    value={dano}
-                    onChange={setDano}
-                    placeholder="Ex: 1d8"
-                    className={inputClass}
-                  />
-              </div>
-
-              <div className="col-span-2 md:col-span-1">
-                <InputLabel label="Dano Secundário" />
-                <InputOtimizado
-                  value={danoSecundario}
-                  onChange={setDanoSecundario}
-                  placeholder="Ex: +2d6"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                {renderLabel('Crítico (Margem)', critico, statsFinais.criticoFinal)}
-                  <InputOtimizado
-                    value={critico}
-                    onChange={setCritico}
-                    placeholder="Ex: 19"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                {renderLabel('Multiplicador', multiplicador, statsFinais.multCritFinal, true)}
-                <InputOtimizado
-                  value={multiplicador}
-                  onChange={setMultiplicador}
-                  placeholder="Ex: 2"
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="col-span-2">
-                {renderLabel('Alcance', alcance, statsFinais.alcanceFinal)}
-                <CustomSelect
-                    value={alcance}
-                    onChange={setAlcance}
-                    options={[
-                      'Curto',
-                      'Médio',
-                      'Longo',
-                      'Extremo',
-                      'Ilimitado',
-                      'Pessoal',
-                      'Toque',
-                      'Corpo a Corpo'
+                <div className="flex gap-2">
+                    <div className="flex-1">
+                      <InputLabel label="Tipo" />
+                      <CustomSelect
+                        value={tipoDano}
+                        onChange={val => setTipoDano(val)}
+                        options={[
+                      { value: "Corte", label: "Corte" },
+                      { value: "Perfuração", label: "Perfuração" },
+                      { value: "Impacto", label: "Impacto" },
+                      { value: "Balístico", label: "Balístico" },
+                      { value: "Fogo", label: "Fogo" },
+                      { value: "Frio", label: "Frio" },
+                      { value: "Químico", label: "Químico" },
+                      { value: "Eletricidade", label: "Eletricidade" },
+                      { value: "Morte", label: "Morte" },
+                      { value: "Sangue", label: "Sangue" },
+                      { value: "Energia", label: "Energia" },
+                      { value: "Conhecimento", label: "Conhecimento" },
+                      { value: "Medo", label: "Medo" }
                     ]}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="col-span-2 flex items-center justify-start mt-4">
-                  <label className="flex items-center gap-2 cursor-pointer text-[10px] font-bold uppercase tracking-wider text-zinc-400 hover:text-green-400 transition-colors">
-                    <input type="checkbox" checked={improvisada} onChange={e => setImprovisada(e.target.checked)} className="form-checkbox bg-zinc-900 border-zinc-700 text-green-500 rounded focus:ring-green-500" />
-                    Arma Improvisada?
-                  </label>
-                </div>
-              </div>
-            </section>
-
-          {/* SECTION: Inventário */}
-          <section>
-            <div className="flex items-center gap-3 mb-5">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-green-400/90">Inventário</h3>
-              <div className="h-px flex-1 bg-gradient-to-r from-zinc-800 to-transparent"></div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <InputLabel label="Categoria" />
-                  <CustomSelect
-                    value={categoriaNumParaRoman(catFinal)}
-                    onChange={(val) => {
-                      const finalDesejado = categoriaRomanParaNum(val);
-                      setCategoria(categoriaNumParaRoman(Math.max(0, finalDesejado - custoAtual)));
-                    }}
-                    options={[
-                      { value: '0', label: '0' },
-                      { value: 'I', label: 'I' },
-                      { value: 'II', label: 'II' },
-                      { value: 'III', label: 'III' },
-                      { value: 'IV', label: 'IV' }
-                    ]}
-                  />
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <InputLabel label="Tipo Secundário" />
+                      <CustomSelect
+                        value={tipoDanoSec}
+                        onChange={val => setTipoDanoSec(val)}
+                        options={[ { value: 'Nenhum', label: 'Nenhum' }, ...[
+                      { value: "Corte", label: "Corte" },
+                      { value: "Perfuração", label: "Perfuração" },
+                      { value: "Impacto", label: "Impacto" },
+                      { value: "Balístico", label: "Balístico" },
+                      { value: "Fogo", label: "Fogo" },
+                      { value: "Frio", label: "Frio" },
+                      { value: "Químico", label: "Químico" },
+                      { value: "Eletricidade", label: "Eletricidade" },
+                      { value: "Morte", label: "Morte" },
+                      { value: "Sangue", label: "Sangue" },
+                      { value: "Energia", label: "Energia" },
+                      { value: "Conhecimento", label: "Conhecimento" },
+                      { value: "Medo", label: "Medo" }
+                    ] ]}
+                      />
+                    </div>
+                  </div>
               </div>
 
               <div>
