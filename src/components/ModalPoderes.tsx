@@ -804,7 +804,7 @@ export const ModalPoderes: React.FC = () => {
 
               const nomeCustomizado = `${ritualModalAbertoPara.poder.Nome} (${ritualNome})`;
               
-              escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, elementoDoRitual, undefined, isDedo ? 'Dedo Decepado' : undefined, nomeCustomizado);
+              escolherPoder(nexEscolhido, ritualModalAbertoPara.poder, ritualModalAbertoPara.categoria, undefined, undefined, isDedo ? 'Dedo Decepado' : undefined, nomeCustomizado);
               if (isDedo) {
                 window.dispatchEvent(new CustomEvent('dedoDecepadoSelecionado', { detail: { poder: ritualModalAbertoPara.poder, elemento: ritualNome || ritualModalAbertoPara.poder.Elemento || 'Varia', poderId: nexEscolhido } }));
               }
