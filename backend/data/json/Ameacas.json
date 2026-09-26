@@ -1,0 +1,248 @@
+[
+  {
+    "id": "zumbi-de-sangue",
+    "nome": "Zumbi de Sangue",
+    "elemento": "Sangue",
+    "vd": 20,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 45,
+    "defesa": 15,
+    "deslocamento": "9m",
+    "iniciativa": 2,
+    "rd": {"Corte": 5, "Impacto": 5, "Balístico": 5},
+    "vulnerabilidades": ["Morte"],
+    "presenca_perturbadora": {"dt": 12, "dano": "1d6"},
+    "acoes": [
+      {"nome": "Garras", "tipo": "PADRÃO", "bonus": 5, "dano": "1d8+3", "alcance": "Corpo a corpo", "critico": "20/x2"},
+      {"nome": "Mordida", "tipo": "PADRÃO", "bonus": 5, "dano": "1d10+3", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Sede de Sangue: ao acertar dano crítico, solta um jato de sangue que causa 1d6 de dano de Sangue.",
+    "descricao": "Um cadáver reanimado transbordando de sangue espesso e fervente. Seus músculos estão hipertrofiados."
+  },
+  {
+    "id": "esqueleto-de-sangue",
+    "nome": "Esqueleto de Sangue",
+    "elemento": "Sangue",
+    "vd": 40,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 65,
+    "defesa": 17,
+    "deslocamento": "12m",
+    "iniciativa": 5,
+    "rd": {"Corte": 5, "Perfuração": 5},
+    "vulnerabilidades": ["Morte", "Impacto"],
+    "presenca_perturbadora": {"dt": 15, "dano": "2d6"},
+    "acoes": [
+      {"nome": "Lâminas de Osso", "tipo": "PADRÃO", "bonus": 10, "dano": "2d8+5", "alcance": "Corpo a corpo", "critico": "19/x2"},
+      {"nome": "Espigão Ósseo", "tipo": "PADRÃO", "bonus": 8, "dano": "1d12+3", "alcance": "Médio (18m)", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Armadura de Ossos: atacar com desarmado sofre 1d6 de perfuração.",
+    "descricao": "Um esqueleto rubro com lâminas afiadas brotando das articulações e dos dedos."
+  },
+  {
+    "id": "aberracao-de-carne",
+    "nome": "Aberração de Carne",
+    "elemento": "Sangue",
+    "vd": 80,
+    "tamanho": "Grande",
+    "tipo": "Monstro",
+    "pv": 160,
+    "defesa": 22,
+    "deslocamento": "9m",
+    "iniciativa": 4,
+    "rd": {"Corte": 10, "Impacto": 10, "Balístico": 10},
+    "vulnerabilidades": ["Morte"],
+    "presenca_perturbadora": {"dt": 18, "dano": "3d6"},
+    "acoes": [
+      {"nome": "Pancada Esmagadora", "tipo": "PADRÃO", "bonus": 15, "dano": "2d10+8", "alcance": "Corpo a corpo", "critico": "19/x2"},
+      {"nome": "Agarrar e Esmagar", "tipo": "PADRÃO", "bonus": 15, "dano": "3d10+10", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Regeneração de Sangue: no início do turno, recupera 15 PV.",
+    "descricao": "Uma massa colossal de membros entrelaçados, bocas berrando e músculos pulsantes."
+  },
+  {
+    "id": "esqueleto-de-lodo",
+    "nome": "Esqueleto de Lodo",
+    "elemento": "Morte",
+    "vd": 20,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 40,
+    "defesa": 14,
+    "deslocamento": "9m",
+    "iniciativa": 3,
+    "rd": {"Perfuração": 5, "Balístico": 5},
+    "vulnerabilidades": ["Energia"],
+    "presenca_perturbadora": {"dt": 15, "dano": "1d6"},
+    "acoes": [
+      {"nome": "Toque Entrópico", "tipo": "PADRÃO", "bonus": 5, "dano": "1d8+2", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Lodo Temporal: alvos atingidos sofrem condição Lento.",
+    "descricao": "Ossos cobertos por uma pasta densa e negra de lodo espiralado, com cinzas flutuando em sua volta."
+  },
+  {
+    "id": "carnical",
+    "nome": "Carniçal Preto da Morte",
+    "elemento": "Morte",
+    "vd": 60,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 110,
+    "defesa": 20,
+    "deslocamento": "12m",
+    "iniciativa": 8,
+    "rd": {"Balístico": 5, "Corte": 5},
+    "vulnerabilidades": ["Energia"],
+    "presenca_perturbadora": {"dt": 16, "dano": "2d6"},
+    "acoes": [
+      {"nome": "Garras Decadentes", "tipo": "PADRÃO", "bonus": 12, "dano": "2d6+6", "alcance": "Corpo a corpo", "critico": "19/x2"},
+      {"nome": "Mordida Sombria", "tipo": "PADRÃO", "bonus": 12, "dano": "2d8+5", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Passo Temporal: pode se teletransportar até 9m entre sombras de lodo.",
+    "descricao": "Uma forma humanoide esguia e cadavérica, de pele enegrecida e translúcida como âmbar de lodo."
+  },
+  {
+    "id": "sukkal",
+    "nome": "Sukkal",
+    "elemento": "Morte",
+    "vd": 140,
+    "tamanho": "Grande",
+    "tipo": "Monstro",
+    "pv": 240,
+    "defesa": 28,
+    "deslocamento": "9m",
+    "iniciativa": 12,
+    "rd": {"Dano Físico": 10, "Morte": 15},
+    "vulnerabilidades": ["Energia"],
+    "presenca_perturbadora": {"dt": 24, "dano": "4d6"},
+    "acoes": [
+      {"nome": "Tentáculo do Tempo", "tipo": "PADRÃO", "bonus": 20, "dano": "3d8+10", "alcance": "Corpo a corpo (4,5m)", "critico": "19/x2"}
+    ],
+    "habilidade_especial": "Aura de Decomposição: criaturas a até 6m sofrem 2d8 de dano de Morte no início do turno.",
+    "descricao": "Uma aparição espectral em manto de lodo escorrendo para cima, cujos olhos espirais roubam o tempo."
+  },
+  {
+    "id": "existido",
+    "nome": "Existido",
+    "elemento": "Conhecimento",
+    "vd": 20,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 35,
+    "defesa": 14,
+    "deslocamento": "9m",
+    "iniciativa": 2,
+    "rd": {"Mental": 99},
+    "vulnerabilidades": ["Sangue"],
+    "presenca_perturbadora": {"dt": 12, "dano": "1d6"},
+    "acoes": [
+      {"nome": "Toque do Esquecimento", "tipo": "PADRÃO", "bonus": 5, "dano": "1d6+3", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Sussurros Vadios: atacantes sofrem teste de Vontade DT 13 ou ficam Confusos.",
+    "descricao": "Uma pessoa que perdeu todas as memórias ao ler símbolos do Outro Lado. Rosto sem feições coberto de sigilos dourados."
+  },
+  {
+    "id": "estrangeiro",
+    "nome": "Estrangeiro",
+    "elemento": "Conhecimento",
+    "vd": 100,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 220,
+    "defesa": 25,
+    "deslocamento": "9m",
+    "iniciativa": 6,
+    "rd": {"Dano Físico": 10},
+    "vulnerabilidades": ["Sangue"],
+    "presenca_perturbadora": {"dt": 20, "dano": "3d6"},
+    "acoes": [
+      {"nome": "Olhar da Revelação", "tipo": "PADRÃO", "bonus": 14, "dano": "2d8+5", "alcance": "Médio (18m)", "critico": "20/x2"},
+      {"nome": "Imposição da Verdade", "tipo": "PADRÃO", "bonus": 16, "dano": "3d10+8", "alcance": "Corpo a corpo", "critico": "19/x2"}
+    ],
+    "habilidade_especial": "Distorção da Verdade: projeta cópias ilusórias, 50% de chance de camuflagem.",
+    "descricao": "Uma figura elegante trajada em vestes antigas com uma máscara de porcelana dourada que altera de expressão."
+  },
+  {
+    "id": "anarquico",
+    "nome": "Anárquico",
+    "elemento": "Energia",
+    "vd": 20,
+    "tamanho": "Pequeno",
+    "tipo": "Criatura",
+    "pv": 40,
+    "defesa": 16,
+    "deslocamento": "12m",
+    "iniciativa": 6,
+    "rd": {"Eletricidade": 99},
+    "vulnerabilidades": ["Conhecimento"],
+    "presenca_perturbadora": {"dt": 13, "dano": "1d6"},
+    "acoes": [
+      {"nome": "Descarga Caótica", "tipo": "PADRÃO", "bonus": 7, "dano": "1d10+4", "alcance": "Curto (9m)", "critico": "19/x2"}
+    ],
+    "habilidade_especial": "Salto Instável: quando sofre dano, teleporta-se até 4,5m aleatoriamente.",
+    "descricao": "Uma esfera errática de luz roxa fluorescente e estática crepitante."
+  },
+  {
+    "id": "nidere",
+    "nome": "Nidere",
+    "elemento": "Energia",
+    "vd": 100,
+    "tamanho": "Grande",
+    "tipo": "Monstro",
+    "pv": 210,
+    "defesa": 26,
+    "deslocamento": "15m",
+    "iniciativa": 14,
+    "rd": {"Dano Físico": 10, "Energia": 15},
+    "vulnerabilidades": ["Conhecimento"],
+    "presenca_perturbadora": {"dt": 22, "dano": "3d6"},
+    "acoes": [
+      {"nome": "Garras Relampejantes", "tipo": "PADRÃO", "bonus": 18, "dano": "3d8+8", "alcance": "Corpo a corpo", "critico": "19/x2"},
+      {"nome": "Salto do Predador", "tipo": "COMPLETA", "bonus": 18, "dano": "4d10+10", "alcance": "Salto 18m", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Camuflagem Prismática: pelagem refrata a luz ambiente como espelho (+5 Defesa).",
+    "descricao": "Predador supremo das florestas paranormais. Quimera felina gigante com crina de relâmpagos violeta."
+  },
+  {
+    "id": "mulher-afogada",
+    "nome": "Mulher Afogada",
+    "elemento": "Medo",
+    "vd": 60,
+    "tamanho": "Médio",
+    "tipo": "Criatura",
+    "pv": 105,
+    "defesa": 18,
+    "deslocamento": "9m",
+    "iniciativa": 5,
+    "rd": {"Corte": 5, "Impacto": 5},
+    "vulnerabilidades": ["Energia"],
+    "presenca_perturbadora": {"dt": 16, "dano": "2d6"},
+    "acoes": [
+      {"nome": "Abraço Submerso", "tipo": "PADRÃO", "bonus": 12, "dano": "2d6+5", "alcance": "Corpo a corpo", "critico": "20/x2"}
+    ],
+    "habilidade_especial": "Pulmões Encharcados: água negra goteja ao redor, gerando terreno difícil.",
+    "descricao": "Uma aparição pálida e encharcada em trajes de época apodrecidos, com boca aberta em agonia perpétua."
+  },
+  {
+    "id": "cultista-fuzileiro",
+    "nome": "Cultista Fuzileiro",
+    "elemento": "Nenhum",
+    "vd": 20,
+    "tamanho": "Médio",
+    "tipo": "Humano",
+    "pv": 28,
+    "defesa": 16,
+    "deslocamento": "9m",
+    "iniciativa": 4,
+    "rd": {},
+    "vulnerabilidades": ["Balístico"],
+    "presenca_perturbadora": null,
+    "acoes": [
+      {"nome": "Fuzil de Assalto", "tipo": "PADRÃO", "bonus": 8, "dano": "2d10", "alcance": "Médio", "critico": "19/x3"}
+    ],
+    "habilidade_especial": "Fogo Coordenado: +2 de dano se outro cultista atacar o mesmo alvo.",
+    "descricao": "Um fanático armado até os dentes e devoto aos rituais sombrios da Seita."
+  }
+]
