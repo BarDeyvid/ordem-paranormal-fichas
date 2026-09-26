@@ -72,6 +72,17 @@ export const SaveLoadButtons: React.FC = () => {
         <span>Bestiário</span>
       </button>
 
+      {/* Botão para acessar o Painel Tático Battlemat */}
+      <button
+        type="button"
+        onClick={() => rpg.setTelaAtual('battlemat')}
+        className="flex items-center gap-1.5 rounded bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-red-400 hover:text-red-300 transition border border-zinc-700 shadow-sm"
+        title="Abrir Painel Tático do Battlemat (Grid & IA de Combate)"
+      >
+        <span>⚔️</span>
+        <span>Battlemat</span>
+      </button>
+
       {/* Botão de Salvar no Dossiê / Galeria */}
       <button
         type="button"

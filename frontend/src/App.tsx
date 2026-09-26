@@ -5,6 +5,7 @@ import { ClasseScreen } from './screens/ClasseScreen';
 import { FichaScreen } from './screens/Ficha';
 import { GaleriaScreen } from './screens/GaleriaScreen';
 import { BestiarioScreen } from './screens/BestiarioScreen';
+import { BattlematScreen } from './screens/BattlematScreen';
 
 function Rotas() {
   const { telaAtual } = useRPG();
@@ -20,6 +21,8 @@ function Rotas() {
       return <GaleriaScreen />;
     case 'bestiario':
       return <BestiarioScreen />;
+    case 'battlemat':
+      return <BattlematScreen />;
     case 'atributos':
     default:
       return <AtributosScreen />;
@@ -37,7 +40,7 @@ function App() {
 function AppContent() {
   const { telaAtual } = useRPG();
   
-  const isFullScreen = telaAtual === 'ficha' || telaAtual === 'galeria' || telaAtual === 'bestiario';
+  const isFullScreen = telaAtual === 'ficha' || telaAtual === 'galeria' || telaAtual === 'bestiario' || telaAtual === 'battlemat';
 
   return (
     <div className={`min-h-screen w-full bg-zinc-950 overflow-x-hidden ${isFullScreen ? '' : 'p-4 md:p-6'}`}>

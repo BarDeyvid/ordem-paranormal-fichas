@@ -2,7 +2,7 @@
 // TIPOS GLOBAIS — TUDO TIPADO
 // ============================================================
 
-export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha' | 'galeria' | 'bestiario';
+export type Tela = 'atributos' | 'origens' | 'classe' | 'ficha' | 'galeria' | 'bestiario' | 'battlemat';
 
 export interface FichaSummary {
   id: string;
@@ -252,7 +252,6 @@ export interface Arma {
   Elemento_Arma?: string | null;
   Especial_Arma?: string | null;
   isAmaldicoada?: boolean;
-  isDuplaObsessivaLinked?: boolean;
 }
 
 export interface ArmaInventario {

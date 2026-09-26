@@ -79,6 +79,16 @@ export const BestiarioScreen: React.FC = () => {
 
             <button
               type="button"
+              onClick={() => setTelaAtual('battlemat')}
+              className="flex items-center gap-1.5 rounded bg-red-950/80 hover:bg-red-900 border border-red-700/80 px-3 py-1.5 text-xs font-bold text-red-200 transition shadow-sm"
+              title="Abrir Painel Tático Battlemat"
+            >
+              <span>⚔️</span>
+              <span>Battlemat</span>
+            </button>
+
+            <button
+              type="button"
               onClick={() => setTelaAtual('ficha')}
               className="flex items-center gap-1.5 rounded bg-emerald-700/90 hover:bg-emerald-600 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white transition shadow-sm"
               title="Voltar para a Ficha do Investigador"
